@@ -17,7 +17,7 @@ ADD_EXECUTABLE(main
   src/cc_list.c
   src/cc_tree.c
 )
-TARGET_LINK_LIBRARIES(main ${FLEX_LIBRARIES})
+TARGET_LINK_LIBRARIES(main ${FLEX_LIBRARIES} -lm)
 
 ENABLE_TESTING()
 SET(i 0)
