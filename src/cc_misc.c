@@ -1,11 +1,11 @@
 #include "cc_misc.h"
 #include "cc_dict.h"
 
-
+//return the current line number
+//incremented in scanner.l after
+//every encontred newline
 int getLineNumber (void)
 {
-  //implemente esta função
-  //return -1;
   return line_number;
 }
 
