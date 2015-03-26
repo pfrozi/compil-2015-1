@@ -10,21 +10,22 @@ integer {uinteger}
 floating {digit}*\.{digit}+
 character [\040-\176]
 ident _*{letter}*({letter}|{digit}|_)*
-lcomment \/\/({character}|[ \t])*
-bcomment \/\*((([^*]|[\r\n])|\*+([^\/]|[\r\n])))*\*+\/ 
 %{
 #include "parser.h" //arquivo automaticamente gerado pelo bison
 #include "cc_misc.h"
 #include "cc_dict.h"
 int line_number=1;
 %}
-%x COMMENT
+%x LCOMMENT
+%x BCOMMENT
 %%
-{lcomment}          {}
-"/*"                {BEGIN(COMMENT);}
-<COMMENT>"*/"       {BEGIN(INITIAL);}
-<COMMENT>"\n"       line_number++;
-<COMMENT>.          {}
+"//"                {BEGIN(LCOMMENT);}
+<LCOMMENT>"\n"      {line_number++;BEGIN(INITIAL);}
+<LCOMMENT>.         {}
+"/*"                {BEGIN(BCOMMENT);}
+<BCOMMENT>"*/"      {BEGIN(INITIAL);}
+<BCOMMENT>"\n"      line_number++;
+<BCOMMENT>.         {}
 [ \t\r]             {}
 "int"               return (TK_PR_INT);
 "float"             return (TK_PR_FLOAT);
