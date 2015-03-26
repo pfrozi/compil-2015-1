@@ -1,6 +1,7 @@
 #include "cc_dict.h"
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 comp_dict_t _stable;
 
@@ -101,6 +102,7 @@ void cc_dict_destroy()
     {
         if(_stable.items[i]!=NULL)
         {
+            free(_stable.items[i]->key);
             free(_stable.items[i]);
         }
     }
