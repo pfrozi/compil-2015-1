@@ -155,5 +155,6 @@ int line_number=1;
                         return(TK_IDENTIFICADOR);
                     }
 "\n"                line_number++;
+.                   return (TOKEN_ERRO);
 %%
 
