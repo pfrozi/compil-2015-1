@@ -14,13 +14,18 @@ lcomment \/\/({character}|[ \t])*
 bcomment \/\*((([^*]|[\r\n])|\*+([^\/]|[\r\n])))*\*+\/ 
 %{
 #include "parser.h" //arquivo automaticamente gerado pelo bison
+#include "cc_misc.h"
 #include "cc_dict.h"
 int line_number=1;
 %}
+%x COMMENT
 %%
-{lcomment}          //ignore
-{bcomment}          {int i;for(i=0;i<strlen(yytext);i++){if(yytext[i]=='\n'){line_number++;}}}
-[ \t\r]             //ignore
+{lcomment}          {}
+"/*"                {BEGIN(COMMENT);}
+<COMMENT>"*/"       {BEGIN(INITIAL);}
+<COMMENT>"\n"       line_number++;
+<COMMENT>.          {}
+[ \t\r]             {}
 "int"               return (TK_PR_INT);
 "float"             return (TK_PR_FLOAT);
 "bool"              return (TK_PR_BOOL);
@@ -43,10 +48,10 @@ int line_number=1;
 "&&"                return (TK_OC_AND);
 "||"                return (TK_OC_OR);
 {integer}           {
-                        comp_dict_item_t* i = cc_dict_get(yytext);
+                        comp_dict_item_t* i = cc_dict_get(stable,yytext);
                         if(i==NULL)
                         {
-                            cc_dict_insert(cc_dict_create_item(yytext,line_number));
+                            cc_dict_insert(stable,cc_dict_create_item(yytext,line_number));
                         }
                         else
                         {
@@ -55,10 +60,10 @@ int line_number=1;
                         return(TK_LIT_INT);
                     }
 {floating}          {
-                        comp_dict_item_t* i = cc_dict_get(yytext);
+                        comp_dict_item_t* i = cc_dict_get(stable,yytext);
                         if(i==NULL)
                         {
-                            cc_dict_insert(cc_dict_create_item(yytext,line_number));
+                            cc_dict_insert(stable,cc_dict_create_item(yytext,line_number));
                         }
                         else
                         {
@@ -67,10 +72,10 @@ int line_number=1;
                         return(TK_LIT_FLOAT);
                     }
 "true"              {
-                        comp_dict_item_t* i = cc_dict_get(yytext);
+                        comp_dict_item_t* i = cc_dict_get(stable,yytext);
                         if(i==NULL)
                         {
-                            cc_dict_insert(cc_dict_create_item(yytext,line_number));
+                            cc_dict_insert(stable,cc_dict_create_item(yytext,line_number));
                         }
                         else
                         {
@@ -79,10 +84,10 @@ int line_number=1;
                         return(TK_LIT_TRUE);
                     }
 "false"             {
-                        comp_dict_item_t* i = cc_dict_get(yytext);
+                        comp_dict_item_t* i = cc_dict_get(stable,yytext);
                         if(i==NULL)
                         {
-                            cc_dict_insert(cc_dict_create_item(yytext,line_number));
+                            cc_dict_insert(stable,cc_dict_create_item(yytext,line_number));
                         }
                         else
                         {
@@ -91,10 +96,10 @@ int line_number=1;
                         return(TK_LIT_FALSE);
                     }
 \'[^\']\'           {
-                        comp_dict_item_t* i = cc_dict_get(yytext);
+                        comp_dict_item_t* i = cc_dict_get(stable,yytext);
                         if(i==NULL)
                         {
-                            cc_dict_insert(cc_dict_create_item(yytext,line_number));
+                            cc_dict_insert(stable,cc_dict_create_item(yytext,line_number));
                         }
                         else
                         {
@@ -103,10 +108,10 @@ int line_number=1;
                         return(TK_LIT_CHAR);
                     }
 \"[^\"]*\"          {
-                        comp_dict_item_t* i = cc_dict_get(yytext);
+                        comp_dict_item_t* i = cc_dict_get(stable,yytext);
                         if(i==NULL)
                         {
-                            cc_dict_insert(cc_dict_create_item(yytext,line_number));
+                            cc_dict_insert(stable,cc_dict_create_item(yytext,line_number));
                         }
                         else
                         {
@@ -137,10 +142,10 @@ int line_number=1;
 "\'"                return (TOKEN_ERRO);
 "."                 return (TOKEN_ERRO);
 {ident}             {
-                        comp_dict_item_t* i = cc_dict_get(yytext);
+                        comp_dict_item_t* i = cc_dict_get(stable,yytext);
                         if(i==NULL)
                         {
-                            cc_dict_insert(cc_dict_create_item(yytext,line_number));
+                            cc_dict_insert(stable,cc_dict_create_item(yytext,line_number));
                         }
                         else
                         {

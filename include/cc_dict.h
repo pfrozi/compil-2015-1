@@ -22,10 +22,10 @@ typedef struct comp_dict
 }comp_dict_t;
 
 //Initialize symboltable
-void cc_dict_init();
+void cc_dict_init(comp_dict_t* table);
 
 //Free symboltable
-void cc_dict_destroy();
+void cc_dict_destroy(comp_dict_t* table);
 
 //Create a new item for the symboltable
 //key: key of the new item
@@ -33,14 +33,14 @@ void cc_dict_destroy();
 comp_dict_item_t* cc_dict_create_item(char* key,int line);
 
 //Insert a new item inti the symboltable
-void cc_dict_insert(comp_dict_item_t* item);
+void cc_dict_insert(comp_dict_t* table,comp_dict_item_t* item);
 
 //Remove an item from the symboltable
 //key:key to remove from symboltable
-void cc_dict_remove(char* key);
+void cc_dict_remove(comp_dict_t* table,char* key);
 
 //Get an item from the symboltable
 //key: Key of the item
-comp_dict_item_t* cc_dict_get(char* key);
+comp_dict_item_t* cc_dict_get(comp_dict_t* table,char* key);
 
 #endif

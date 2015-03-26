@@ -3,8 +3,6 @@
 #include <math.h>
 #include <string.h>
 
-comp_dict_t _stable;
-
 //Private dictionary functions
 
 //djb2 hashing for strings
@@ -29,23 +27,23 @@ unsigned long cc_dict_num_hash(int n)
 }
 
 //Function to resize size of hashtable for better performance
-void cc_dict_resize()
+void cc_dict_resize(comp_dict_t* table)
 {
     int newsize;
     int i;
     comp_dict_item_t** items;
-    double usage = ((double)_stable.used)/_stable.size;
+    double usage = ((double)((*table).used))/(*table).size;
     //make table smaller
     //when less then 25% of places are occupied
-    if(usage<=0.25f && _stable.size>32)
+    if(usage<=0.25f && (*table).size>32)
     {
-        newsize=_stable.size/2;
+        newsize=(*table).size/2;
     }
     //make table bigger
     //when more then 75% of places are occupied
     else if(usage>=0.75f)
     {
-        newsize=_stable.size*2;
+        newsize=(*table).size*2;
     }
     //Do nothing
     else
@@ -56,57 +54,57 @@ void cc_dict_resize()
     items = (comp_dict_item_t**)malloc(sizeof(comp_dict_item_t*)*newsize);
 
     //Rehash items for the new table
-    for(i=0;i<_stable.size;i++)
+    for(i=0;i<(*table).size;i++)
     {
         //Just do this, when place is occupied
-        if(_stable.items[i]!=NULL)
+        if((*table).items[i]!=NULL)
         {
             int j=0;
             int index;
             do
             {
-                index = (cc_dict_djb2(_stable.items[i]->key)+j*(cc_dict_num_hash(index)+1)) % newsize;
+                index = (cc_dict_djb2((*table).items[i]->key)+j*(cc_dict_num_hash(index)+1)) % newsize;
                 j++;
-            }while(items[index]!=NULL && strcmp(items[index]->key,_stable.items[i]->key)!=0);
-            items[index] = _stable.items[i];
+            }while(items[index]!=NULL && strcmp(items[index]->key,(*table).items[i]->key)!=0);
+            items[index] = (*table).items[i];
         }
     }
     //Free old table and point to new table
-    free(_stable.items);
-    _stable.items = items;
-    _stable.size = newsize;
+    free((*table).items);
+    (*table).items = items;
+    (*table).size = newsize;
 }
 
 //Public dictionary functions
 
 //Init symboltable
 //initial size of the symboltable is 32 entries
-void cc_dict_init()
+void cc_dict_init(comp_dict_t* table)
 {
     int i;
-    _stable.size  = 32;
-    _stable.used  = 0;
-    _stable.items = (comp_dict_item_t**)malloc(sizeof(comp_dict_item_t*)*_stable.size);
+    (*table).size  = 32;
+    (*table).used  = 0;
+    (*table).items = (comp_dict_item_t**)malloc(sizeof(comp_dict_item_t*)*((*table).size));
     //mark all places as not occupied
-    for(i=0;i<_stable.size;i++)
+    for(i=0;i<(*table).size;i++)
     {
-        _stable.items[i]=NULL;
+        (*table).items[i]=NULL;
     }
 }
 
 //Free items in hashtable
-void cc_dict_destroy()
+void cc_dict_destroy(comp_dict_t* table)
 {
     int i=0;
-    for(i=0;i<_stable.size;i++)
+    for(i=0;i<(*table).size;i++)
     {
-        if(_stable.items[i]!=NULL)
+        if((*table).items[i]!=NULL)
         {
-            free(_stable.items[i]->key);
-            free(_stable.items[i]);
+            free((*table).items[i]->key);
+            free((*table).items[i]);
         }
     }
-    free(_stable.items);
+    free((*table).items);
 }
 
 //Create a new symboltable entry
@@ -122,49 +120,49 @@ comp_dict_item_t* cc_dict_create_item(char* key,int line)
 //Insert an item into the symboltable
 //Collision behaviour is double hashing
 //and eventually resize table
-void cc_dict_insert(comp_dict_item_t* item)
+void cc_dict_insert(comp_dict_t* table,comp_dict_item_t* item)
 {
     int index;
     int i=0;
-    cc_dict_resize();
+    cc_dict_resize(table);
     do
     {
-        index = (cc_dict_djb2(item->key)+i*(cc_dict_num_hash(index)+1)) % _stable.size;
+        index = (cc_dict_djb2(item->key)+i*(cc_dict_num_hash(index)+1)) % (*table).size;
         i++;
-    }while(_stable.items[index]!=NULL && strcmp(item->key,_stable.items[index]->key)!=0);
-    _stable.items[index]=item;
-    _stable.used++;
+    }while((*table).items[index]!=NULL && strcmp(item->key,(*table).items[index]->key)!=0);
+    (*table).items[index]=item;
+    (*table).used++;
 }
 
 //Remove an item into the symboltable
 //Collision behaviour is double hashing
 //and eventually resize table
-void cc_dict_remove(char* key)
+void cc_dict_remove(comp_dict_t* table,char* key)
 {
     int index;
     int i=0;
     do
     {
-        index = (cc_dict_djb2(key)+i*(cc_dict_num_hash(index)+1)) % _stable.size;
+        index = (cc_dict_djb2(key)+i*(cc_dict_num_hash(index)+1)) % (*table).size;
         i++;
-    }while(_stable.items[index]!=NULL && strcmp(key,_stable.items[index]->key)!=0);
-    free(_stable.items[index]);
-    _stable.items[index]=NULL;
-    _stable.used--;
-    cc_dict_resize();
+    }while((*table).items[index]!=NULL && strcmp(key,(*table).items[index]->key)!=0);
+    free((*table).items[index]);
+    (*table).items[index]=NULL;
+    (*table).used--;
+    cc_dict_resize(table);
 }
 
 //Get an item with the specified key or NULL,
 //when an empty place is found
 //Collision behaviour is double hashing
-comp_dict_item_t* cc_dict_get(char* key)
+comp_dict_item_t* cc_dict_get(comp_dict_t* table,char* key)
 {
     int index;
     int i=0;
     do
     {
-        index = (cc_dict_djb2(key)+i*(cc_dict_num_hash(index)+1)) % _stable.size;
+        index = (cc_dict_djb2(key)+i*(cc_dict_num_hash(index)+1)) % (*table).size;
         i++;
-    }while(_stable.items[index]!=NULL && strcmp(key,_stable.items[index]->key)!=0);
-    return _stable.items[index];
+    }while((*table).items[index]!=NULL && strcmp(key,(*table).items[index]->key)!=0);
+    return (*table).items[index];
 }
