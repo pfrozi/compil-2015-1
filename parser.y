@@ -6,6 +6,7 @@
 */
 %{
 #include <stdio.h>
+#include "main.h"
 %}
 
 /* Declaração dos tokens da linguagem */
@@ -59,37 +60,59 @@
 %token TOKEN_ERRO
 
 %%
+// VERIFICAR COMANDO VAZIO!
 /* Regras (e ações) da gramática */
 programa:
-        input
+        input { return SINTATICA_SUCESSO; }
 ;
-input:    empty
-        | line input
+
+input:    empty 
+        | line 
+        | line input 
 ;
 empty:
           ""
         | " "
+        | '\n'
 ;
 line:      
-          exp endline
+          global_statement
+        | function
 ;  
 endline:
           TK_CE_SEMICOLON
 ;
 
-exp:
-          statement array
+global_statement:
+          statement endline        // int x; int static x;
+        | statement array endline  // int x[6]; int static x[7];
+;
+array:
+          TK_CE_BRA_OPEN TK_LIT_INT TK_CE_BRA_CLOSE   // x[1]
 ;
 statement:
-          type TK_IDENTIFICADOR
-        | type TK_PR_STATIC TK_IDENTIFICADOR
+          TK_PR_STATIC type TK_IDENTIFICADOR
+        | type TK_IDENTIFICADOR
 ;
 
-array:
-          %empty
-        | TK_CE_BRA_OPEN TK_PR_INT TK_CE_BRA_CLOSE   // x[1]
+local_statement:
+          TK_IDENTIFICADOR TK_OC_LE const_statement endline
+        | literal TK_OC_LE statement endline
+        | const_statement endline
+        | statement endline
 ;
-    
+const_statement:
+          TK_PR_STATIC TK_PR_CONST type TK_IDENTIFICADOR
+        | TK_PR_CONST type TK_IDENTIFICADOR
+;
+literal:
+          TK_LIT_INT
+        | TK_LIT_FLOAT
+        | TK_LIT_FALSE
+        | TK_LIT_TRUE
+        | TK_LIT_CHAR
+        | TK_LIT_STRING
+;
 type:     TK_PR_INT
         | TK_PR_FLOAT
         | TK_PR_BOOL
@@ -97,15 +120,68 @@ type:     TK_PR_INT
         | TK_PR_STRING
 ;
 
-/*
-exp:      NUM                { $$ = $1;         }
-        | exp '+' exp        { $$ = $1 + $3;    }
-        | exp '-' exp        { $$ = $1 - $3;    }
-        | exp '*' exp        { $$ = $1 * $3;    }
-        | exp '/' exp        { $$ = $1 / $3;    }
-        | '-' exp  %prec NEG { $$ = -$2;        }
-        | exp '^' exp        { $$ = pow ($1, $3); }
-        | '(' exp ')'        { $$ = $2;         }
+exp:
+          
+          
 ;
- */ 
+lst_exp:
+          exp TK_CE_COMMA lst_exp
+        | exp
+;
+
+command_block:
+          TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE
+;
+command:
+          local_statement
+        | exp
+        | %empty
+;
+function:
+          func_head command_block
+;
+func_head:
+          TK_PR_STATIC type TK_IDENTIFICADOR func_head_params
+        | type TK_IDENTIFICADOR func_head_params
+;
+
+func_head_params:
+          TK_CE_PAR_OPEN TK_CE_PAR_CLOSE
+        | TK_CE_PAR_OPEN func_params TK_CE_PAR_CLOSE
+;
+func_params:
+          type TK_IDENTIFICADOR TK_CE_COMMA func_params
+        | TK_PR_CONST type TK_IDENTIFICADOR TK_CE_COMMA func_params
+        | type TK_IDENTIFICADOR
+        | TK_PR_CONST type TK_IDENTIFICADOR 
+        
+;
+
+// atribuicao 
+assignment:
+          TK_IDENTIFICADOR TK_CE_EQUAL literal
+        | TK_IDENTIFICADOR array TK_CE_EQUAL literal
+;
+
+// entrada
+in:
+          TK_PR_INPUT exp TK_CE_EG exp 
+;
+// saida
+out:
+          TK_PR_OUTPUT lst_exp
+;
+
+// retorno
+ret:
+          TK_PR_RETURN exp
+;
+
+// Chamada da funcao 
+func_call:
+          TK_IDENTIFICADOR TK_CE_PAR_OPEN TK_CE_PAR_CLOSE
+        | TK_IDENTIFICADOR TK_CE_PAR_OPEN lst_exp TK_CE_PAR_CLOSE
+;
+
+/* End of grammar */
 %%
