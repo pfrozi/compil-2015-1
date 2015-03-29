@@ -121,12 +121,12 @@ int line_number=1;
                         return(TK_LIT_STRING);
                     }
 ","                 return (int)',';
-";"                 return (int)';';
+";"                 return (TK_CE_SEMICOLON);
 ":"                 return (int)':';
 "("                 return (int)'(';
 ")"                 return (int)')';
-"["                 return (int)'[';
-"]"                 return (int)']';
+"["                 return (TK_CE_BRA_OPEN);
+"]"                 return (TK_CE_BRA_CLOSE);
 "+"                 return (int)'+';
 "-"                 return (int)'-';
 "*"                 return (int)'*';

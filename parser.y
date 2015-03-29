@@ -1,5 +1,8 @@
 /*
-  Coloque aqui o identificador do grupo e dos seus membros
+    Wladimir's group
+        Lucas Herbert Jones
+        Pedro Henrique Frozi
+        Wladimir Leuschner
 */
 %{
 #include <stdio.h>
@@ -57,7 +60,52 @@
 
 %%
 /* Regras (e ações) da gramática */
-
 programa:
+        input
+;
+input:    empty
+        | line input
+;
+empty:
+          ""
+        | " "
+;
+line:      
+          exp endline
+;  
+endline:
+          TK_CE_SEMICOLON
+;
 
+exp:
+          statement array
+;
+statement:
+          type TK_IDENTIFICADOR
+        | type TK_PR_STATIC TK_IDENTIFICADOR
+;
+
+array:
+          %empty
+        | TK_CE_BRA_OPEN TK_PR_INT TK_CE_BRA_CLOSE   // x[1]
+;
+    
+type:     TK_PR_INT
+        | TK_PR_FLOAT
+        | TK_PR_BOOL
+        | TK_PR_CHAR
+        | TK_PR_STRING
+;
+
+/*
+exp:      NUM                { $$ = $1;         }
+        | exp '+' exp        { $$ = $1 + $3;    }
+        | exp '-' exp        { $$ = $1 - $3;    }
+        | exp '*' exp        { $$ = $1 * $3;    }
+        | exp '/' exp        { $$ = $1 / $3;    }
+        | '-' exp  %prec NEG { $$ = -$2;        }
+        | exp '^' exp        { $$ = pow ($1, $3); }
+        | '(' exp ')'        { $$ = $2;         }
+;
+ */ 
 %%
