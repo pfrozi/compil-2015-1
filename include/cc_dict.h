@@ -1,13 +1,30 @@
 #ifndef __CC_DICT_H_
 #define __CC_DICT_H_
+#include<stdbool.h>
+
+typedef struct comp_dict_item_key
+{
+    char* lexem;
+    int   type;
+}comp_dict_item_key_t;
 
 //Struct for symbol table item
 //key: key for hastable
 //line: last occurence of symbol
 typedef struct comp_dict_item
 {
-    char* key;
+    comp_dict_item_key_t key;
     int line;
+    int type;
+    union
+    {
+        int val_int;
+        float val_float;
+        char val_char;
+        bool val_bool;
+        char* val_str;
+        char* ident;
+    };
 }comp_dict_item_t;
 
 //Struct for symbol table
@@ -27,20 +44,25 @@ void cc_dict_init(comp_dict_t* table);
 //Free symboltable
 void cc_dict_destroy(comp_dict_t* table);
 
+//Create a new key
+//lexem: lexem of scanner
+//type: type of lexem
+comp_dict_item_key_t cc_dict_create_item_key(char* lexem, int type);
+
 //Create a new item for the symboltable
 //key: key of the new item
 //line: line occurence of the item
-comp_dict_item_t* cc_dict_create_item(char* key,int line);
+comp_dict_item_t* cc_dict_create_item(comp_dict_item_key_t key,int line);
 
 //Insert a new item inti the symboltable
-void cc_dict_insert(comp_dict_t* table,comp_dict_item_t* item);
+comp_dict_item_t* cc_dict_insert(comp_dict_t* table,comp_dict_item_t* item);
 
 //Remove an item from the symboltable
 //key:key to remove from symboltable
-void cc_dict_remove(comp_dict_t* table,char* key);
+void cc_dict_remove(comp_dict_t* table,comp_dict_item_key_t key);
 
 //Get an item from the symboltable
 //key: Key of the item
-comp_dict_item_t* cc_dict_get(comp_dict_t* table,char* key);
+comp_dict_item_t* cc_dict_get(comp_dict_t* table,comp_dict_item_key_t key);
 
 #endif

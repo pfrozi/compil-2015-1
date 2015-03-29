@@ -1,4 +1,5 @@
 #include "cc_dict.h"
+#include "main.h"
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
@@ -63,9 +64,9 @@ void cc_dict_resize(comp_dict_t* table)
             int index;
             do
             {
-                index = (cc_dict_djb2((*table).items[i]->key)+j*(cc_dict_num_hash(index)+1)) % newsize;
+                index = (cc_dict_djb2((*table).items[i]->key.lexem)+j*(cc_dict_num_hash(index)+1)) % newsize;
                 j++;
-            }while(items[index]!=NULL && strcmp(items[index]->key,(*table).items[i]->key)!=0);
+            }while(items[index]!=NULL && strcmp(items[index]->key.lexem,(*table).items[i]->key.lexem)!=0);
             items[index] = (*table).items[i];
         }
     }
@@ -100,52 +101,72 @@ void cc_dict_destroy(comp_dict_t* table)
     {
         if((*table).items[i]!=NULL)
         {
-            free((*table).items[i]->key);
+            if((*table).items[i]->type==SIMBOLO_LITERAL_STRING)
+            {
+                free((*table).items[i]->val_str);
+            }
+            else if((*table).items[i]->type==SIMBOLO_IDENTIFICADOR)
+            {
+                free((*table).items[i]->ident);
+            }
+            free((*table).items[i]->key.lexem);
             free((*table).items[i]);
         }
     }
     free((*table).items);
 }
 
+//Create a new key
+comp_dict_item_key_t cc_dict_create_item_key(char* lexem, int type)
+{
+    comp_dict_item_key_t key;
+    key.lexem=(char*)malloc(sizeof(char)*strlen(lexem));
+    memcpy(key.lexem,lexem,strlen(lexem));
+    key.type=type;
+    return key;
+}
+
 //Create a new symboltable entry
-comp_dict_item_t* cc_dict_create_item(char* key,int line)
+comp_dict_item_t* cc_dict_create_item(comp_dict_item_key_t key,int line)
 {
     comp_dict_item_t* item = (comp_dict_item_t*)malloc(sizeof(comp_dict_item_t));
-    item->key=(char*)malloc(strlen(key));
-    memcpy(item->key,key,strlen(key));
+    item->key=key;
     item->line=line;
+    item->ident=NULL;
+    item->val_str=NULL;
     return item;
 }
 
 //Insert an item into the symboltable
 //Collision behaviour is double hashing
 //and eventually resize table
-void cc_dict_insert(comp_dict_t* table,comp_dict_item_t* item)
+comp_dict_item_t* cc_dict_insert(comp_dict_t* table,comp_dict_item_t* item)
 {
     int index;
     int i=0;
     cc_dict_resize(table);
     do
     {
-        index = (cc_dict_djb2(item->key)+i*(cc_dict_num_hash(index)+1)) % (*table).size;
+        index = (cc_dict_djb2(item->key.lexem)+i*(cc_dict_num_hash(index)+1)) % (*table).size;
         i++;
-    }while((*table).items[index]!=NULL && strcmp(item->key,(*table).items[index]->key)!=0);
+    }while((*table).items[index]!=NULL && strcmp(item->key.lexem,(*table).items[index]->key.lexem)!=0);
     (*table).items[index]=item;
     (*table).used++;
+    return item;
 }
 
 //Remove an item into the symboltable
 //Collision behaviour is double hashing
 //and eventually resize table
-void cc_dict_remove(comp_dict_t* table,char* key)
+void cc_dict_remove(comp_dict_t* table,comp_dict_item_key_t key)
 {
     int index;
     int i=0;
     do
     {
-        index = (cc_dict_djb2(key)+i*(cc_dict_num_hash(index)+1)) % (*table).size;
+        index = (cc_dict_djb2(key.lexem)+i*(cc_dict_num_hash(index)+1)) % (*table).size;
         i++;
-    }while((*table).items[index]!=NULL && strcmp(key,(*table).items[index]->key)!=0);
+    }while((*table).items[index]!=NULL && strcmp(key.lexem,(*table).items[index]->key.lexem)!=0);
     free((*table).items[index]);
     (*table).items[index]=NULL;
     (*table).used--;
@@ -155,14 +176,14 @@ void cc_dict_remove(comp_dict_t* table,char* key)
 //Get an item with the specified key or NULL,
 //when an empty place is found
 //Collision behaviour is double hashing
-comp_dict_item_t* cc_dict_get(comp_dict_t* table,char* key)
+comp_dict_item_t* cc_dict_get(comp_dict_t* table,comp_dict_item_key_t key)
 {
     int index;
     int i=0;
     do
     {
-        index = (cc_dict_djb2(key)+i*(cc_dict_num_hash(index)+1)) % (*table).size;
+        index = (cc_dict_djb2(key.lexem)+i*(cc_dict_num_hash(index)+1)) % (*table).size;
         i++;
-    }while((*table).items[index]!=NULL && strcmp(key,(*table).items[index]->key)!=0);
+    }while((*table).items[index]!=NULL && strcmp(key.lexem,(*table).items[index]->key.lexem)!=0);
     return (*table).items[index];
 }
