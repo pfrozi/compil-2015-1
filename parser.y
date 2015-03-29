@@ -43,6 +43,7 @@
 %token TK_CE_EQUAL
 %token TK_CE_EXCL
 %token TK_CE_AMP
+%token TK_CE_EG
 %token TK_CE_DOLLAR
 %token TK_OC_LE
 %token TK_OC_GE
@@ -121,8 +122,8 @@ type:     TK_PR_INT
 ;
 
 exp:
-          
-          
+          func_call
+        | literal
 ;
 lst_exp:
           exp TK_CE_COMMA lst_exp
@@ -133,9 +134,13 @@ command_block:
           TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE
 ;
 command:
-          local_statement
-        | exp
-        | %empty
+          /* %empty */
+        | func_call
+        | local_statement
+        | in
+        | out
+        | ret
+        | assignment
 ;
 function:
           func_head command_block
