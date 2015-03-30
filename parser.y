@@ -67,7 +67,6 @@
 // VERIFICAR COMANDO VAZIO!
 /* Regras (e ações) da gramática */
 programa:
-
         input TOKEN_EOF { return SINTATICA_SUCESSO; }
 ;
 
@@ -210,6 +209,7 @@ single_command:
 flow_command:
           cond
         | whiledo
+        | dowhile
 ;
 function:
           func_head command_block
@@ -263,6 +263,10 @@ cond:
 
 whiledo:
           TK_PR_WHILE TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_DO command2
+;
+
+dowhile:
+          TK_PR_DO command2 TK_PR_WHILE exp 
 ;
 /* End of grammar */
 %%
