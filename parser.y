@@ -62,7 +62,7 @@
 %token TK_IDENTIFICADOR
 %token TOKEN_ERRO
 %token TOKEN_EOF
-
+%right TK_PR_THEN TK_PR_ELSE
 %%
 // VERIFICAR COMANDO VAZIO!
 /* Regras (e ações) da gramática */
@@ -188,12 +188,14 @@ lst_exp:
 command_block:
           TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE
 ;
+
 command:
-          /* %empty */
-        | command command2
+        /* %empty */
+        | command2 endline command
+        | command2
 ;
 command2:
-          single_command endline
+          single_command
         | command_block
         | flow_command
         | endline
@@ -257,10 +259,11 @@ func_call:
         | TK_IDENTIFICADOR TK_CE_PAR_OPEN lst_exp TK_CE_PAR_CLOSE
 ;
 // if
+
 cond:
           TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2
+        | TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2 TK_PR_ELSE command2
 ;
-
 whiledo:
           TK_PR_WHILE TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_DO command2
 ;
