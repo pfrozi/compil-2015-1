@@ -90,6 +90,9 @@ endline:
 global_statement:
           statement endline        // int x; int static x;
         | statement array endline  // int x[6]; int static x[7];
+        | statement                { yyerror("Missing a ;"); return SINTATICA_ERRO; }
+        | statement array          { yyerror("Missing a ;"); return SINTATICA_ERRO; }
+        
 ;
 array:
           TK_CE_BRA_OPEN exp TK_CE_BRA_CLOSE   // x[1]
@@ -98,6 +101,8 @@ array:
 statement:
           TK_PR_STATIC type TK_IDENTIFICADOR
         | type TK_IDENTIFICADOR
+        | TK_PR_STATIC TK_IDENTIFICADOR             { yyerror("Missing a type"); return SINTATICA_ERRO; }
+        | TK_IDENTIFICADOR                          { yyerror("Missing a type"); return SINTATICA_ERRO; }        
 ;
 
 local_statement:
@@ -107,10 +112,16 @@ local_statement:
         | statement TK_OC_LE literal
         | const_statement 
         | statement 
+        | const_statement TK_OC_LE                  { yyerror("Missing a attrib"); return SINTATICA_ERRO; }        
+        | statement TK_OC_LE                        { yyerror("Missing a attrib"); return SINTATICA_ERRO; }        
 ;
 const_statement:
           TK_PR_STATIC TK_PR_CONST type TK_IDENTIFICADOR
+        | TK_PR_STATIC TK_PR_CONST TK_IDENTIFICADOR { yyerror("Missing a type"); return SINTATICA_ERRO; }
+        | TK_PR_STATIC TK_PR_CONST type             { yyerror("Missing a IDENTIFICADOR"); return SINTATICA_ERRO; }
         | TK_PR_CONST type TK_IDENTIFICADOR
+        | TK_PR_CONST TK_IDENTIFICADOR              { yyerror("Missing a type"); return SINTATICA_ERRO; }
+        | TK_PR_CONST type                          { yyerror("Missing a IDENTIFICADOR"); return SINTATICA_ERRO; }
 ;
 literal:
           op_literal
@@ -230,27 +241,38 @@ func_params:
         | TK_PR_CONST type TK_IDENTIFICADOR TK_CE_COMMA func_params
         | type TK_IDENTIFICADOR
         | TK_PR_CONST type TK_IDENTIFICADOR 
-        
+        | TK_IDENTIFICADOR TK_CE_COMMA func_params              { yyerror("Missing a param type"); return SINTATICA_ERRO; }
+        | TK_PR_CONST TK_IDENTIFICADOR TK_CE_COMMA func_params  { yyerror("Missing a param type"); return SINTATICA_ERRO; }
+        | TK_IDENTIFICADOR                                      { yyerror("Missing a param type"); return SINTATICA_ERRO; }
+        | TK_PR_CONST TK_IDENTIFICADOR                          { yyerror("Missing a param type"); return SINTATICA_ERRO; }
+        | type                                                  { yyerror("Missing a param IDENTIFICADOR"); return SINTATICA_ERRO; }
+        | type TK_CE_COMMA func_params                          { yyerror("Missing a param IDENTIFICADOR"); return SINTATICA_ERRO; }
 ;
 
 // atribuicao 
 assignment:
           TK_IDENTIFICADOR TK_CE_EQUAL exp
         | TK_IDENTIFICADOR array TK_CE_EQUAL exp
+        | TK_IDENTIFICADOR TK_CE_EQUAL              { yyerror("Missing a expression"); return SINTATICA_ERRO; }        
+        | TK_IDENTIFICADOR array TK_CE_EQUAL        { yyerror("Missing a expression"); return SINTATICA_ERRO; }        
 ;
 
 // entrada
 in:
           TK_PR_INPUT exp TK_CE_EG exp 
+        | TK_PR_INPUT TK_CE_EG exp                  { yyerror("Missing a expression left of =>"); return SINTATICA_ERRO; } 
+        | TK_PR_INPUT exp TK_CE_EG                  { yyerror("Missing a expression right of =>"); return SINTATICA_ERRO; } 
 ;
 // saida
 out:
-          TK_PR_OUTPUT lst_exp  
+          TK_PR_OUTPUT lst_exp 
+        | TK_PR_OUTPUT                              { yyerror("Missing a expression list"); return SINTATICA_ERRO; } 
 ;
 
 // retorno
 ret:
           TK_PR_RETURN exp
+        | TK_PR_RETURN                              { yyerror("Missing a expression"); return SINTATICA_ERRO; } 
 ;
 
 // Chamada da funcao 
@@ -263,13 +285,17 @@ func_call:
 cond:
           TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2
         | TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2 TK_PR_ELSE command2
+        | TK_PR_IF TK_CE_PAR_OPEN TK_CE_PAR_CLOSE TK_PR_THEN command2           { yyerror("if statement without expression"); return SINTATICA_ERRO; }
+        | TK_PR_IF TK_CE_PAR_OPEN exp TK_PR_THEN command2                       { yyerror("Missing ')'"); return SINTATICA_ERRO; }
 ;
 whiledo:
           TK_PR_WHILE TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_DO command2
+        | TK_PR_WHILE TK_CE_PAR_OPEN TK_CE_PAR_CLOSE TK_PR_DO command2          { yyerror("while statement without expression"); return SINTATICA_ERRO; }        
 ;
 
 dowhile:
-          TK_PR_DO command2 TK_PR_WHILE exp 
+          TK_PR_DO command2 TK_PR_WHILE exp
+        | TK_PR_DO command2 TK_PR_WHILE                                         { yyerror("do statement without expression"); return SINTATICA_ERRO; }
 ;
 /* End of grammar */
 %%
