@@ -192,5 +192,6 @@ int line_number=1;
                     }
 "\n"                line_number++;
 .                   return (TOKEN_ERRO);
+<<EOF>>             return (TOKEN_EOF);
 %%
 

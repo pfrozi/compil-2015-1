@@ -61,12 +61,14 @@
 %token TK_LIT_STRING
 %token TK_IDENTIFICADOR
 %token TOKEN_ERRO
+%token TOKEN_EOF
 
 %%
 // VERIFICAR COMANDO VAZIO!
 /* Regras (e ações) da gramática */
 programa:
-        input { return SINTATICA_SUCESSO; }
+
+        input TOKEN_EOF { return SINTATICA_SUCESSO; }
 ;
 
 input:    empty 
