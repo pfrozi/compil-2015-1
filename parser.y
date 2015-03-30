@@ -51,6 +51,8 @@
 %token TK_OC_NE
 %token TK_OC_AND
 %token TK_OC_OR
+%token TK_OC_GT
+%token TK_OC_LT
 %token TK_LIT_INT
 %token TK_LIT_FLOAT
 %token TK_LIT_FALSE
@@ -89,30 +91,40 @@ global_statement:
         | statement array endline  // int x[6]; int static x[7];
 ;
 array:
-          TK_CE_BRA_OPEN TK_LIT_INT TK_CE_BRA_CLOSE   // x[1]
+          TK_CE_BRA_OPEN exp TK_CE_BRA_CLOSE   // x[1]
 ;
+
 statement:
           TK_PR_STATIC type TK_IDENTIFICADOR
         | type TK_IDENTIFICADOR
 ;
 
 local_statement:
-          TK_IDENTIFICADOR TK_OC_LE const_statement endline
-        | literal TK_OC_LE statement endline
-        | const_statement endline
-        | statement endline
+          const_statement TK_OC_LE TK_IDENTIFICADOR
+        | const_statement TK_OC_LE literal
+        | statement TK_OC_LE TK_IDENTIFICADOR
+        | statement TK_OC_LE literal
+        | const_statement 
+        | statement 
 ;
 const_statement:
           TK_PR_STATIC TK_PR_CONST type TK_IDENTIFICADOR
         | TK_PR_CONST type TK_IDENTIFICADOR
 ;
 literal:
+          op_literal
+        | TK_LIT_STRING
+;
+op_literal:
           TK_LIT_INT
         | TK_LIT_FLOAT
         | TK_LIT_FALSE
         | TK_LIT_TRUE
         | TK_LIT_CHAR
-        | TK_LIT_STRING
+        | TK_CE_MINUS TK_LIT_INT
+        | TK_CE_MINUS TK_LIT_FLOAT
+        | TK_CE_PLUS TK_LIT_INT
+        | TK_CE_PLUS TK_LIT_FLOAT
 ;
 type:     TK_PR_INT
         | TK_PR_FLOAT
@@ -120,10 +132,52 @@ type:     TK_PR_INT
         | TK_PR_CHAR
         | TK_PR_STRING
 ;
-
 exp:
+          val_exp
+        | TK_LIT_STRING
+;
+
+val_exp:
+          exp1
+        | val_exp arith_op exp1
+        | val_exp log_op exp1
+;
+exp1:
+          TK_CE_PAR_OPEN val_exp TK_CE_PAR_CLOSE
+        | end_exp
+;
+end_exp:
           func_call
-        | literal
+        | op_literal
+        | TK_IDENTIFICADOR
+        | TK_IDENTIFICADOR array
+;
+
+/*
+arith_exp:
+          arith_op exp
+;
+*/
+arith_op:
+          TK_CE_PLUS
+        | TK_CE_MINUS
+        | TK_CE_MUL
+        | TK_CE_DIV
+;
+/*
+log_exp:
+          exp log_op
+;
+*/
+log_op:
+          TK_OC_LT
+        | TK_OC_GT
+        | TK_OC_LE
+        | TK_OC_GE
+        | TK_OC_EQ
+        | TK_OC_NE
+        | TK_OC_AND
+        | TK_OC_OR
 ;
 lst_exp:
           exp TK_CE_COMMA lst_exp
@@ -135,12 +189,25 @@ command_block:
 ;
 command:
           /* %empty */
-        | func_call
+        | command command2
+;
+command2:
+          single_command endline
+        | command_block
+        | flow_command
+        | endline
+;
+single_command:
+          func_call 
         | local_statement
         | in
-        | out
+        | out       
         | ret
         | assignment
+;
+flow_command:
+          cond
+        | whiledo
 ;
 function:
           func_head command_block
@@ -164,8 +231,8 @@ func_params:
 
 // atribuicao 
 assignment:
-          TK_IDENTIFICADOR TK_CE_EQUAL literal
-        | TK_IDENTIFICADOR array TK_CE_EQUAL literal
+          TK_IDENTIFICADOR TK_CE_EQUAL exp
+        | TK_IDENTIFICADOR array TK_CE_EQUAL exp
 ;
 
 // entrada
@@ -174,7 +241,7 @@ in:
 ;
 // saida
 out:
-          TK_PR_OUTPUT lst_exp
+          TK_PR_OUTPUT lst_exp  
 ;
 
 // retorno
@@ -187,6 +254,13 @@ func_call:
           TK_IDENTIFICADOR TK_CE_PAR_OPEN TK_CE_PAR_CLOSE
         | TK_IDENTIFICADOR TK_CE_PAR_OPEN lst_exp TK_CE_PAR_CLOSE
 ;
+// if
+cond:
+          TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2
+;
 
+whiledo:
+          TK_PR_WHILE TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_DO command2
+;
 /* End of grammar */
 %%
