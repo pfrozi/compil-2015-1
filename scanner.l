@@ -11,11 +11,11 @@ floating {digit}*\.{digit}+
 character [\040-\176]
 ident _*{letter}*({letter}|{digit}|_)*
 %{
-#include "parser.h" //arquivo automaticamente gerado pelo bison
 #include "main.h"
 #include "cc_misc.h"
-#include "cc_dict.h"
 #include <stdbool.h>
+#include "parser.h" //arquivo automaticamente gerado pelo bison
+struct comp_dict_item a;
 int line_number=1;
 %}
 %x LCOMMENT
@@ -64,6 +64,7 @@ int line_number=1;
                         i->line=line_number;
                         i->type=SIMBOLO_LITERAL_INT;
                         i->val_int=atoi(yytext);
+                        yylval.valor_simbolo_lexico = i;
                         return(TK_LIT_INT);
                     }
 {floating}          {
@@ -80,6 +81,7 @@ int line_number=1;
                         i->line=line_number;
                         i->type=SIMBOLO_LITERAL_FLOAT;
                         i->val_float=atof(yytext);
+                        yylval.valor_simbolo_lexico = i;
                         return(TK_LIT_FLOAT);
                     }
 "true"              {
@@ -96,6 +98,7 @@ int line_number=1;
                         i->line=line_number; 
                         i->type=SIMBOLO_LITERAL_BOOL;
                         i->val_bool=true;
+                        yylval.valor_simbolo_lexico = i;
                         return(TK_LIT_TRUE);
                     }
 "false"             {
@@ -112,6 +115,7 @@ int line_number=1;
                         i->line=line_number;
                         i->type=SIMBOLO_LITERAL_BOOL;
                         i->val_bool=false;
+                        yylval.valor_simbolo_lexico = i;
                         return(TK_LIT_FALSE);
                     }
 \'[^\']\'           {
@@ -128,6 +132,7 @@ int line_number=1;
                         i->line=line_number;
                         i->type=SIMBOLO_LITERAL_CHAR;
                         i->val_char=yytext[1];
+                        yylval.valor_simbolo_lexico = i;
                         return(TK_LIT_CHAR);
                     }
 \"[^\"]*\"          {
@@ -142,11 +147,12 @@ int line_number=1;
                             free(key.lexem);
                             free(i->val_str);
                         }
-                        char* dst = (char*)malloc(sizeof(char)*strlen(yytext)-1);
-                        strncpy(dst,yytext+1,strlen(yytext)-1);
+                        char* dst = (char*)malloc(sizeof(char)*strlen(yytext)-2);
+                        strncpy(dst,yytext+1,strlen(yytext)-2);
                         i->line=line_number;
                         i->type=SIMBOLO_LITERAL_STRING;
                         i->val_str=dst;
+                        yylval.valor_simbolo_lexico = i;
                         return(TK_LIT_STRING);
                     }
 ","                 return (TK_CE_COMMA);
@@ -188,6 +194,7 @@ int line_number=1;
                         i->type=SIMBOLO_IDENTIFICADOR;
                         i->ident=(char*)malloc(sizeof(char)*strlen(yytext));
                         memcpy(i->ident,yytext,strlen(yytext));
+                        yylval.valor_simbolo_lexico = i;
                         return(TK_IDENTIFICADOR);
                     }
 "\n"                line_number++;

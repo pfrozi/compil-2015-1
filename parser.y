@@ -6,8 +6,14 @@
 */
 %{
 #include <stdio.h>
+#include "cc_misc.h"
+#include "cc_dict.h"
 #include "main.h"
 %}
+/* Union for yylval */
+%union {
+    comp_dict_item_t *valor_simbolo_lexico;
+}
 
 /* Declaração dos tokens da linguagem */
 %token TK_PR_INT
