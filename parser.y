@@ -236,11 +236,15 @@ function:
 func_head:
           TK_PR_STATIC type TK_IDENTIFICADOR func_head_params
         | type TK_IDENTIFICADOR func_head_params
+        | type func_head_params                                { yyerror("Missing a param IDENTIFICADOR"); return SINTATICA_ERRO; }
+        | TK_IDENTIFICADOR func_head_params                    { yyerror("Missing a type IDENTIFICADOR"); return SINTATICA_ERRO; }
 ;
 
 func_head_params:
           TK_CE_PAR_OPEN TK_CE_PAR_CLOSE
         | TK_CE_PAR_OPEN func_params TK_CE_PAR_CLOSE
+        | TK_CE_PAR_CLOSE                                      {yyerror("Missing ')'"); return SINTATICA_ERRO; }
+        | TK_CE_PAR_OPEN                                       {yyerror("Missing '('"); return SINTATICA_ERRO; }
 ;
 func_params:
           type TK_IDENTIFICADOR TK_CE_COMMA func_params
