@@ -14,6 +14,7 @@
 %union {
     comp_dict_item_t *valor_simbolo_lexico;
 }
+%error-verbose
 
 /* Declaração dos tokens da linguagem */
 %token TK_PR_INT

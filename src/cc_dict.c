@@ -18,12 +18,23 @@ unsigned long cc_dict_djb2(char* key)
     return h;
 }
 
+long pow2(int b,int n)
+{
+    int ret=b;
+    int i=1;
+    for(i;i<n;i++)
+    {
+        ret=ret*b;
+    }
+    return ret;
+}
+
 //hash function for double hashing
 unsigned long cc_dict_num_hash(int n)
 {
-    n = (pow((n >> 16),n)) * 0x45d9f3b;
-    n = (pow((n >> 16),n)) * 0x45d9f3b;
-    n = (pow((n >> 16),n));
+    n = (pow2((n >> 16),n)) * 0x45d9f3b;
+    n = (pow2((n >> 16),n)) * 0x45d9f3b;
+    n = (pow2((n >> 16),n));
     return n;
 }
 
@@ -120,8 +131,8 @@ void cc_dict_destroy(comp_dict_t* table)
 comp_dict_item_key_t cc_dict_create_item_key(char* lexem, int type)
 {
     comp_dict_item_key_t key;
-    key.lexem=(char*)malloc(sizeof(char)*strlen(lexem));
-    memcpy(key.lexem,lexem,strlen(lexem));
+    key.lexem=(char*)malloc(sizeof(char)*strlen(lexem)+1);
+    strcpy(key.lexem,lexem);
     key.type=type;
     return key;
 }
@@ -142,7 +153,7 @@ comp_dict_item_t* cc_dict_create_item(comp_dict_item_key_t key,int line)
 //and eventually resize table
 comp_dict_item_t* cc_dict_insert(comp_dict_t* table,comp_dict_item_t* item)
 {
-    int index;
+    int index=0;
     int i=0;
     cc_dict_resize(table);
     do
@@ -160,7 +171,7 @@ comp_dict_item_t* cc_dict_insert(comp_dict_t* table,comp_dict_item_t* item)
 //and eventually resize table
 void cc_dict_remove(comp_dict_t* table,comp_dict_item_key_t key)
 {
-    int index;
+    int index=0;
     int i=0;
     do
     {
@@ -178,7 +189,7 @@ void cc_dict_remove(comp_dict_t* table,comp_dict_item_key_t key)
 //Collision behaviour is double hashing
 comp_dict_item_t* cc_dict_get(comp_dict_t* table,comp_dict_item_key_t key)
 {
-    int index;
+    int index=0;
     int i=0;
     do
     {

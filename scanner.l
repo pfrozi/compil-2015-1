@@ -147,7 +147,7 @@ int line_number=1;
                             free(key.lexem);
                             free(i->val_str);
                         }
-                        char* dst = (char*)malloc(sizeof(char)*strlen(yytext)-2);
+                        char* dst = (char*)malloc(sizeof(char)*strlen(yytext));
                         strncpy(dst,yytext+1,strlen(yytext)-2);
                         i->line=line_number;
                         i->type=SIMBOLO_LITERAL_STRING;
