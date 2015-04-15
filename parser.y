@@ -19,8 +19,7 @@ extern comp_tree_t* ast;
     comp_tree_t *ast;
 }
 
-%type <ast> programa input
-%type <ast> function func_head command_block
+%type <ast> programa input function func_head command_block command
 %error-verbose
 
 /* Declaração dos tokens da linguagem */
@@ -84,9 +83,9 @@ programa:
         input TOKEN_EOF { $$ = cc_tree_insert_node(cc_tree_create_node(10,cc_tree_item_create(AST_PROGRAMA,NULL)),$1); ast=$$ ;return SINTATICA_SUCESSO; }
 ;
 
-input:    empty 
-        | line 
-        | line input 
+input:    /*empty*/
+        | line {}
+        | line input {$$ = cc_tree_insert_node($$,$2)}
 ;
 empty:
           ""
@@ -211,7 +210,7 @@ lst_exp:
 ;
 
 command_block:
-          TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE
+         TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_FUNCAO,"block")),$2);}
 ;
 
 command:
@@ -239,7 +238,7 @@ flow_command:
         | dowhile
 ;
 function:
-          func_head command_block { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_FUNCAO,"Funktion")),$2);}
+          func_head command_block { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_FUNCAO,yylval.valor_simbolo_lexico->key.lexem)),$2);}
 ;
 func_head:
           TK_PR_STATIC type TK_IDENTIFICADOR func_head_params
