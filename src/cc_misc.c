@@ -1,11 +1,14 @@
 #include "cc_misc.h"
 #include "cc_dict.h"
+#include "cc_tree.h"
 #include <stdlib.h>
+
+comp_tree_t* ast;
+comp_dict_t* stable;
 
 //return the current line number
 //incremented in scanner.l after
 //every encontred newline
-comp_dict_t* stable;
 
 int getLineNumber (void)
 {

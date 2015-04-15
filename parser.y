@@ -8,12 +8,19 @@
 #include <stdio.h>
 #include "cc_misc.h"
 #include "cc_dict.h"
+#include "cc_tree.h"
+#include "cc_ast.h"
 #include "main.h"
+extern comp_tree_t* ast;
 %}
 /* Union for yylval */
 %union {
     comp_dict_item_t *valor_simbolo_lexico;
+    comp_tree_t *ast;
 }
+
+%type <ast> programa input
+%type <ast> function func_head command_block
 %error-verbose
 
 /* Declaração dos tokens da linguagem */
@@ -74,7 +81,7 @@
 // VERIFICAR COMANDO VAZIO!
 /* Regras (e ações) da gramática */
 programa:
-        input TOKEN_EOF { return SINTATICA_SUCESSO; }
+        input TOKEN_EOF { $$ = cc_tree_insert_node(cc_tree_create_node(10,cc_tree_item_create(AST_PROGRAMA,NULL)),$1); ast=$$ ;return SINTATICA_SUCESSO; }
 ;
 
 input:    empty 
@@ -232,7 +239,7 @@ flow_command:
         | dowhile
 ;
 function:
-          func_head command_block
+          func_head command_block { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_FUNCAO,"Funktion")),$2);}
 ;
 func_head:
           TK_PR_STATIC type TK_IDENTIFICADOR func_head_params
