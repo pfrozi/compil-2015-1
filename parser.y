@@ -66,6 +66,7 @@ extern comp_tree_t* ast;
 %token TK_OC_OR
 %token TK_OC_GT
 %token TK_OC_LT
+%token TK_OC_NEG
 %token <valor_simbolo_lexico> TK_LIT_INT
 %token <valor_simbolo_lexico> TK_LIT_FLOAT
 %token <valor_simbolo_lexico> TK_LIT_FALSE
@@ -80,7 +81,7 @@ extern comp_tree_t* ast;
 // VERIFICAR COMANDO VAZIO!
 /* Regras (e ações) da gramática */
 programa:
-          input TOKEN_EOF { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_PROGRAMA,NULL)),$1); ast=$$ ;return SINTATICA_SUCESSO; }
+          input TOKEN_EOF {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_PROGRAMA,NULL)),$1); ast=$$ ;return SINTATICA_SUCESSO; }
 ;
 
 input:    /*empty*/ {$$ = NULL;}
@@ -138,14 +139,15 @@ literal:
 op_literal:
           TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
         | TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
+        | TK_OC_NEG TK_LIT_FALSE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
         | TK_LIT_FALSE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
+        | TK_OC_NEG TK_LIT_TRUE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
         | TK_LIT_TRUE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
         | TK_LIT_CHAR {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
-
-        | TK_CE_MINUS TK_LIT_INT {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2));}
-        | TK_CE_MINUS TK_LIT_FLOAT {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2));}
-        | TK_CE_PLUS TK_LIT_INT {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2));}
-        | TK_CE_PLUS TK_LIT_FLOAT {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2));}
+        | TK_CE_MINUS TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
+        | TK_CE_MINUS TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
+        | TK_CE_PLUS TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
+        | TK_CE_PLUS TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
 ;
 type:     TK_PR_INT
         | TK_PR_FLOAT
@@ -160,8 +162,8 @@ exp:
 
 val_exp:
           exp1 {$$ = $1;}
-        | val_exp arith_op exp1 {$$ = cc_tree_insert_node($1,cc_tree_insert_node($2,$3));}
-        | val_exp log_op exp1 {$$ = cc_tree_insert_node($1,cc_tree_insert_node($2,$3));}
+        | val_exp arith_op exp1 {$$ = cc_tree_insert_node(cc_tree_insert_node($2,$1),$3);}
+        | val_exp log_op exp1 {$$ = cc_tree_insert_node(cc_tree_insert_node($2,$1),$3);}
 ;
 exp1:
           TK_CE_PAR_OPEN val_exp TK_CE_PAR_CLOSE {$$ = $2;}
@@ -169,9 +171,13 @@ exp1:
 ;
 end_exp:
           func_call {$$ = $1;}
+        | TK_CE_MINUS func_call {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),$2);}
+        | TK_OC_NEG func_call {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),$2);}
         | op_literal {$$ = $1;}
         | TK_IDENTIFICADOR {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1));}
-        | TK_IDENTIFICADOR array {$$ = cc_tree_insert_node(cc_tree_item_create(AST_IDENTIFICADOR,$1),$2);}
+        | TK_CE_MINUS TK_IDENTIFICADOR {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
+        | TK_OC_NEG TK_IDENTIFICADOR {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
+        | TK_IDENTIFICADOR array {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2));}
 ;
 
 /*
@@ -180,10 +186,10 @@ arith_exp:
 ;
 */
 arith_op:
-          TK_CE_PLUS {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_SOMA,NULL));}
-        | TK_CE_MINUS {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_SUBTRACAO,NULL));}
-        | TK_CE_MUL {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_MULTIPLICACAO,NULL));}
-        | TK_CE_DIV {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_DIVISAO,NULL));}
+          TK_CE_PLUS {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_ARIM_SOMA,NULL));}
+        | TK_CE_MINUS {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_ARIM_SUBTRACAO,NULL));}
+        | TK_CE_MUL {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_ARIM_MULTIPLICACAO,NULL));}
+        | TK_CE_DIV {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_ARIM_DIVISAO,NULL));}
 ;
 /*
 log_exp:
@@ -191,14 +197,14 @@ log_exp:
 ;
 */
 log_op:
-          TK_OC_LT {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_L,NULL));}
-        | TK_OC_GT {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_G,NULL));}
-        | TK_OC_LE {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_LE,NULL));}
-        | TK_OC_GE {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_GE,NULL));}
-        | TK_OC_EQ {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_IGUAL,NULL));}
-        | TK_OC_NE {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL));}
-        | TK_OC_AND {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_E,NULL));}
-        | TK_OC_OR {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_OU,NULL));}
+          TK_OC_LT {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_L,NULL));}
+        | TK_OC_GT {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_G,NULL));}
+        | TK_OC_LE {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_LE,NULL));}
+        | TK_OC_GE {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_GE,NULL));}
+        | TK_OC_EQ {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_IGUAL,NULL));}
+        | TK_OC_NE {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_DIF,NULL));}
+        | TK_OC_AND {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_E,NULL));}
+        | TK_OC_OR {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_OU,NULL));}
 ;
 lst_exp:
           exp TK_CE_COMMA lst_exp { $$ = cc_tree_insert_node($1,$3);}
@@ -206,7 +212,7 @@ lst_exp:
 ;
 
 command_block:
-         TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_BLOCO,NULL)),$2);}
+         TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE { $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_BLOCO,NULL)),$2);}
 ;
 
 command:
@@ -234,11 +240,11 @@ flow_command:
         | dowhile                { $$ = $1;}
 ;
 function:
-          func_head TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE { $$ = cc_tree_insert_node($1,$3);}
+          func_head TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE {$$ = cc_tree_insert_node($1,$3);}
 ;
 func_head:
-          TK_PR_STATIC type TK_IDENTIFICADOR func_head_params  {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_FUNCAO,$3));}
-        | type TK_IDENTIFICADOR func_head_params               {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_FUNCAO,$2));}
+          TK_PR_STATIC type TK_IDENTIFICADOR func_head_params  {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_FUNCAO,$3));}
+        | type TK_IDENTIFICADOR func_head_params               {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_FUNCAO,$2));}
         | type func_head_params                                { yyerror("Missing a param IDENTIFICADOR"); return SINTATICA_ERRO; }
         | TK_IDENTIFICADOR func_head_params                    { yyerror("Missing a type IDENTIFICADOR"); return SINTATICA_ERRO; }
 ;
@@ -264,52 +270,51 @@ func_params:
 
 // atribuicao 
 assignment:
-          TK_IDENTIFICADOR TK_CE_EQUAL exp          { $$ = cc_tree_insert_node($1,cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ATRIBUICAO,NULL)),$3));}
-        | TK_IDENTIFICADOR array TK_CE_EQUAL exp
+          TK_IDENTIFICADOR TK_CE_EQUAL exp          { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$3);}
+        | TK_IDENTIFICADOR array TK_CE_EQUAL exp    {$$ = cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2));}
         | TK_IDENTIFICADOR TK_CE_EQUAL              { yyerror("Missing a expression"); return SINTATICA_ERRO; }        
         | TK_IDENTIFICADOR array TK_CE_EQUAL        { yyerror("Missing a expression"); return SINTATICA_ERRO; }        
 ;
 
 // entrada
 in:
-          TK_PR_INPUT exp TK_CE_EG exp              { $$ = cc_tree_insert_node($2,$4);}
+          TK_PR_INPUT exp TK_CE_EG exp              { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_INPUT,NULL)),$2),$4);}
         | TK_PR_INPUT TK_CE_EG exp                  { yyerror("Missing a expression left of =>"); return SINTATICA_ERRO; } 
         | TK_PR_INPUT exp TK_CE_EG                  { yyerror("Missing a expression right of =>"); return SINTATICA_ERRO; } 
 ;
 // saida
 out:
-          TK_PR_OUTPUT lst_exp                      { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_OUTPUT,NULL)),$2);}
+          TK_PR_OUTPUT lst_exp                      { $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_OUTPUT,NULL)),$2);}
         | TK_PR_OUTPUT                              { yyerror("Missing a expression list"); return SINTATICA_ERRO; } 
 ;
 
 // retorno
 ret:
-          TK_PR_RETURN exp                          { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_RETURN,NULL)),$2);}
+          TK_PR_RETURN exp                          { $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_RETURN,NULL)),$2);}
         | TK_PR_RETURN                              { yyerror("Missing a expression"); return SINTATICA_ERRO; } 
 ;
 
 // Chamada da funcao 
 func_call:
-          TK_IDENTIFICADOR TK_CE_PAR_OPEN TK_CE_PAR_CLOSE
-        | TK_IDENTIFICADOR TK_CE_PAR_OPEN lst_exp TK_CE_PAR_CLOSE
+          TK_IDENTIFICADOR TK_CE_PAR_OPEN TK_CE_PAR_CLOSE { $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_CHAMADA_DE_FUNCAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1)));}
+        | TK_IDENTIFICADOR TK_CE_PAR_OPEN lst_exp TK_CE_PAR_CLOSE { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_CHAMADA_DE_FUNCAO,NULL)),$3),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1)));}
 ;
 // if
 
 cond:
-          TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2 {$$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_IF_ELSE,NULL)),$3),$6);}
+          TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2 {$$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(4,cc_tree_item_create(AST_IF_ELSE,NULL)),$3),$6);}
 
-
-        | TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2 TK_PR_ELSE command2 {$$ = cc_tree_insert_node($3,cc_tree_insert_node($6,$8));}
+        | TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2 TK_PR_ELSE command2 {$$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(4,cc_tree_item_create(AST_IF_ELSE,NULL)),$3),$6),$8);}
         | TK_PR_IF TK_CE_PAR_OPEN TK_CE_PAR_CLOSE TK_PR_THEN command2           { yyerror("if statement without expression"); return SINTATICA_ERRO; }
         | TK_PR_IF TK_CE_PAR_OPEN exp TK_PR_THEN command2                       { yyerror("Missing ')'"); return SINTATICA_ERRO; }
 ;
 whiledo:
-          TK_PR_WHILE TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_DO command2      { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_WHILE_DO,NULL)),$3),$6);}
+          TK_PR_WHILE TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_DO command2      { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_WHILE_DO,NULL)),$3),$6);}
         | TK_PR_WHILE TK_CE_PAR_OPEN TK_CE_PAR_CLOSE TK_PR_DO command2          { yyerror("while statement without expression"); return SINTATICA_ERRO; }        
 ;
 
 dowhile:
-          TK_PR_DO command2 TK_PR_WHILE exp                                     { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_DO_WHILE,NULL)),$2),$4);}
+          TK_PR_DO command2 TK_PR_WHILE exp                                     { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_DO_WHILE,NULL)),$2),$4);}
         | TK_PR_DO command2 TK_PR_WHILE                                         { yyerror("do statement without expression"); return SINTATICA_ERRO; }
 ;
 /* End of grammar */

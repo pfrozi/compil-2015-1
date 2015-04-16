@@ -44,6 +44,7 @@ int line_number=1;
 "return"            return (TK_PR_RETURN);
 "const"             return (TK_PR_CONST);
 "static"            return (TK_PR_STATIC);
+"!"                 return (TK_OC_NEG);
 "<="                return (TK_OC_LE);
 ">="                return (TK_OC_GE);
 "=="                return (TK_OC_EQ);
@@ -171,7 +172,6 @@ int line_number=1;
 "{"                 return (TK_CE_BRA_CURL_OPEN);
 "}"                 return (TK_CE_BRA_CURL_CLOSE);
 "="                 return (TK_CE_EQUAL);
-"!"                 return (int)'!';
 "&"                 return (int)'&';
 "$"                 return (int)'$';
 "=>"                return (TK_CE_EG);
@@ -192,8 +192,8 @@ int line_number=1;
                         }
                         i->line=line_number;
                         i->type=SIMBOLO_IDENTIFICADOR;
-                        i->ident=(char*)malloc(sizeof(char)*strlen(yytext));
-                        memcpy(i->ident,yytext,strlen(yytext));
+                        i->ident=(char*)malloc(sizeof(char)*strlen(yytext)+1);
+                        strncpy(i->ident,yytext,strlen(yytext));
                         yylval.valor_simbolo_lexico = i;
                         return(TK_IDENTIFICADOR);
                     }
