@@ -224,8 +224,8 @@ command_block:
 
 command:
         /* %empty */ {$$ = NULL;}
-        | command2 endline command {$$ = cc_tree_insert_node($1,$3);}
-        | command2 {$$ = $1;}
+        | command2 endline command {if($1!=NULL){$$ = cc_tree_insert_node($1,$3);} else{$$=$3;};}
+        | command2 {if($1!=NULL){$$ = $1;}else{$$=NULL;}}
 ;
 command2:
           single_command { $$ = $1;}
@@ -235,12 +235,13 @@ command2:
 ;
 single_command:
           func_call              { $$ = $1;}
-        | local_statement        {}
+        | local_statement        { $$ = NULL;}
         | in                     { $$ = $1;}
         | out                    { $$ = $1;} 
         | ret                    { $$ = $1;}
         | assignment             { $$ = $1;}
 ;
+
 flow_command:
           cond                   { $$ = $1;}
         | whiledo                { $$ = $1;}
