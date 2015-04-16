@@ -6,14 +6,14 @@
 comp_tree_t* cc_tree_create_node(int numChildren, comp_tree_item_t* item)
 {
     comp_tree_t* node = (comp_tree_t*)malloc(sizeof(comp_tree_t));
-    node->children = (comp_tree_t*)malloc(sizeof(comp_tree_t*)*numChildren);
+    node->children = (comp_tree_t**)malloc(sizeof(comp_tree_t*)*numChildren);
     node->num_children = numChildren;
     node->item = item;
 
     //gv stuff
     if(item->sentry!=NULL)
     {
-        gv_declare(item->type,node,item->sentry);
+        gv_declare(item->type,node,item->sentry->key.lexem);
     }
     else
     {

@@ -19,7 +19,7 @@ extern comp_tree_t* ast;
     comp_tree_t *ast;
 }
 
-%type <ast> programa input function func_head command_block command
+%type <ast> programa input line function func_head command_block command command2 exp exp1 val_exp end_exp cond op_literal
 %error-verbose
 
 /* Declaração dos tokens da linguagem */
@@ -80,12 +80,12 @@ extern comp_tree_t* ast;
 // VERIFICAR COMANDO VAZIO!
 /* Regras (e ações) da gramática */
 programa:
-        input TOKEN_EOF { $$ = cc_tree_insert_node(cc_tree_create_node(10,cc_tree_item_create(AST_PROGRAMA,NULL)),$1); ast=$$ ;return SINTATICA_SUCESSO; }
+        input TOKEN_EOF { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_PROGRAMA,NULL)),$1); ast=$$ ;return SINTATICA_SUCESSO; }
 ;
 
-input:    /*empty*/
-        | line {}
-        | line input {$$ = cc_tree_insert_node($$,$2)}
+input:    /*empty*/ {$$ = NULL;}
+        | line {$$ = $1;}
+        | line input {$$ = cc_tree_insert_node($1,$2);}
 ;
 empty:
           ""
@@ -94,7 +94,7 @@ empty:
 ;
 line:      
           global_statement
-        | function
+        | function {$$ = $$}
 ;  
 endline:
           TK_CE_SEMICOLON
@@ -141,15 +141,16 @@ literal:
         | TK_LIT_STRING
 ;
 op_literal:
-          TK_LIT_INT
-        | TK_LIT_FLOAT
-        | TK_LIT_FALSE
-        | TK_LIT_TRUE
-        | TK_LIT_CHAR
-        | TK_CE_MINUS TK_LIT_INT
-        | TK_CE_MINUS TK_LIT_FLOAT
-        | TK_CE_PLUS TK_LIT_INT
-        | TK_CE_PLUS TK_LIT_FLOAT
+          TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,yylval.valor_simbolo_lexico)),NULL);}
+        | TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,yylval.valor_simbolo_lexico)),NULL);}
+        | TK_LIT_FALSE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,yylval.valor_simbolo_lexico)),NULL);}
+        | TK_LIT_TRUE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,yylval.valor_simbolo_lexico)),NULL);}
+        | TK_LIT_CHAR {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,yylval.valor_simbolo_lexico)),NULL);}
+
+        | TK_CE_MINUS TK_LIT_INT {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,yylval.valor_simbolo_lexico));}
+        | TK_CE_MINUS TK_LIT_FLOAT {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,yylval.valor_simbolo_lexico));}
+        | TK_CE_PLUS TK_LIT_INT {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,yylval.valor_simbolo_lexico));}
+        | TK_CE_PLUS TK_LIT_FLOAT {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,yylval.valor_simbolo_lexico));}
 ;
 type:     TK_PR_INT
         | TK_PR_FLOAT
@@ -163,13 +164,13 @@ exp:
 ;
 
 val_exp:
-          exp1
+          exp1 {$$ = $1;}
         | val_exp arith_op exp1
         | val_exp log_op exp1
 ;
 exp1:
-          TK_CE_PAR_OPEN val_exp TK_CE_PAR_CLOSE
-        | end_exp
+          TK_CE_PAR_OPEN val_exp TK_CE_PAR_CLOSE {$$ = $2;}
+        | end_exp {$$ = $1;}
 ;
 end_exp:
           func_call
@@ -210,13 +211,13 @@ lst_exp:
 ;
 
 command_block:
-         TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_FUNCAO,"block")),$2);}
+         TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_BLOCO,NULL)),$2);}
 ;
 
 command:
-        /* %empty */
-        | command2 endline command
-        | command2
+        /* %empty */ {$$ = NULL;}
+        | command2 endline command {$$ = cc_tree_insert_node($1,$3);}
+        | command2 {$$ = $1;}
 ;
 command2:
           single_command
@@ -238,7 +239,7 @@ flow_command:
         | dowhile
 ;
 function:
-          func_head command_block { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_FUNCAO,yylval.valor_simbolo_lexico->key.lexem)),$2);}
+          func_head TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_FUNCAO,yylval.valor_simbolo_lexico)),$3);}
 ;
 func_head:
           TK_PR_STATIC type TK_IDENTIFICADOR func_head_params
@@ -300,8 +301,10 @@ func_call:
 // if
 
 cond:
-          TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2
-        | TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2 TK_PR_ELSE command2
+          TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2 {$$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_IF_ELSE,NULL)),$3),$6);}
+
+
+        | TK_PR_IF TK_CE_PAR_OPEN exp TK_CE_PAR_CLOSE TK_PR_THEN command2 TK_PR_ELSE command2 {$$ = cc_tree_insert_node($3,cc_tree_insert_node($6,$8));}
         | TK_PR_IF TK_CE_PAR_OPEN TK_CE_PAR_CLOSE TK_PR_THEN command2           { yyerror("if statement without expression"); return SINTATICA_ERRO; }
         | TK_PR_IF TK_CE_PAR_OPEN exp TK_PR_THEN command2                       { yyerror("Missing ')'"); return SINTATICA_ERRO; }
 ;
