@@ -77,7 +77,6 @@ extern comp_tree_t* ast;
 %token TOKEN_ERRO
 %token TOKEN_EOF
 %right TK_PR_THEN TK_PR_ELSE
-
 %%
 // VERIFICAR COMANDO VAZIO!
 /* Regras (e ações) da gramática */
@@ -87,11 +86,15 @@ programa:
 
 input:    /*empty*/ {$$ = NULL;}
         | line input {$$ = cc_tree_insert_node($1,$2);}
+        | global_line input {$$ = $2;}
 ;
 
-line:      
+global_line:
           global_statement {}
-        | function {$$ = $1;}
+;
+
+line:
+          function {$$ = $1;}
 ;  
 endline:
           TK_CE_SEMICOLON
@@ -136,7 +139,6 @@ const_statement:
 literal:
           op_literal {$$ = $1;}
         | TK_LIT_STRING {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1));}
-        | TK_LIT_CHAR {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1));}
 ;
 op_literal:
           TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
@@ -160,7 +162,6 @@ type:     TK_PR_INT
 exp:
           val_exp {$$ = $1;}
         | TK_LIT_STRING {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
-        | TK_LIT_CHAR {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1));}
 ;
 
 val_exp:
