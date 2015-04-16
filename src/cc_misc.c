@@ -1,6 +1,7 @@
 #include "cc_misc.h"
 #include "cc_dict.h"
 #include "cc_tree.h"
+#include "cc_ast.h"
 #include <stdlib.h>
 
 comp_tree_t* ast;
@@ -31,5 +32,6 @@ void main_finalize (void)
 {
   //implemente esta função com rotinas de inicialização, se necessário
   cc_dict_destroy(stable);
+  //cc_tree_destroy_node(ast);
   free(stable);
 }
