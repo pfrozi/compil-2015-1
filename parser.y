@@ -22,7 +22,7 @@ extern comp_tree_t* ast;
 %type <ast> programa input line function func_head command_block single_command ret assignment 
 %type <ast> in out flow_command command command2 val_exp cond op_literal func_call  
 %type <ast> array dowhile whiledo lst_exp exp literal exp_art exp_art_t exp_art_par
-%type <ast> exp_bool exp_bool_e exp_bool_ou exp_end
+%type <ast> exp_bool exp_bool_e exp_bool_ou exp_end exp_neg
 %error-verbose
 
 /* Declaração dos tokens da linguagem */
@@ -147,16 +147,13 @@ literal:
 op_literal:
           TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
         | TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
-        | TK_OC_NEG TK_LIT_FALSE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
         | TK_LIT_FALSE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
-        | TK_OC_NEG TK_LIT_TRUE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
         | TK_LIT_TRUE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
         | TK_LIT_CHAR {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
-        | TK_CE_MINUS TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
-        | TK_CE_MINUS TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
-        | TK_CE_PLUS TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
-        | TK_CE_PLUS TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
+        | TK_CE_PLUS TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)),NULL);}
+        | TK_CE_PLUS TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)),NULL);}
 ;
+
 type:     TK_PR_INT
         | TK_PR_FLOAT
         | TK_PR_BOOL
@@ -209,7 +206,14 @@ exp_art_t:
 
 exp_art_par:
           TK_CE_PAR_OPEN exp_bool TK_CE_PAR_CLOSE { $$ = $2; }
-        | exp_end                                 { $$ = $1; }
+        | exp_neg                                 { $$ = $1; }
+;
+
+
+exp_neg:
+          TK_CE_MINUS exp_end { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),$2); }
+        | TK_OC_NEG exp_end { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),$2); }
+        | exp_end { $$ = $1;}
 ;
 
 
@@ -218,12 +222,6 @@ exp_end:
         | op_literal                             { $$ = $1; }
         | TK_IDENTIFICADOR                       { $$ = cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1)); }
         | TK_IDENTIFICADOR array                 { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2);}
-        | TK_CE_MINUS func_call                  { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),$2);}
-        | TK_CE_MINUS TK_IDENTIFICADOR           { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2))); }
-        | TK_CE_MINUS TK_IDENTIFICADOR array     { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$2))),$3)); }
-        | TK_OC_NEG func_call                    { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),$2);}
-        | TK_OC_NEG TK_IDENTIFICADOR             { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2))); }
-        | TK_OC_NEG TK_IDENTIFICADOR array       { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$2))),$3)); }
 ;
 
 lst_exp:
