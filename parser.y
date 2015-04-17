@@ -19,7 +19,10 @@ extern comp_tree_t* ast;
     comp_tree_t *ast;
 }
 
-%type <ast> programa input line function func_head command_block single_command in out ret assignment flow_command command command2 exp exp1 val_exp arith_op log_op end_exp cond op_literal func_call array dowhile whiledo lst_exp literal
+%type <ast> programa input line function func_head command_block single_command ret assignment 
+%type <ast> in out flow_command command command2 val_exp cond op_literal func_call  
+%type <ast> array dowhile whiledo lst_exp exp literal exp_art exp_art_t exp_art_par
+%type <ast> exp_bool exp_bool_e exp_bool_ou exp_end
 %error-verbose
 
 /* Declaração dos tokens da linguagem */
@@ -78,7 +81,7 @@ extern comp_tree_t* ast;
 %token TOKEN_EOF
 %right TK_PR_THEN TK_PR_ELSE
 %%
-// VERIFICAR COMANDO VAZIO!
+
 /* Regras (e ações) da gramática */
 programa:
           input TOKEN_EOF {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_PROGRAMA,NULL)),$1); ast=$$ ;return SINTATICA_SUCESSO; }
@@ -166,54 +169,63 @@ exp:
 ;
 
 val_exp:
-          exp1 {$$ = $1;}
-        | val_exp arith_op exp1 {$$ = cc_tree_insert_node(cc_tree_insert_node($2,$1),$3);}
-        | val_exp log_op exp1 {$$ = cc_tree_insert_node(cc_tree_insert_node($2,$1),$3);}
+          exp_bool { $$ = $1; }
 ;
-exp1:
-          TK_CE_PAR_OPEN val_exp TK_CE_PAR_CLOSE {$$ = $2;}
-        | end_exp {$$ = $1;}
-;
-end_exp:
-          func_call {$$ = $1;}
-        | TK_CE_MINUS func_call {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),$2);}
-        | TK_OC_NEG func_call {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),$2);}
-        | op_literal {$$ = $1;}
-        | TK_IDENTIFICADOR {$$ = cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1));}
-        | TK_CE_MINUS TK_IDENTIFICADOR {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
-        | TK_OC_NEG TK_IDENTIFICADOR {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)));}
+ /*
+ 
+ $2
+/  \
+$1 $3
 
-        | TK_IDENTIFICADOR array {$$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2);}
-
-        | TK_OC_NEG TK_IDENTIFICADOR array {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$2))),$3));}
-;
-
-/*
-arith_exp:
-          arith_op exp
-;
 */
-arith_op:
-          TK_CE_PLUS {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_ARIM_SOMA,NULL));}
-        | TK_CE_MINUS {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_ARIM_SUBTRACAO,NULL));}
-        | TK_CE_MUL {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_ARIM_MULTIPLICACAO,NULL));}
-        | TK_CE_DIV {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_ARIM_DIVISAO,NULL));}
+
+exp_bool:
+          exp_bool TK_OC_LT exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_L, NULL)), $1), $3); }
+        | exp_bool TK_OC_GT exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_G, NULL)), $1), $3); }
+        | exp_bool TK_OC_LE exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_LE, NULL)), $1), $3); }
+        | exp_bool TK_OC_GE exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_GE, NULL)), $1), $3); }
+        | exp_bool TK_OC_EQ exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_IGUAL, NULL)), $1), $3); }
+        | exp_bool TK_OC_NE exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_DIF, NULL)), $1), $3); }
+        | exp_bool_ou                    { $$ = $1; }
 ;
-/*
-log_exp:
-          exp log_op
+exp_bool_ou:
+          exp_bool_ou TK_OC_OR exp_bool_e   { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_OU, NULL)), $1), $3); }
+        | exp_bool_e                        { $$ = $1; }
 ;
-*/
-log_op:
-          TK_OC_LT {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_L,NULL));}
-        | TK_OC_GT {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_G,NULL));}
-        | TK_OC_LE {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_LE,NULL));}
-        | TK_OC_GE {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_GE,NULL));}
-        | TK_OC_EQ {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_IGUAL,NULL));}
-        | TK_OC_NE {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_COMP_DIF,NULL));}
-        | TK_OC_AND {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_E,NULL));}
-        | TK_OC_OR {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_LOGICO_OU,NULL));}
+exp_bool_e:
+          exp_bool_e TK_OC_AND exp_art      { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_E, NULL)), $1), $3); }
+        | exp_art                           { $$ = $1; }
 ;
+exp_art:
+          exp_art TK_CE_PLUS exp_art_t  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_ARIM_SOMA, NULL)), $1), $3); }
+        | exp_art TK_CE_MINUS exp_art_t { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_ARIM_SUBTRACAO, NULL)), $1), $3); }
+        | exp_art_t                     { $$ = $1; }
+;
+exp_art_t:
+          exp_art_t TK_CE_MUL exp_art_par { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_ARIM_MULTIPLICACAO, NULL)), $1), $3); }
+        | exp_art_t TK_CE_DIV exp_art_par { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_ARIM_DIVISAO, NULL)), $1), $3); }
+        | exp_art_par                     { $$ = $1; }
+;
+
+exp_art_par:
+          TK_CE_PAR_OPEN exp_bool TK_CE_PAR_CLOSE { $$ = $2; }
+        | exp_end                                 { $$ = $1; }
+;
+
+
+exp_end:
+          func_call                              { $$ = $1; }
+        | op_literal                             { $$ = $1; }
+        | TK_IDENTIFICADOR                       { $$ = cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1)); }
+        | TK_IDENTIFICADOR array                 { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2);}
+        | TK_CE_MINUS func_call                  { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),$2);}
+        | TK_CE_MINUS TK_IDENTIFICADOR           { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2))); }
+        | TK_CE_MINUS TK_IDENTIFICADOR array     { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$2))),$3)); }
+        | TK_OC_NEG func_call                    { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),$2);}
+        | TK_OC_NEG TK_IDENTIFICADOR             { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2))); }
+        | TK_OC_NEG TK_IDENTIFICADOR array       { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$2))),$3)); }
+;
+
 lst_exp:
           exp TK_CE_COMMA lst_exp { $$ = cc_tree_insert_node($1,$3);}
         | exp {$$ = $1;}
