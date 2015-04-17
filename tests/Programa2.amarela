@@ -1,10 +1,10 @@
-function acabafondo() {
-   bool vai <= false;
-   bool naovai <= !vai;
+bool vai;
+bool naovai;
 
-   if(vai && !naovai) then 
+int acabafondo() {
+   if(vai && !naovai) then
    {
      return vai;
-   }
+   };
    return naovai;
 }
