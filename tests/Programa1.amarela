@@ -1,0 +1,11 @@
+funtion equalValue(int i)
+{
+  if(i <= 10) {
+    while (i<=10) 
+    {
+      i = i + 1;
+      count = count + 1;
+    }
+  }
+  return count*2; 
+}
