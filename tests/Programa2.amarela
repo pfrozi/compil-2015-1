@@ -1,0 +1,10 @@
+bool vai = false;
+bool naovai = !vai;
+
+function acabafondo() {
+   if(vai && !naovai)
+   {
+     return vai;
+   }
+   return naovai;
+}
