@@ -2,7 +2,7 @@ function acabafondo() {
    bool vai <= false;
    bool naovai <= !vai;
 
-   if(vai && !naovai)
+   if(vai && !naovai) then 
    {
      return vai;
    }
