@@ -1,7 +1,7 @@
-bool vai = false;
-bool naovai = !vai;
-
 function acabafondo() {
+   bool vai <= false;
+   bool naovai <= !vai;
+
    if(vai && !naovai)
    {
      return vai;
