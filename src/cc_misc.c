@@ -7,6 +7,7 @@
 comp_tree_t* ast;
 comp_dict_t* stable;
 
+
 //return the current line number
 //incremented in scanner.l after
 //every encontred newline
