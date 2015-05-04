@@ -321,7 +321,7 @@ ret:
 
 // Chamada da funcao 
 func_call:
-          TK_IDENTIFICADOR TK_CE_PAR_OPEN TK_CE_PAR_CLOSE { printf("    x1   ");if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_FUNCTION) return yyerror_var($1); $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_CHAMADA_DE_FUNCAO,yystack_find($1)->iks_type,NULL)),cc_tree_create_node(1,cc_tree_item_create_type(AST_IDENTIFICADOR,yystack_find($1)->iks_type,$1)));}
+          TK_IDENTIFICADOR TK_CE_PAR_OPEN TK_CE_PAR_CLOSE { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_FUNCTION) return yyerror_var($1); $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_CHAMADA_DE_FUNCAO,yystack_find($1)->iks_type,NULL)),cc_tree_create_node(1,cc_tree_item_create_type(AST_IDENTIFICADOR,yystack_find($1)->iks_type,$1))); }
         | TK_IDENTIFICADOR TK_CE_PAR_OPEN lst_exp TK_CE_PAR_CLOSE { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_FUNCTION) return yyerror_var($1); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create_type(AST_CHAMADA_DE_FUNCAO,yystack_find($1)->iks_type,NULL)),$3),cc_tree_create_node(1,cc_tree_item_create_type(AST_IDENTIFICADOR,yystack_find($1)->iks_type,$1)));}
 ;
 // if

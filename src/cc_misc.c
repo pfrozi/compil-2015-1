@@ -47,6 +47,7 @@ void main_init (int argc, char **argv)
   cc_dict_init(stable);
     
   scopes = cc_stack_create();
+    
 }
 
 void main_finalize (void)
@@ -58,11 +59,15 @@ void main_finalize (void)
 }
 
 comp_dict_item_t* yystack_find(comp_dict_item_t* sentry){
+        
+    printf(" yystack_find(): %s\n", sentry->key.lexem);
     
     comp_dict_item_t* item = cc_stack_find_top(scopes, sentry);
     return item;
 }
 void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
+    
+    printf(" yystack_add()\n");
     
     sentry->iks_type = iks_type;
     sentry->iks_var = iks_var;
