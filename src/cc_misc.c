@@ -56,13 +56,22 @@ void main_finalize (void)
   cc_dict_destroy(stable);
   //cc_tree_destroy_node(ast);
   free(stable);
+  
+  scopes = cc_stack_pop(scopes);
 }
 
+comp_dict_item_t* yystack_find_top(comp_dict_item_t* sentry){
+        
+    printf(" yystack_find_top(): %s\n", sentry->key.lexem);
+    
+    comp_dict_item_t* item = cc_stack_find_top(scopes, sentry);
+    return item;
+}
 comp_dict_item_t* yystack_find(comp_dict_item_t* sentry){
         
     printf(" yystack_find(): %s\n", sentry->key.lexem);
     
-    comp_dict_item_t* item = cc_stack_find_top(scopes, sentry);
+    comp_dict_item_t* item = cc_stack_find(scopes, sentry);
     return item;
 }
 void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
@@ -110,5 +119,53 @@ int yystack_inf(int type_a, int type_b){
     }
     if(type_a == IKS_INT && type_b == IKS_BOOL || type_b == IKS_INT && type_a == IKS_BOOL){
         return IKS_INT;   
+    }
+}
+
+void yystack_push_scope(){
+    
+    printf("Push scope...\n");
+    
+    scopes = cc_stack_push(scopes);
+}
+void yystack_pop_scope(){
+    
+    printf("Pop scope...\n");
+    scopes = cc_stack_pop(scopes);
+}
+
+
+int yytree_match_types_out(comp_tree_t* root){
+ 
+    if(root!=NULL)
+    {
+        if(root->item->iks_type!=IKS_STRING && root->item->type!=AST_IDENTIFICADOR){
+            return 1;
+        }
+        else {
+            return yytree_match_types_out(root->children[1]);
+        }
+    }
+    return 0;
+}
+
+int yystack_set_type(comp_tree_t* root){
+ 
+    printf("\nROOT TYPE %d .", root->item->iks_type);
+
+
+    scopes->top->type = root->item->iks_type;
+}
+
+int yystack_return_type(comp_tree_t* root){
+    
+    printf("\ntype fun %d .", scopes->top->type);
+    printf("\ntype return %d .", root->item->iks_type);
+    
+    if(root->item->iks_type!=scopes->top->type){
+        return 1;
+    }else {
+    
+        return 0;
     }
 }

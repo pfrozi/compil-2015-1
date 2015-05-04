@@ -121,8 +121,8 @@ array:
 ;
 
 statement:
-          TK_PR_STATIC type TK_IDENTIFICADOR	    { if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($3, $2, IKS_VARIABLE); $$ = $3; }
-        | type TK_IDENTIFICADOR			            { if(yystack_find($2)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($2, $1, IKS_VARIABLE); $$ = $2; }
+          TK_PR_STATIC type TK_IDENTIFICADOR	    { if(yystack_find_top($3)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($3, $2, IKS_VARIABLE); $$ = $3; }
+        | type TK_IDENTIFICADOR			            { if(yystack_find_top($2)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($2, $1, IKS_VARIABLE); $$ = $2; }
         | TK_PR_STATIC TK_IDENTIFICADOR             { yyerror("Missing a type"); return SINTATICA_ERRO; }
         | TK_IDENTIFICADOR                          { yyerror("Missing a type"); return SINTATICA_ERRO; }        
 ;
@@ -138,10 +138,10 @@ local_statement:
         | statement TK_OC_LE                        { yyerror("Missing a attrib"); return SINTATICA_ERRO; }        
 ;
 const_statement:
-          TK_PR_STATIC TK_PR_CONST type TK_IDENTIFICADOR	{ if(yystack_find($4)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($4, $3, IKS_VARIABLE); $$ = $4; }
+          TK_PR_STATIC TK_PR_CONST type TK_IDENTIFICADOR	{ if(yystack_find_top($4)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($4, $3, IKS_VARIABLE); $$ = $4; }
         | TK_PR_STATIC TK_PR_CONST TK_IDENTIFICADOR 		{ yyerror("Missing a type"); return SINTATICA_ERRO; }
         | TK_PR_STATIC TK_PR_CONST type             		{ yyerror("Missing a IDENTIFICADOR"); return SINTATICA_ERRO; }
-        | TK_PR_CONST type TK_IDENTIFICADOR			        { if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($3,$2, IKS_VARIABLE); $$ = $3; }
+        | TK_PR_CONST type TK_IDENTIFICADOR			        { if(yystack_find_top($3)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($3,$2, IKS_VARIABLE); $$ = $3; }
         | TK_PR_CONST TK_IDENTIFICADOR              		{ yyerror("Missing a type"); return SINTATICA_ERRO; }
         | TK_PR_CONST type                          		{ yyerror("Missing a IDENTIFICADOR"); return SINTATICA_ERRO; }
 ;
@@ -236,7 +236,15 @@ lst_exp:
 ;
 
 command_block:
-         TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE { $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_BLOCO,NULL)),$2);}
+         init_scope command close_scope { $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_BLOCO,NULL)),$2);}
+;
+
+init_scope:
+        TK_CE_BRA_CURL_OPEN { yystack_push_scope(); }
+;
+
+close_scope:
+        TK_CE_BRA_CURL_CLOSE { yystack_pop_scope(); }
 ;
 
 command:
@@ -265,11 +273,11 @@ flow_command:
         | dowhile                { $$ = $1;}
 ;
 function:
-          func_head TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE {$$ = cc_tree_insert_node($1,$3);}
+          func_head init_scope {yystack_set_type($1);} command close_scope { $$ = cc_tree_insert_node($1,$4);}
 ;
 func_head:
-          TK_PR_STATIC type TK_IDENTIFICADOR func_head_params  { if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($3, $2, IKS_FUNCTION); $$ = cc_tree_create_node(3,cc_tree_item_create(AST_FUNCAO,$3));}
-        | type TK_IDENTIFICADOR func_head_params               { if(yystack_find($2)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($2, $1, IKS_FUNCTION); $$ = cc_tree_create_node(3,cc_tree_item_create(AST_FUNCAO,$2));}
+          TK_PR_STATIC type TK_IDENTIFICADOR func_head_params  { if(yystack_find_top($3)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($3, $2, IKS_FUNCTION); $$ = cc_tree_create_node(3,cc_tree_item_create_type(AST_FUNCAO,$2,$3));}
+        | type TK_IDENTIFICADOR func_head_params               { if(yystack_find_top($2)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($2, $1, IKS_FUNCTION); $$ = cc_tree_create_node(3,cc_tree_item_create_type(AST_FUNCAO,$1,$2));}
         | type func_head_params                                { yyerror("Missing a param IDENTIFICADOR"); return SINTATICA_ERRO; }
         | TK_IDENTIFICADOR func_head_params                    { yyerror("Missing a type IDENTIFICADOR"); return SINTATICA_ERRO; }
 ;
@@ -303,19 +311,19 @@ assignment:
 
 // entrada
 in:
-          TK_PR_INPUT exp TK_CE_EG exp              { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_INPUT,NULL)),$2),$4);}
+          TK_PR_INPUT exp TK_CE_EG exp              { if($4->item->type!=AST_IDENTIFICADOR) return IKS_ERROR_WRONG_PAR_INPUT; $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_INPUT,NULL)),$2),$4);}
         | TK_PR_INPUT TK_CE_EG exp                  { yyerror("Missing a expression left of =>"); return SINTATICA_ERRO; } 
         | TK_PR_INPUT exp TK_CE_EG                  { yyerror("Missing a expression right of =>"); return SINTATICA_ERRO; } 
 ;
 // saida
 out:
-          TK_PR_OUTPUT lst_exp                      { $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_OUTPUT,NULL)),$2);}
+          TK_PR_OUTPUT lst_exp                      { if(yytree_match_types_out($2)>0) return IKS_ERROR_WRONG_PAR_OUTPUT; $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_OUTPUT,NULL)),$2);}
         | TK_PR_OUTPUT                              { yyerror("Missing a expression list"); return SINTATICA_ERRO; } 
 ;
 
 // retorno
 ret:
-          TK_PR_RETURN exp                          { $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_RETURN,NULL)),$2);}
+          TK_PR_RETURN exp                          { if(yystack_return_type($2)>0) return IKS_ERROR_WRONG_PAR_RETURN; $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_RETURN,NULL)),$2);}
         | TK_PR_RETURN                              { yyerror("Missing a expression"); return SINTATICA_ERRO; } 
 ;
 

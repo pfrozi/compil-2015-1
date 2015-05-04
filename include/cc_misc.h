@@ -15,10 +15,20 @@ void main_finalize (void);
 
 int yyerror_var(comp_dict_item_t* sentry);
 
+comp_dict_item_t* yystack_find_top(comp_dict_item_t* sentry);
 comp_dict_item_t* yystack_find(comp_dict_item_t* sentry);
+
 void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var);
 void yystack_update_var(comp_dict_item_t* sentry, int var);
 
 int yystack_verify_types(int type_a, int type_b);
 int yystack_inf(int type_a, int type_b);
+int yystack_set_type(comp_tree_t* root);
+int yystack_return_type(comp_tree_t* root);
+int yystack_type_co(int type_a, int type_b);
+
+int yytree_match_types_out(comp_tree_t* root);
+
+void yystack_push_scope();
+void yystack_pop_scope();
 #endif
