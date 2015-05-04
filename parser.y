@@ -115,16 +115,16 @@ array:
 ;
 
 statement:
-          TK_PR_STATIC type TK_IDENTIFICADOR	    { if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; }
-        | type TK_IDENTIFICADOR			            { if(yystack_find($2)!=NULL) return IKS_ERROR_DECLARED;else yystack_add($2); }
+          TK_PR_STATIC type TK_IDENTIFICADOR	    { if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($3); }
+        | type TK_IDENTIFICADOR			    { if(yystack_find($2)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($2); }
         | TK_PR_STATIC TK_IDENTIFICADOR             { yyerror("Missing a type"); return SINTATICA_ERRO; }
         | TK_IDENTIFICADOR                          { yyerror("Missing a type"); return SINTATICA_ERRO; }        
 ;
 
 local_statement:
-          const_statement TK_OC_LE TK_IDENTIFICADOR	{ if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; }
+          const_statement TK_OC_LE TK_IDENTIFICADOR	{ if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($3); }
         | const_statement TK_OC_LE literal
-        | statement TK_OC_LE TK_IDENTIFICADOR		{ if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; }
+        | statement TK_OC_LE TK_IDENTIFICADOR		{ if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($3); }
         | statement TK_OC_LE literal
         | const_statement 
         | statement 
@@ -132,12 +132,12 @@ local_statement:
         | statement TK_OC_LE                        { yyerror("Missing a attrib"); return SINTATICA_ERRO; }        
 ;
 const_statement:
-          TK_PR_STATIC TK_PR_CONST type TK_IDENTIFICADOR	{ if(yystack_find($4)!=NULL) return IKS_ERROR_DECLARED; }
-        | TK_PR_STATIC TK_PR_CONST TK_IDENTIFICADOR { yyerror("Missing a type"); return SINTATICA_ERRO; }
-        | TK_PR_STATIC TK_PR_CONST type             { yyerror("Missing a IDENTIFICADOR"); return SINTATICA_ERRO; }
-        | TK_PR_CONST type TK_IDENTIFICADOR			{ if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; }
-        | TK_PR_CONST TK_IDENTIFICADOR              { yyerror("Missing a type"); return SINTATICA_ERRO; }
-        | TK_PR_CONST type                          { yyerror("Missing a IDENTIFICADOR"); return SINTATICA_ERRO; }
+          TK_PR_STATIC TK_PR_CONST type TK_IDENTIFICADOR	{ if(yystack_find($4)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($4); }
+        | TK_PR_STATIC TK_PR_CONST TK_IDENTIFICADOR 		{ yyerror("Missing a type"); return SINTATICA_ERRO; }
+        | TK_PR_STATIC TK_PR_CONST type             		{ yyerror("Missing a IDENTIFICADOR"); return SINTATICA_ERRO; }
+        | TK_PR_CONST type TK_IDENTIFICADOR			{ if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($3); }
+        | TK_PR_CONST TK_IDENTIFICADOR              		{ yyerror("Missing a type"); return SINTATICA_ERRO; }
+        | TK_PR_CONST type                          		{ yyerror("Missing a IDENTIFICADOR"); return SINTATICA_ERRO; }
 ;
 literal:
           op_literal {$$ = $1;}
