@@ -71,6 +71,18 @@ comp_tree_item_t* cc_tree_item_create(int type,comp_dict_item_t* sentry)
 
     return item;
 }
+comp_tree_item_t* cc_tree_item_create_type(int type, int iks_type, comp_dict_item_t* sentry)
+{
+    comp_tree_item_t* item = (comp_tree_item_t*)malloc(sizeof(comp_tree_item_t));
+    
+    item->type = type;
+    item->iks_type = iks_type;
+    
+    item->sentry = sentry;
+    item->sentry->iks_type = iks_type;
+    
+    return item;
+}
 
 comp_tree_t* cc_tree_insert_node(comp_tree_t* root,comp_tree_t* node)
 {

@@ -75,3 +75,35 @@ void yystack_update_var(comp_dict_item_t* sentry, int var){
     cc_dict_get(stable, sentry->key)->iks_var = var;
     
 }
+
+int yystack_verify_types(int type_a, int type_b){
+    
+    printf("\ttipo a: %d\t\ttipo b: %d", type_a, type_b);
+    
+    if(type_a != IKS_STRING && type_b == IKS_STRING){
+       return IKS_ERROR_STRING_TO_X;
+    }
+    if(type_a != IKS_CHAR && type_b == IKS_CHAR){
+       return IKS_ERROR_CHAR_TO_X;
+    }
+    if(type_a == IKS_CHAR && type_b != IKS_CHAR || type_a == IKS_STRING && type_b != IKS_STRING){
+       return IKS_ERROR_WRONG_TYPE;
+    }
+    return IKS_SUCESS;
+}
+
+int yystack_inf(int type_a, int type_b){
+    
+    if(type_a == type_b){
+       return type_a;
+    }
+    if(type_a == IKS_FLOAT && type_b == IKS_INT || type_b == IKS_FLOAT && type_a == IKS_INT){
+        return IKS_FLOAT;   
+    }
+    if(type_a == IKS_FLOAT && type_b == IKS_BOOL || type_b == IKS_FLOAT && type_a == IKS_BOOL){
+        return IKS_FLOAT;   
+    }
+    if(type_a == IKS_INT && type_b == IKS_BOOL || type_b == IKS_INT && type_a == IKS_BOOL){
+        return IKS_INT;   
+    }
+}

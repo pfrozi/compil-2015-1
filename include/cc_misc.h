@@ -18,4 +18,7 @@ int yyerror_var(comp_dict_item_t* sentry);
 comp_dict_item_t* yystack_find(comp_dict_item_t* sentry);
 void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var);
 void yystack_update_var(comp_dict_item_t* sentry, int var);
+
+int yystack_verify_types(int type_a, int type_b);
+int yystack_inf(int type_a, int type_b);
 #endif

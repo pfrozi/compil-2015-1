@@ -151,13 +151,13 @@ literal:
 ;
 
 op_literal:
-          TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
-        | TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
-        | TK_LIT_FALSE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
-        | TK_LIT_TRUE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
-        | TK_LIT_CHAR {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
-        | TK_CE_PLUS TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)),NULL);}
-        | TK_CE_PLUS TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$2)),NULL);}
+          TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create_type(AST_LITERAL,IKS_INT,$1)),NULL);}
+        | TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create_type(AST_LITERAL,IKS_FLOAT,$1)),NULL);}
+        | TK_LIT_FALSE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create_type(AST_LITERAL,IKS_BOOL,$1)),NULL);}
+        | TK_LIT_TRUE {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create_type(AST_LITERAL,IKS_BOOL,$1)),NULL);}
+        | TK_LIT_CHAR {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create_type(AST_LITERAL,IKS_CHAR,$1)),NULL);}
+        | TK_CE_PLUS TK_LIT_INT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create_type(AST_LITERAL,IKS_INT,$2)),NULL);}
+        | TK_CE_PLUS TK_LIT_FLOAT {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create_type(AST_LITERAL,IKS_FLOAT,$2)),NULL);}
 ;
 
 type:     TK_PR_INT    { $$ = IKS_INT; }
@@ -168,7 +168,7 @@ type:     TK_PR_INT    { $$ = IKS_INT; }
 ;
 exp:
           val_exp {$$ = $1;}
-        | TK_LIT_STRING {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LITERAL,$1)),NULL);}
+        | TK_LIT_STRING {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create_type(AST_LITERAL,IKS_STRING,$1)),NULL);}
 ;
 
 val_exp:
@@ -183,30 +183,30 @@ $1 $3
 */
 
 exp_bool:
-          exp_bool TK_OC_LT exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_L, NULL)), $1), $3); }
-        | exp_bool TK_OC_GT exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_G, NULL)), $1), $3); }
-        | exp_bool TK_OC_LE exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_LE, NULL)), $1), $3); }
-        | exp_bool TK_OC_GE exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_GE, NULL)), $1), $3); }
-        | exp_bool TK_OC_EQ exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_IGUAL, NULL)), $1), $3); }
-        | exp_bool TK_OC_NE exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_COMP_DIF, NULL)), $1), $3); }
+          exp_bool TK_OC_LT exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_LOGICO_COMP_L,yystack_inf($1->item->iks_type, $3->item->iks_type), NULL)), $1), $3); }
+        | exp_bool TK_OC_GT exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_LOGICO_COMP_G,yystack_inf($1->item->iks_type, $3->item->iks_type), NULL)), $1), $3); }
+        | exp_bool TK_OC_LE exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_LOGICO_COMP_LE,yystack_inf($1->item->iks_type, $3->item->iks_type), NULL)), $1), $3); }
+        | exp_bool TK_OC_GE exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_LOGICO_COMP_GE,yystack_inf($1->item->iks_type, $3->item->iks_type), NULL)), $1), $3); }
+        | exp_bool TK_OC_EQ exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_LOGICO_COMP_IGUAL,yystack_inf($1->item->iks_type, $3->item->iks_type), NULL)), $1), $3); }
+        | exp_bool TK_OC_NE exp_bool_ou  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_LOGICO_COMP_DIF, yystack_inf($1->item->iks_type, $3->item->iks_type),NULL)), $1), $3); }
         | exp_bool_ou                    { $$ = $1; }
 ;
 exp_bool_ou:
-          exp_bool_ou TK_OC_OR exp_bool_e   { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_OU, NULL)), $1), $3); }
+          exp_bool_ou TK_OC_OR exp_bool_e   { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_LOGICO_OU,yystack_inf($1->item->iks_type, $3->item->iks_type), NULL)), $1), $3); }
         | exp_bool_e                        { $$ = $1; }
 ;
 exp_bool_e:
-          exp_bool_e TK_OC_AND exp_art      { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_LOGICO_E, NULL)), $1), $3); }
+          exp_bool_e TK_OC_AND exp_art      { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_LOGICO_E,yystack_inf($1->item->iks_type, $3->item->iks_type), NULL)), $1), $3); }
         | exp_art                           { $$ = $1; }
 ;
 exp_art:
-          exp_art TK_CE_PLUS exp_art_t  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_ARIM_SOMA, NULL)), $1), $3); }
-        | exp_art TK_CE_MINUS exp_art_t { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_ARIM_SUBTRACAO, NULL)), $1), $3); }
+          exp_art TK_CE_PLUS exp_art_t  { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_ARIM_SOMA, yystack_inf($1->item->iks_type, $3->item->iks_type), NULL)), $1), $3); }
+        | exp_art TK_CE_MINUS exp_art_t { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_ARIM_SUBTRACAO, yystack_inf($1->item->iks_type, $3->item->iks_type), NULL)), $1), $3); }
         | exp_art_t                     { $$ = $1; }
 ;
 exp_art_t:
-          exp_art_t TK_CE_MUL exp_art_par { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_ARIM_MULTIPLICACAO, NULL)), $1), $3); }
-        | exp_art_t TK_CE_DIV exp_art_par { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_ARIM_DIVISAO, NULL)), $1), $3); }
+          exp_art_t TK_CE_MUL exp_art_par { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_ARIM_MULTIPLICACAO, yystack_inf($1->item->iks_type, $3->item->iks_type), NULL)), $1), $3); }
+        | exp_art_t TK_CE_DIV exp_art_par { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_ARIM_DIVISAO, yystack_inf($1->item->iks_type, $3->item->iks_type), NULL)), $1), $3); }
         | exp_art_par                     { $$ = $1; }
 ;
 
@@ -217,8 +217,8 @@ exp_art_par:
 
 
 exp_neg:
-          TK_CE_MINUS exp_end { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_ARIM_INVERSAO,NULL)),$2); }
-        | TK_OC_NEG exp_end { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_LOGICO_COMP_NEGACAO,NULL)),$2); }
+          TK_CE_MINUS exp_end { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create_type(AST_ARIM_INVERSAO, $2->item->iks_type,NULL)),$2); }
+        | TK_OC_NEG exp_end { $$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create_type(AST_LOGICO_COMP_NEGACAO, $2->item->iks_type,NULL)),$2); }
         | exp_end { $$ = $1;}
 ;
 
@@ -226,8 +226,8 @@ exp_neg:
 exp_end:
           func_call                              { $$ = $1; }
         | op_literal                             { $$ = $1; }
-        | TK_IDENTIFICADOR                       { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_VARIABLE) return yyerror_var($1); $$ = cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1)); }
-        | TK_IDENTIFICADOR array                 { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_ARRAY) return yyerror_var($1); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2);}
+        | TK_IDENTIFICADOR                       { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_VARIABLE) return yyerror_var($1); $$ = cc_tree_create_node(1,cc_tree_item_create_type(AST_IDENTIFICADOR,$1->iks_type,$1)); }
+        | TK_IDENTIFICADOR array                 { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_ARRAY) return yyerror_var($1); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_VETOR_INDEXADO, $1->iks_type,NULL)),cc_tree_create_node(1,cc_tree_item_create_type(AST_IDENTIFICADOR,$1->iks_type,$1))),$2);}
 ;
 
 lst_exp:
@@ -295,8 +295,8 @@ func_params:
 
 // atribuicao 
 assignment:
-          TK_IDENTIFICADOR TK_CE_EQUAL exp          { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_VARIABLE) return yyerror_var($1); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$3);}
-        | TK_IDENTIFICADOR array TK_CE_EQUAL exp    { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_ARRAY) return yyerror_var($1); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2)),$4);}
+          TK_IDENTIFICADOR TK_CE_EQUAL exp          { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_VARIABLE) return yyerror_var($1); if(yystack_verify_types($1->iks_type,$3->item->iks_type)>0) return yystack_verify_types($1->iks_type,$3->item->iks_type); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$3);}
+        | TK_IDENTIFICADOR array TK_CE_EQUAL exp    { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_ARRAY) return yyerror_var($1);if(yystack_verify_types($1->iks_type,$4->item->iks_type)>0) return yystack_verify_types($1->iks_type,$4->item->iks_type); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2)),$4);}
         | TK_IDENTIFICADOR TK_CE_EQUAL              { yyerror("Missing a expression"); return SINTATICA_ERRO; }        
         | TK_IDENTIFICADOR array TK_CE_EQUAL        { yyerror("Missing a expression"); return SINTATICA_ERRO; }        
 ;
@@ -321,8 +321,8 @@ ret:
 
 // Chamada da funcao 
 func_call:
-          TK_IDENTIFICADOR TK_CE_PAR_OPEN TK_CE_PAR_CLOSE { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_FUNCTION) return yyerror_var($1); $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_CHAMADA_DE_FUNCAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1)));}
-        | TK_IDENTIFICADOR TK_CE_PAR_OPEN lst_exp TK_CE_PAR_CLOSE { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_FUNCTION) return yyerror_var($1); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_CHAMADA_DE_FUNCAO,NULL)),$3),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1)));}
+          TK_IDENTIFICADOR TK_CE_PAR_OPEN TK_CE_PAR_CLOSE { printf("    x1   ");if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_FUNCTION) return yyerror_var($1); $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_CHAMADA_DE_FUNCAO,yystack_find($1)->iks_type,NULL)),cc_tree_create_node(1,cc_tree_item_create_type(AST_IDENTIFICADOR,yystack_find($1)->iks_type,$1)));}
+        | TK_IDENTIFICADOR TK_CE_PAR_OPEN lst_exp TK_CE_PAR_CLOSE { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; if(yystack_find($1)->iks_var!=IKS_FUNCTION) return yyerror_var($1); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create_type(AST_CHAMADA_DE_FUNCAO,yystack_find($1)->iks_type,NULL)),$3),cc_tree_create_node(1,cc_tree_item_create_type(AST_IDENTIFICADOR,yystack_find($1)->iks_type,$1)));}
 ;
 // if
 
