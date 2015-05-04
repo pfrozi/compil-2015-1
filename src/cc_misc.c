@@ -45,7 +45,8 @@ comp_dict_item_t* yystack_find(comp_dict_item_t* sentry){
     comp_dict_item_t* item = cc_stack_find_top(scopes, sentry);
     return item;
 }
-void yystack_add(comp_dict_item_t* sentry){
+void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_size){
     
     scopes = cc_stack_add_top(scopes, sentry);
 }
+

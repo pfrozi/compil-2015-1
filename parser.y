@@ -115,7 +115,7 @@ array:
 ;
 
 statement:
-          TK_PR_STATIC type TK_IDENTIFICADOR	    { if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; }
+          TK_PR_STATIC type TK_IDENTIFICADOR	    { if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED;else yystack_add($3); }
         | type TK_IDENTIFICADOR			            { if(yystack_find($2)!=NULL) return IKS_ERROR_DECLARED;else yystack_add($2); }
         | TK_PR_STATIC TK_IDENTIFICADOR             { yyerror("Missing a type"); return SINTATICA_ERRO; }
         | TK_IDENTIFICADOR                          { yyerror("Missing a type"); return SINTATICA_ERRO; }        
