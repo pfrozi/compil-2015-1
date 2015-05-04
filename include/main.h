@@ -38,6 +38,13 @@
 #define IKS_STRING          4
 #define IKS_BOOL            5
 
+/* Tamanhos de tipos da linguagem amarela */
+#define IKS_INT_SIZE             4
+#define IKS_FLOAT_SIZE           8
+#define IKS_CHAR_SIZE            1
+#define IKS_STRING_SIZE          1
+#define IKS_BOOL_SIZE            1
+
 /*
   Constantes a serem utilizadas como valor de retorno do analisador
   semantico.

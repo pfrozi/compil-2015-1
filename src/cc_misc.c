@@ -40,8 +40,12 @@ void main_finalize (void)
   free(stable);
 }
 
-comp_dict_item_t* yyfind_stack(comp_dict_item_t* sentry){
+comp_dict_item_t* yystack_find(comp_dict_item_t* sentry){
     
     comp_dict_item_t* item = cc_stack_find_top(scopes, sentry);
-    return NULL;
+    return item;
+}
+void yystack_add(comp_dict_item_t* sentry){
+    
+    scopes = cc_stack_add_top(scopes, sentry);
 }

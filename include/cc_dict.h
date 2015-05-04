@@ -19,6 +19,7 @@ typedef struct comp_dict_item
     int line;
     int type;
     int iks_type;
+    int iks_size;
     union
     {
         int val_int;

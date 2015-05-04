@@ -56,12 +56,11 @@ comp_dict_item_t* cc_stack_find_top(dict_stack_t* stack, comp_dict_item_t* item)
     if(stack->top!=NULL){
         item_scope = cc_dict_get(stack->top->item, item->key);
     }
+    
     return item_scope;
 }
 
 dict_stack_t* cc_stack_add_top(dict_stack_t* stack, comp_dict_item_t* item){
-    
-    comp_dict_item_t* item_scope = NULL;
     
     if(stack->top!=NULL){
         comp_dict_item_key_t key = cc_dict_create_item_key(item->key.lexem, 0);
