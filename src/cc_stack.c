@@ -12,10 +12,16 @@ dict_stack_t* create(){
 dict_stack_t* cc_stack_push(dict_stack_t* stack, dict_stack_item_t* item){
     
     dict_stack_t* new = (dict_stack_t*)malloc(sizeof(dict_stack_t)); 
-    
     new->top = item;
-    new->next = stack;
     
+    if(stack->top!=NULL){
+        
+        new->next = stack;
+    }else
+    {
+        free(stack);
+        new->next = NULL;
+    }
     return new;
 }
 dict_stack_t* cc_stack_pop(dict_stack_t* stack){
