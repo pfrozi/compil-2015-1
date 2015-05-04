@@ -17,9 +17,10 @@ typedef struct dict_stack
 }dict_stack_t;
 
 dict_stack_t* cc_stack_create();
-dict_stack_t* cc_stack_push(dict_stack_t* stack, dict_stack_item_t* item);
+dict_stack_t* cc_stack_push(dict_stack_t* stack);
 dict_stack_t* cc_stack_pop(dict_stack_t* stack);
 dict_stack_item_t* cc_stack_top(dict_stack_t* stack);
 
 comp_dict_item_t* cc_stack_find_top(dict_stack_t* stack, comp_dict_item_t* item);
+dict_stack_t* cc_stack_add_top(dict_stack_t* stack, comp_dict_item_t* item);
 #endif
