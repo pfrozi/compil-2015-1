@@ -122,9 +122,9 @@ statement:
 ;
 
 local_statement:
-          const_statement TK_OC_LE TK_IDENTIFICADOR
+          const_statement TK_OC_LE TK_IDENTIFICADOR	{ if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; }
         | const_statement TK_OC_LE literal
-        | statement TK_OC_LE TK_IDENTIFICADOR
+        | statement TK_OC_LE TK_IDENTIFICADOR		{ if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; }
         | statement TK_OC_LE literal
         | const_statement 
         | statement 
@@ -132,10 +132,10 @@ local_statement:
         | statement TK_OC_LE                        { yyerror("Missing a attrib"); return SINTATICA_ERRO; }        
 ;
 const_statement:
-          TK_PR_STATIC TK_PR_CONST type TK_IDENTIFICADOR
+          TK_PR_STATIC TK_PR_CONST type TK_IDENTIFICADOR	{ if(yystack_find($4)!=NULL) return IKS_ERROR_DECLARED; }
         | TK_PR_STATIC TK_PR_CONST TK_IDENTIFICADOR { yyerror("Missing a type"); return SINTATICA_ERRO; }
         | TK_PR_STATIC TK_PR_CONST type             { yyerror("Missing a IDENTIFICADOR"); return SINTATICA_ERRO; }
-        | TK_PR_CONST type TK_IDENTIFICADOR
+        | TK_PR_CONST type TK_IDENTIFICADOR			{ if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; }
         | TK_PR_CONST TK_IDENTIFICADOR              { yyerror("Missing a type"); return SINTATICA_ERRO; }
         | TK_PR_CONST type                          { yyerror("Missing a IDENTIFICADOR"); return SINTATICA_ERRO; }
 ;
@@ -220,8 +220,8 @@ exp_neg:
 exp_end:
           func_call                              { $$ = $1; }
         | op_literal                             { $$ = $1; }
-        | TK_IDENTIFICADOR                       { $$ = cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1)); }
-        | TK_IDENTIFICADOR array                 { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2);}
+        | TK_IDENTIFICADOR                       { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; $$ = cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1)); }
+        | TK_IDENTIFICADOR array                 { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2);}
 ;
 
 lst_exp:
@@ -262,8 +262,8 @@ function:
           func_head TK_CE_BRA_CURL_OPEN command TK_CE_BRA_CURL_CLOSE {$$ = cc_tree_insert_node($1,$3);}
 ;
 func_head:
-          TK_PR_STATIC type TK_IDENTIFICADOR func_head_params  {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_FUNCAO,$3));}
-        | type TK_IDENTIFICADOR func_head_params               {$$ = cc_tree_create_node(3,cc_tree_item_create(AST_FUNCAO,$2));}
+          TK_PR_STATIC type TK_IDENTIFICADOR func_head_params  { if(yystack_find($3)!=NULL) return IKS_ERROR_DECLARED; $$ = cc_tree_create_node(3,cc_tree_item_create(AST_FUNCAO,$3));}
+        | type TK_IDENTIFICADOR func_head_params               { if(yystack_find($2)!=NULL) return IKS_ERROR_DECLARED; $$ = cc_tree_create_node(3,cc_tree_item_create(AST_FUNCAO,$2));}
         | type func_head_params                                { yyerror("Missing a param IDENTIFICADOR"); return SINTATICA_ERRO; }
         | TK_IDENTIFICADOR func_head_params                    { yyerror("Missing a type IDENTIFICADOR"); return SINTATICA_ERRO; }
 ;
@@ -289,8 +289,8 @@ func_params:
 
 // atribuicao 
 assignment:
-          TK_IDENTIFICADOR TK_CE_EQUAL exp          { if(yystack_find($1)==NULL)return IKS_ERROR_UNDECLARED; $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$3);}
-        | TK_IDENTIFICADOR array TK_CE_EQUAL exp    { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2)),$4);}
+          TK_IDENTIFICADOR TK_CE_EQUAL exp          { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$3);}
+        | TK_IDENTIFICADOR array TK_CE_EQUAL exp    { if(yystack_find($1)==NULL) return IKS_ERROR_UNDECLARED; $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2)),$4);}
         | TK_IDENTIFICADOR TK_CE_EQUAL              { yyerror("Missing a expression"); return SINTATICA_ERRO; }        
         | TK_IDENTIFICADOR array TK_CE_EQUAL        { yyerror("Missing a expression"); return SINTATICA_ERRO; }        
 ;
