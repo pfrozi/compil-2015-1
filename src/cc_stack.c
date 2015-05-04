@@ -33,3 +33,14 @@ dict_stack_item_t* cc_stack_top(dict_stack_t* stack){
     
     return stack->top;
 }
+
+comp_dict_item_t* cc_stack_find_top(dict_stack_t* stack, comp_dict_item_t* item){
+    
+    comp_dict_item_t* item_scope = NULL;
+    
+    if(stack->top!=NULL){
+        item_scope = cc_dict_get(stack->top, item->key);
+    }
+    
+    return item_scope;
+}

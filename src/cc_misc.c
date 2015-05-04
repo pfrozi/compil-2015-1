@@ -39,3 +39,9 @@ void main_finalize (void)
   //cc_tree_destroy_node(ast);
   free(stable);
 }
+
+comp_dict_item_t* yyfind_stack(comp_dict_item_t* sentry){
+    
+    comp_dict_item_t* item = cc_stack_find_top(scopes, sentry);
+    return item;
+}

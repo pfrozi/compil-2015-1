@@ -16,7 +16,7 @@ extern comp_tree_t* ast;
 /* Union for yylval */
 %union {
     comp_dict_item_t *valor_simbolo_lexico;
-    comp_tree_t *ast;
+    comp_tree_t      *ast;
 }
 
 %type <ast> programa input line function func_head command_block single_command ret assignment 
@@ -289,7 +289,7 @@ func_params:
 
 // atribuicao 
 assignment:
-          TK_IDENTIFICADOR TK_CE_EQUAL exp          { $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$3);}
+          TK_IDENTIFICADOR TK_CE_EQUAL exp          {if(yyfind_stack($1)==NULL)return IKS_ERROR_UNDECLARED; $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$3);}
         | TK_IDENTIFICADOR array TK_CE_EQUAL exp    {$$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(3,cc_tree_item_create(AST_ATRIBUICAO,NULL)),cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_VETOR_INDEXADO,NULL)),cc_tree_create_node(1,cc_tree_item_create(AST_IDENTIFICADOR,$1))),$2)),$4);}
         | TK_IDENTIFICADOR TK_CE_EQUAL              { yyerror("Missing a expression"); return SINTATICA_ERRO; }        
         | TK_IDENTIFICADOR array TK_CE_EQUAL        { yyerror("Missing a expression"); return SINTATICA_ERRO; }        

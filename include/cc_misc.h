@@ -12,4 +12,5 @@ void yyerror (char const *mensagem);
 void main_init (int argc, char **argv);
 void main_finalize (void);
 
+comp_dict_item_t* yyfind_stack(comp_dict_item_t* sentry);
 #endif
