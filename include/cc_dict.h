@@ -1,5 +1,6 @@
 #ifndef __CC_DICT_H_
 #define __CC_DICT_H_
+
 #include<stdbool.h>
 struct comp_dict_item;
 
