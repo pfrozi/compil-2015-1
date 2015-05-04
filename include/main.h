@@ -38,6 +38,10 @@
 #define IKS_STRING          4
 #define IKS_BOOL            5
 
+#define IKS_FUNCTION        0
+#define IKS_ARRAY           1
+#define IKS_VARIABLE        2
+
 /* Tamanhos de tipos da linguagem amarela */
 #define IKS_INT_SIZE             4
 #define IKS_FLOAT_SIZE           8

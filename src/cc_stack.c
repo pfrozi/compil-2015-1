@@ -63,8 +63,13 @@ comp_dict_item_t* cc_stack_find_top(dict_stack_t* stack, comp_dict_item_t* item)
 dict_stack_t* cc_stack_add_top(dict_stack_t* stack, comp_dict_item_t* item){
     
     if(stack->top!=NULL){
+        comp_dict_item_t* new_item = NULL;
+        
         comp_dict_item_key_t key = cc_dict_create_item_key(item->key.lexem, 0);
-        cc_dict_insert(stack->top->item,cc_dict_create_item(key, item->line));
+        new_item = cc_dict_insert(stack->top->item,cc_dict_create_item(key, item->line));
+        
+        new_item->iks_type = item->iks_type;
+        new_item->iks_var  = item->iks_var;
     }
     
     return stack;
