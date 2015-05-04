@@ -24,23 +24,23 @@ comp_tree_t* cc_tree_create_node(int numChildren, comp_tree_item_t* item)
     {
         if(item->sentry->type==SIMBOLO_LITERAL_STRING)
         {
-            gv_declare(item->type,node,item->sentry->val_str);
+            //gv_declare(item->type,node,item->sentry->val_str);
         }
         else if(item->sentry->type==SIMBOLO_LITERAL_CHAR)
         {
             char *buf=(char*)malloc(sizeof(char)*2);
-            sprintf(buf,"%c\0",item->sentry->val_char);
-            gv_declare(item->type,node,buf);
+            //sprintf(buf,"%c\0",item->sentry->val_char);
+            //gv_declare(item->type,node,buf);
             free(buf);
         }
         else
         {
-            gv_declare(item->type,node,item->sentry->key.lexem);
+            //gv_declare(item->type,node,item->sentry->key.lexem);
         }
     }
     else
     {
-        gv_declare(item->type,node,NULL);
+        //gv_declare(item->type,node,NULL);
     }
     return node;
 }
@@ -85,7 +85,7 @@ comp_tree_t* cc_tree_insert_node(comp_tree_t* root,comp_tree_t* node)
                 break;
             }
         }
-        gv_connect(root,node);
+        //gv_connect(root,node);
     }
     return root;
 }

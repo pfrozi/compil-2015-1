@@ -1,6 +1,6 @@
 #include "cc_stack.h"
 
-dict_stack_t* create(){
+dict_stack_t* cc_stack_create(){
     
     dict_stack_t* new = (dict_stack_t*)malloc(sizeof(dict_stack_t)); 
     

@@ -7,6 +7,7 @@
 comp_tree_t* ast;
 comp_dict_t* stable;
 
+dict_stack_t* scopes;
 
 //return the current line number
 //incremented in scanner.l after
@@ -27,6 +28,8 @@ void main_init (int argc, char **argv)
   //implemente esta função com rotinas de inicialização, se necessário
   stable = (comp_dict_t*)malloc(sizeof(comp_dict_t));
   cc_dict_init(stable);
+    
+  scopes = cc_stack_create();
 }
 
 void main_finalize (void)

@@ -2,6 +2,8 @@
 #define __MISC_H
 #include <stdio.h>
 #include "cc_dict.h"
+#include "cc_stack.h"
+
 extern int line_number;
 extern comp_dict_t* stable;
 
