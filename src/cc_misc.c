@@ -162,10 +162,27 @@ int yystack_return_type(comp_tree_t* root){
     printf("\ntype fun %d .", scopes->top->type);
     printf("\ntype return %d .", root->item->iks_type);
     
-    if(root->item->iks_type!=scopes->top->type){
-        return 1;
-    }else {
     
+    return yystack_type_co(root->item->iks_type, scopes->top->type);
+    
+}
+
+
+int yystack_type_co(int type_a, int type_b){
+    
+    if(  (type_a==IKS_INT || type_a==IKS_FLOAT || type_a==IKS_BOOL)
+      && (type_b==IKS_INT || type_b==IKS_FLOAT || type_b==IKS_BOOL))
+    {
         return 0;
+    }
+    else
+    {
+        if(type_a==type_b)
+        {
+            return 0;    
+        }else{
+            
+            return 1;
+        }
     }
 }

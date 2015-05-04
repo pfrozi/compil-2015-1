@@ -73,7 +73,6 @@ comp_tree_item_t* cc_tree_item_create(int type,comp_dict_item_t* sentry)
 }
 comp_tree_item_t* cc_tree_item_create_type(int type, int iks_type, comp_dict_item_t* sentry)
 {
-    printf(" x1");
     comp_tree_item_t* item = (comp_tree_item_t*)malloc(sizeof(comp_tree_item_t));
     
     item->type = type;
