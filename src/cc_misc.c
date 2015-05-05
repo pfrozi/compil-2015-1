@@ -2,6 +2,7 @@
 #include "cc_dict.h"
 #include "cc_tree.h"
 #include "cc_ast.h"
+#include "cc_list.h"
 #include <stdlib.h>
 
 comp_tree_t* ast;
@@ -147,6 +148,31 @@ int yytree_match_types_out(comp_tree_t* root){
         }
     }
     return 0;
+}
+
+int yytree_match_arguments(comp_list_t* list, comp_list_t* args)
+{
+    if(list!=NULL)
+    {
+        if(list->type!=args->type){
+            return 1;
+        }
+        else {
+            return yytree_match_arguments(list->next,args->next);
+        }
+    }
+    return 0;
+}
+
+comp_list_t* yytree_get_argument_list(comp_tree_t* root)
+{
+    if(root!=NULL)
+    {
+    	comp_list_t *item = cc_list_create(root->item->iks_type);
+    	item = cc_list_append(item,yytree_get_argument_list(root->children[0]));
+	return item;
+    }
+    return NULL;
 }
 
 int yystack_set_type(comp_tree_t* root){

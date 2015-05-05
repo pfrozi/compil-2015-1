@@ -28,6 +28,7 @@ int yystack_return_type(comp_tree_t* root);
 int yystack_type_co(int type_a, int type_b);
 
 int yytree_match_types_out(comp_tree_t* root);
+int yytree_match_arguments(comp_list_t* list, comp_list_t* args);
 
 void yystack_push_scope();
 void yystack_pop_scope();

@@ -2,6 +2,7 @@
 #define __CC_DICT_H_
 
 #include<stdbool.h>
+#include"cc_list.h"
 struct comp_dict_item;
 
 typedef struct comp_dict_item_key
@@ -21,6 +22,7 @@ typedef struct comp_dict_item
     int iks_type;
     int iks_var;
     int iks_size;
+    comp_list_t* iks_arguments;
     union
     {
         int val_int;
