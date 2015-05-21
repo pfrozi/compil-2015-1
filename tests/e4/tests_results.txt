@@ -215,3 +215,211 @@ The following tests FAILED:
 	325 - e4_valgrind_37 (Failed)
 	326 - e4_valgrind_38 (Failed)
 	327 - e4_valgrind_39 (Failed)
+Test project /home/aluno/compiladores/compil-2015-1/build
+      Start 248: e4_avaliacao_00
+ 1/80 Test #248: e4_avaliacao_00 ..................   Passed    0.14 sec
+      Start 249: e4_avaliacao_01
+ 2/80 Test #249: e4_avaliacao_01 ..................   Passed    0.14 sec
+      Start 250: e4_avaliacao_02
+ 3/80 Test #250: e4_avaliacao_02 ..................   Passed    0.13 sec
+      Start 251: e4_avaliacao_03
+ 4/80 Test #251: e4_avaliacao_03 ..................   Passed    0.14 sec
+      Start 252: e4_avaliacao_04
+ 5/80 Test #252: e4_avaliacao_04 ..................   Passed    0.12 sec
+      Start 253: e4_avaliacao_05
+ 6/80 Test #253: e4_avaliacao_05 ..................   Passed    0.11 sec
+      Start 254: e4_avaliacao_06
+ 7/80 Test #254: e4_avaliacao_06 ..................   Passed    0.11 sec
+      Start 255: e4_avaliacao_07
+ 8/80 Test #255: e4_avaliacao_07 ..................   Passed    0.11 sec
+      Start 256: e4_avaliacao_08
+ 9/80 Test #256: e4_avaliacao_08 ..................   Passed    0.11 sec
+      Start 257: e4_avaliacao_09
+10/80 Test #257: e4_avaliacao_09 ..................   Passed    0.13 sec
+      Start 258: e4_avaliacao_10
+11/80 Test #258: e4_avaliacao_10 ..................   Passed    0.11 sec
+      Start 259: e4_avaliacao_11
+12/80 Test #259: e4_avaliacao_11 ..................   Passed    0.13 sec
+      Start 260: e4_avaliacao_12
+13/80 Test #260: e4_avaliacao_12 ..................   Passed    0.13 sec
+      Start 261: e4_avaliacao_13
+14/80 Test #261: e4_avaliacao_13 ..................   Passed    0.14 sec
+      Start 262: e4_avaliacao_14
+15/80 Test #262: e4_avaliacao_14 ..................   Passed    0.19 sec
+      Start 263: e4_avaliacao_15
+16/80 Test #263: e4_avaliacao_15 ..................   Passed    0.15 sec
+      Start 264: e4_avaliacao_16
+17/80 Test #264: e4_avaliacao_16 ..................   Passed    0.12 sec
+      Start 265: e4_avaliacao_17
+18/80 Test #265: e4_avaliacao_17 ..................   Passed    0.15 sec
+      Start 266: e4_avaliacao_18
+19/80 Test #266: e4_avaliacao_18 ..................   Passed    0.14 sec
+      Start 267: e4_avaliacao_19
+20/80 Test #267: e4_avaliacao_19 ..................   Passed    0.13 sec
+      Start 268: e4_avaliacao_20
+21/80 Test #268: e4_avaliacao_20 ..................   Passed    0.13 sec
+      Start 269: e4_avaliacao_21
+22/80 Test #269: e4_avaliacao_21 ..................   Passed    0.12 sec
+      Start 270: e4_avaliacao_22
+23/80 Test #270: e4_avaliacao_22 ..................   Passed    0.11 sec
+      Start 271: e4_avaliacao_23
+24/80 Test #271: e4_avaliacao_23 ..................   Passed    0.12 sec
+      Start 272: e4_avaliacao_24
+25/80 Test #272: e4_avaliacao_24 ..................   Passed    0.13 sec
+      Start 273: e4_avaliacao_25
+26/80 Test #273: e4_avaliacao_25 ..................   Passed    0.13 sec
+      Start 274: e4_avaliacao_26
+27/80 Test #274: e4_avaliacao_26 ..................   Passed    0.15 sec
+      Start 275: e4_avaliacao_27
+28/80 Test #275: e4_avaliacao_27 ..................***Failed    0.13 sec
+      Start 276: e4_avaliacao_28
+29/80 Test #276: e4_avaliacao_28 ..................   Passed    0.12 sec
+      Start 277: e4_avaliacao_29
+30/80 Test #277: e4_avaliacao_29 ..................   Passed    0.11 sec
+      Start 278: e4_avaliacao_30
+31/80 Test #278: e4_avaliacao_30 ..................   Passed    0.12 sec
+      Start 279: e4_avaliacao_31
+32/80 Test #279: e4_avaliacao_31 ..................   Passed    0.13 sec
+      Start 280: e4_avaliacao_32
+33/80 Test #280: e4_avaliacao_32 ..................   Passed    0.12 sec
+      Start 281: e4_avaliacao_33
+34/80 Test #281: e4_avaliacao_33 ..................   Passed    0.12 sec
+      Start 282: e4_avaliacao_34
+35/80 Test #282: e4_avaliacao_34 ..................   Passed    0.12 sec
+      Start 283: e4_avaliacao_35
+36/80 Test #283: e4_avaliacao_35 ..................   Passed    0.12 sec
+      Start 284: e4_avaliacao_36
+37/80 Test #284: e4_avaliacao_36 ..................   Passed    0.13 sec
+      Start 285: e4_avaliacao_37
+38/80 Test #285: e4_avaliacao_37 ..................   Passed    0.11 sec
+      Start 286: e4_avaliacao_38
+39/80 Test #286: e4_avaliacao_38 ..................   Passed    0.11 sec
+      Start 287: e4_avaliacao_39
+40/80 Test #287: e4_avaliacao_39 ..................   Passed    0.18 sec
+      Start 288: e4_valgrind_00
+41/80 Test #288: e4_valgrind_00 ...................***Failed    0.18 sec
+      Start 289: e4_valgrind_01
+42/80 Test #289: e4_valgrind_01 ...................***Failed    0.17 sec
+      Start 290: e4_valgrind_02
+43/80 Test #290: e4_valgrind_02 ...................***Failed    0.16 sec
+      Start 291: e4_valgrind_03
+44/80 Test #291: e4_valgrind_03 ...................***Failed    0.16 sec
+      Start 292: e4_valgrind_04
+45/80 Test #292: e4_valgrind_04 ...................***Failed    0.15 sec
+      Start 293: e4_valgrind_05
+46/80 Test #293: e4_valgrind_05 ...................***Failed    0.15 sec
+      Start 294: e4_valgrind_06
+47/80 Test #294: e4_valgrind_06 ...................***Failed    0.17 sec
+      Start 295: e4_valgrind_07
+48/80 Test #295: e4_valgrind_07 ...................***Failed    0.16 sec
+      Start 296: e4_valgrind_08
+49/80 Test #296: e4_valgrind_08 ...................***Failed    0.15 sec
+      Start 297: e4_valgrind_09
+50/80 Test #297: e4_valgrind_09 ...................***Failed    0.15 sec
+      Start 298: e4_valgrind_10
+51/80 Test #298: e4_valgrind_10 ...................***Failed    0.16 sec
+      Start 299: e4_valgrind_11
+52/80 Test #299: e4_valgrind_11 ...................***Failed    0.16 sec
+      Start 300: e4_valgrind_12
+53/80 Test #300: e4_valgrind_12 ...................***Failed    0.16 sec
+      Start 301: e4_valgrind_13
+54/80 Test #301: e4_valgrind_13 ...................***Failed    0.15 sec
+      Start 302: e4_valgrind_14
+55/80 Test #302: e4_valgrind_14 ...................***Failed    0.16 sec
+      Start 303: e4_valgrind_15
+56/80 Test #303: e4_valgrind_15 ...................***Failed    0.15 sec
+      Start 304: e4_valgrind_16
+57/80 Test #304: e4_valgrind_16 ...................***Failed    0.15 sec
+      Start 305: e4_valgrind_17
+58/80 Test #305: e4_valgrind_17 ...................***Failed    0.15 sec
+      Start 306: e4_valgrind_18
+59/80 Test #306: e4_valgrind_18 ...................***Failed    0.16 sec
+      Start 307: e4_valgrind_19
+60/80 Test #307: e4_valgrind_19 ...................***Failed    0.16 sec
+      Start 308: e4_valgrind_20
+61/80 Test #308: e4_valgrind_20 ...................***Failed    0.16 sec
+      Start 309: e4_valgrind_21
+62/80 Test #309: e4_valgrind_21 ...................***Failed    0.16 sec
+      Start 310: e4_valgrind_22
+63/80 Test #310: e4_valgrind_22 ...................***Failed    0.18 sec
+      Start 311: e4_valgrind_23
+64/80 Test #311: e4_valgrind_23 ...................***Failed    0.16 sec
+      Start 312: e4_valgrind_24
+65/80 Test #312: e4_valgrind_24 ...................***Failed    0.15 sec
+      Start 313: e4_valgrind_25
+66/80 Test #313: e4_valgrind_25 ...................***Failed    0.15 sec
+      Start 314: e4_valgrind_26
+67/80 Test #314: e4_valgrind_26 ...................***Failed    0.15 sec
+      Start 315: e4_valgrind_27
+68/80 Test #315: e4_valgrind_27 ...................***Failed    0.15 sec
+      Start 316: e4_valgrind_28
+69/80 Test #316: e4_valgrind_28 ...................***Failed    0.16 sec
+      Start 317: e4_valgrind_29
+70/80 Test #317: e4_valgrind_29 ...................***Failed    0.15 sec
+      Start 318: e4_valgrind_30
+71/80 Test #318: e4_valgrind_30 ...................***Failed    0.16 sec
+      Start 319: e4_valgrind_31
+72/80 Test #319: e4_valgrind_31 ...................***Failed    0.16 sec
+      Start 320: e4_valgrind_32
+73/80 Test #320: e4_valgrind_32 ...................***Failed    0.15 sec
+      Start 321: e4_valgrind_33
+74/80 Test #321: e4_valgrind_33 ...................***Failed    0.16 sec
+      Start 322: e4_valgrind_34
+75/80 Test #322: e4_valgrind_34 ...................***Failed    0.15 sec
+      Start 323: e4_valgrind_35
+76/80 Test #323: e4_valgrind_35 ...................***Failed    0.15 sec
+      Start 324: e4_valgrind_36
+77/80 Test #324: e4_valgrind_36 ...................***Failed    0.15 sec
+      Start 325: e4_valgrind_37
+78/80 Test #325: e4_valgrind_37 ...................***Failed    0.16 sec
+      Start 326: e4_valgrind_38
+79/80 Test #326: e4_valgrind_38 ...................***Failed    0.16 sec
+      Start 327: e4_valgrind_39
+80/80 Test #327: e4_valgrind_39 ...................***Failed    0.15 sec
+
+49% tests passed, 41 tests failed out of 80
+
+Total Test time (real) =  11.54 sec
+
+The following tests FAILED:
+	275 - e4_avaliacao_27 (Failed)
+	288 - e4_valgrind_00 (Failed)
+	289 - e4_valgrind_01 (Failed)
+	290 - e4_valgrind_02 (Failed)
+	291 - e4_valgrind_03 (Failed)
+	292 - e4_valgrind_04 (Failed)
+	293 - e4_valgrind_05 (Failed)
+	294 - e4_valgrind_06 (Failed)
+	295 - e4_valgrind_07 (Failed)
+	296 - e4_valgrind_08 (Failed)
+	297 - e4_valgrind_09 (Failed)
+	298 - e4_valgrind_10 (Failed)
+	299 - e4_valgrind_11 (Failed)
+	300 - e4_valgrind_12 (Failed)
+	301 - e4_valgrind_13 (Failed)
+	302 - e4_valgrind_14 (Failed)
+	303 - e4_valgrind_15 (Failed)
+	304 - e4_valgrind_16 (Failed)
+	305 - e4_valgrind_17 (Failed)
+	306 - e4_valgrind_18 (Failed)
+	307 - e4_valgrind_19 (Failed)
+	308 - e4_valgrind_20 (Failed)
+	309 - e4_valgrind_21 (Failed)
+	310 - e4_valgrind_22 (Failed)
+	311 - e4_valgrind_23 (Failed)
+	312 - e4_valgrind_24 (Failed)
+	313 - e4_valgrind_25 (Failed)
+	314 - e4_valgrind_26 (Failed)
+	315 - e4_valgrind_27 (Failed)
+	316 - e4_valgrind_28 (Failed)
+	317 - e4_valgrind_29 (Failed)
+	318 - e4_valgrind_30 (Failed)
+	319 - e4_valgrind_31 (Failed)
+	320 - e4_valgrind_32 (Failed)
+	321 - e4_valgrind_33 (Failed)
+	322 - e4_valgrind_34 (Failed)
+	323 - e4_valgrind_35 (Failed)
+	324 - e4_valgrind_36 (Failed)
+	325 - e4_valgrind_37 (Failed)
+	326 - e4_valgrind_38 (Failed)
+	327 - e4_valgrind_39 (Failed)
