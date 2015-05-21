@@ -20,6 +20,7 @@ typedef struct comp_dict_item
     int line;
     int type;
     int iks_type;
+    int iks_coercion;
     int iks_var;
     int iks_size;
     comp_list_t* iks_arguments;

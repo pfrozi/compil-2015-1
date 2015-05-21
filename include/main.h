@@ -32,6 +32,7 @@
 
 
 /* Codigos de tipos da linguagem amarela */
+#define IKS_NULL            0
 #define IKS_INT             1
 #define IKS_FLOAT           2
 #define IKS_CHAR            3
