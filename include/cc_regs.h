@@ -2,7 +2,9 @@
 #define __CC_REGS_H_
 
 #include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
+
+#define MAX_LEN 5
 
 int id;
 

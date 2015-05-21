@@ -1,13 +1,19 @@
-#include "cc_stack.h"
-#include <stdio.h>
-#include <string.h>
+#include "cc_rot.h"
 
-int count = 0;
+void  init_cc_rot(){
+    
+    id = 0;
+}
 
-char* get_rot() {
-	//char* str = "l";
-	//char* num = (char)count;	
-	//strcat (str, num);
-	//count += 1;
-	//return str;
+char* get_rot(){
+    
+    char*   new_reg;
+    
+    new_reg = (char*)malloc(sizeof(char)*MAX_LEN);
+    
+    snprintf(new_reg, MAX_LEN, "l%d", id);
+    
+    id++;
+    
+    return new_reg;
 }
