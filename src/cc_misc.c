@@ -79,8 +79,10 @@ void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
     
     printf(" yystack_add()\n");
     
-    sentry->iks_type = iks_type;
-    sentry->iks_var = iks_var;
+    sentry->iks_type     = iks_type;
+    sentry->iks_var      = iks_var;
+    sentry->iks_coercion = IKS_NULL;
+    sentry->iks_size     = 0;
     
     scopes = cc_stack_add_top(scopes, sentry);
 }
@@ -107,18 +109,33 @@ int yystack_verify_types(int type_a, int type_b){
     return IKS_SUCESS;
 }
 
-int yystack_inf(int type_a, int type_b){
+int yystack_inf(comp_dict_item_t* sentry_a, comp_dict_item_t* sentry_b){
+    
+    int type_a = sentry_a->iks_type;
+    int type_b = sentry_b->iks_type;
     
     if(type_a == type_b){
        return type_a;
     }
     if(type_a == IKS_FLOAT && type_b == IKS_INT || type_b == IKS_FLOAT && type_a == IKS_INT){
-        return IKS_FLOAT;   
+        
+        sentry_a->iks_coercion = IKS_FLOAT;
+        sentry_b->iks_coercion = IKS_FLOAT;
+        
+        return IKS_FLOAT;
     }
     if(type_a == IKS_FLOAT && type_b == IKS_BOOL || type_b == IKS_FLOAT && type_a == IKS_BOOL){
+        
+        sentry_a->iks_coercion = IKS_FLOAT;
+        sentry_b->iks_coercion = IKS_FLOAT;
+        
         return IKS_FLOAT;   
     }
     if(type_a == IKS_INT && type_b == IKS_BOOL || type_b == IKS_INT && type_a == IKS_BOOL){
+        
+        sentry_a->iks_coercion = IKS_INT;
+        sentry_b->iks_coercion = IKS_INT;
+        
         return IKS_INT;   
     }
 }
