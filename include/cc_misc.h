@@ -22,7 +22,7 @@ void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var);
 void yystack_update_var(comp_dict_item_t* sentry, int var);
 
 int yystack_verify_types(int type_a, int type_b);
-int yystack_inf(comp_dict_item_t* sentry_a, comp_dict_item_t* sentry_b);
+int yystack_inf(comp_tree_item_t* sentry_a, comp_tree_item_t* sentry_b);
 int yystack_set_type(comp_tree_t* root);
 int yystack_return_type(comp_tree_t* root);
 int yystack_type_co(int type_a, int type_b);
