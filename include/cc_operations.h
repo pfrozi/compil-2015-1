@@ -7,6 +7,8 @@
 #define MAX_LEN_STR_CODE   30
 
 
+#define OP_VAR             "@%s"
+
 #define OP_ZERO            "%s"
 #define OP_1SRC_1TRG       "%s %s => %s"
 #define OP_2SRC_1TRG       "%s %s, %s => %s"
@@ -16,6 +18,9 @@
 #define OP_1SRC_1TRG_FLOW  "%s %s -> %s"
 #define OP_2SRC_1TRG_FLOW  "%s %s, %s -> %s"
 #define OP_1SRC_2TRG_FLOW  "%s %s -> %s, %s"
+
+#define OP_REG_ESPEC_FP     "rarp"
+#define OP_REG_ESPEC_RB     "rbss"
 
 // OPERACOES INDIVIDUAIS
 
