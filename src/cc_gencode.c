@@ -1,7 +1,5 @@
 #include "cc_gencode.h" 
-#include "cc_regs.h"
-#include <stdlib.h>
-#include <string.h>
+
 
 void gen_literal(comp_tree_t* t)
 {
@@ -169,43 +167,45 @@ void load_array(comp_tree_t* t1){
     int i=0;
     int base = 0;
     
+    char* reg_sum  = get_reg();
     char* reg_mult = get_reg();
     char* reg_base = get_reg();
     char* reg_addr = get_reg();
+    char* result   = get_reg();
         
-    list_codes_create(t1->codes, load_immediate(reg_sum, 0));
+    t1->item->codes = list_codes_create(load_immediate(reg_sum, 0));
     
     for(i=0;i<t1->num_children-1;i++)
     {
         base     = cc_list_get(t1->item->sentry->bases, i)->type;
         
-        list_codes_append(t1->codes
-                      , load_immediate(reg_base, base));
-        list_codes_append(t1->codes
-                      , get_iloc_code(OP_MULT,reg_base, t1->children[i]->result, reg_mult));
-        list_codes_append(t1->codes
-                      , get_iloc_code(OP_ADD, reg_mult, reg_sum, reg_sum));
+        list_codes_append(t1->item->codes
+                      , list_codes_create(load_immediate(reg_base, base)));
+        list_codes_append(t1->item->codes
+                      , list_codes_create(get_iloc_code(OP_MULT,reg_base, t1->children[i]->item->result, reg_mult)));
+        list_codes_append(t1->item->codes
+                      , list_codes_create(get_iloc_code(OP_ADD, reg_mult, reg_sum, reg_sum)));
         
     }
-    list_codes_append(t1->codes
-                      , get_iloc_code(OP_ADD, t1->children[i]->result, reg_sum, reg_sum));
-    list_codes_append(t1->codes
-                      , load_immediate(reg_addr,t1->item->sentry->address));
-    list_codes_append(t1->codes
-                      , get_iloc_code(OP_ADD, reg_addr, reg_sum, reg_addr));
+    list_codes_append(t1->item->codes
+                      , list_codes_create(get_iloc_code(OP_ADD, t1->children[i]->item->result, reg_sum, reg_sum)));
+    list_codes_append(t1->item->codes
+                      , list_codes_create(load_immediate(reg_addr,t1->item->sentry->address)));
+    list_codes_append(t1->item->codes
+                      , list_codes_create(get_iloc_code(OP_ADD, reg_addr, reg_sum, reg_addr)));
     
     if(t1->item->sentry->scope_type==SCOPE_TYPE_LOCAL){
-        list_codes_append(t1->codes
-                      , get_iloc_code(OP_LOADAO, OP_REG_ESPEC_FP, reg_addr, result));   
+        list_codes_append(t1->item->codes
+                      , list_codes_create(get_iloc_code(OP_LOADAO, OP_REG_ESPEC_FP, reg_addr, result)));   
     }
     else if(t1->item->sentry->scope_type==SCOPE_TYPE_GLOBAL){
-        list_codes_append(t1->codes
-                      , get_iloc_code(OP_LOADAO, OP_REG_ESPEC_RB, reg_addr, result));
+        list_codes_append(t1->item->codes
+                      , list_codes_create(get_iloc_code(OP_LOADAO, OP_REG_ESPEC_RB, reg_addr, result)));
     }
     else {
         printf("ERROR - cc_gencode: load_array()\n");
     }
     
-    t1->result = result;
+    t1->item->result = result;
 }
 
