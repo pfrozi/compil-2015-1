@@ -391,6 +391,7 @@ void tree_pass_code(comp_tree_t* tree)
     if(tree!=NULL)
     {
         int i=0;
+        fprintf(stderr,"CHILDREN: %d\n",tree->num_children);
         for(i=0;i<tree->num_children;i++)
         {
             tree_pass_code(tree->children[i]);
@@ -421,6 +422,9 @@ void tree_pass_code(comp_tree_t* tree)
             case AST_RETURN:
             case AST_BLOCO:
             case AST_IDENTIFICADOR:
+            {
+                break;
+            }
             case AST_LITERAL:
             {
                 gen_literal(tree);
