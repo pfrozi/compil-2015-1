@@ -10,9 +10,9 @@ typedef struct comp_tree_item
     comp_dict_item_t* sentry;
     
     int               num_codes;
-    iloc_code_t**     codes;
-    iloc_code_t**     bf;
-    iloc_code_t**     bv;
+    list_codes_t*     codes;
+    list_codes_t*     bf;
+    list_codes_t*     bv;
 
     char* result;
     

@@ -147,3 +147,38 @@ iloc_code_t*  load_immediate(char* reg1, int val){
     snprintf(base_str, 10, "%d", val);
     return get_iloc_code(OP_LOADI, base_str, NULL, reg1);
 }
+
+
+list_codes_t* list_codes_create(iloc_code_t* item){
+
+    list_codes_t* list = (list_codes_t*)malloc(sizeof(list_codes_t));
+    list->item = item;
+    list->next = NULL;
+    return list;
+}
+
+list_codes_t* list_codes_append(list_codes_t* list1, list_codes_t* list2){
+    
+    if(list1!=NULL && list2!=NULL)
+    {
+    	list_codes_t *l = list1;
+    	while(l->next!=NULL)
+    	{
+    	    l=l->next;
+    	};
+    	l->next = list2;
+    }
+    return list;
+}
+
+list_codes_t* list_codes_get(list_codes_t* list, int n){
+
+    int i=0;
+    list_codes_t *l = list;
+    do
+    {
+        l=l->next;
+        i++;
+    }while(i!=n && l!=NULL);
+    return l;
+}
