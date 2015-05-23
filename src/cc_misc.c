@@ -246,6 +246,19 @@ int define_type_size(int type){
     }
 }
 
+void tree_inorder(comp_tree_t* tree)
+{
+    if(tree!=NULL)
+    {
+        int i=0;
+        for(i=0;i<tree->num_children;i++)
+        {
+            tree_inorder(tree->children[i]);
+        }
+        //TODO THE MAGIC
+    }
+}
+
 void tree_routing(){
     
     
