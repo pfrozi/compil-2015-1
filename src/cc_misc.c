@@ -91,7 +91,7 @@ void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
 }
 
 
-void yystack_update_var(comp_dict_item_t* sentry, int var){
+void yystack_update_var(comp_dict_item_t* sentry, comp_tree_t* lst, int var){
     
     yystack_find(sentry)->iks_var = var;
     cc_dict_get(stable, sentry->key)->iks_var = var;
@@ -256,7 +256,7 @@ void tree_inorder(comp_tree_t* tree)
             tree_inorder(tree->children[i]);
         }
         //TODO THE MAGIC
-        switch(tree->type)
+        switch(tree->item->type)
         {
             case AST_PROGRAMA:
             case AST_FUNCAO:

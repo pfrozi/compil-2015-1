@@ -19,7 +19,7 @@ comp_dict_item_t* yystack_find_top(comp_dict_item_t* sentry);
 comp_dict_item_t* yystack_find(comp_dict_item_t* sentry);
 
 void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var);
-void yystack_update_var(comp_dict_item_t* sentry, int var);
+void yystack_update_var(comp_dict_item_t* sentry, comp_tree_t* lst, int var);
 
 int yystack_verify_types(int type_a, int type_b);
 int yystack_inf(comp_tree_item_t* sentry_a, comp_tree_item_t* sentry_b);
@@ -32,6 +32,7 @@ int yytree_match_arguments(comp_list_t* list, comp_list_t* args);
 
 void yystack_push_scope();
 void yystack_pop_scope();
+
 
 int  define_type_size(int type);
 void tree_routing();

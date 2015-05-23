@@ -114,7 +114,7 @@ endline:
 
 global_statement:
           statement endline        // int x; int static x;
-        | statement array endline  { yystack_update_var($1, IKS_ARRAY); }
+        | statement array endline  { yystack_update_var($1, $2, IKS_ARRAY); }
         | statement                { yyerror("Missing a ;"); return SINTATICA_ERRO; }
         | statement array          { yyerror("Missing a ;"); return SINTATICA_ERRO; }
         
@@ -128,8 +128,20 @@ array:
 ;
 
 statement:
-          TK_PR_STATIC type TK_IDENTIFICADOR	    { if(yystack_find_top($3)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($3, $2, IKS_VARIABLE); $$ = $3; }
-        | type TK_IDENTIFICADOR			            { if(yystack_find_top($2)!=NULL) return IKS_ERROR_DECLARED; else yystack_add($2, $1, IKS_VARIABLE); $$ = $2; }
+          TK_PR_STATIC type TK_IDENTIFICADOR	    { 
+                                                        if(yystack_find_top($3)!=NULL) 
+                                                            return IKS_ERROR_DECLARED; 
+                                                        else 
+                                                            yystack_add($3, $2, IKS_VARIABLE); 
+                                                        $$ = $3; 
+                                                    }
+        | type TK_IDENTIFICADOR			            { 
+                                                        if(yystack_find_top($2)!=NULL) 
+                                                            return IKS_ERROR_DECLARED; 
+                                                        else 
+                                                            yystack_add($2, $1, IKS_VARIABLE); 
+                                                        $$ = $2; 
+                                                    }
         | TK_PR_STATIC TK_IDENTIFICADOR             { yyerror("Missing a type"); return SINTATICA_ERRO; }
         | TK_IDENTIFICADOR                          { yyerror("Missing a type"); return SINTATICA_ERRO; }        
 ;
@@ -240,6 +252,11 @@ exp_end:
 lst_exp:
           exp TK_CE_COMMA lst_exp { $$ = cc_tree_insert_node($1,$3);}
         | exp {$$ = $1;}
+;
+
+lst_int:
+          TK_PR_INT TK_CE_COMMA lst_int { $$ = cc_tree_insert_node($1,$3);}
+        | TK_PR_INT {$$ = $1;}
 ;
 
 command_block:

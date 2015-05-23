@@ -1,12 +1,18 @@
 #ifndef _TREE_H_
 #define _TREE_H_
 #include "cc_dict.h"
+#include "cc_operations.h"
 
 typedef struct comp_tree_item
 {
     int type;
     int iks_type;
     comp_dict_item_t* sentry;
+    
+    iloc_code_t**     codes;
+    iloc_code_t**     bf;
+    iloc_code_t**     bv;
+    
 } comp_tree_item_t;
 
 typedef struct comp_tree
