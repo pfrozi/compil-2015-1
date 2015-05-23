@@ -91,10 +91,12 @@ void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
 }
 
 
-void yystack_update_var(comp_dict_item_t* sentry, comp_tree_t* lst, int var){
+void yystack_update_var(comp_dict_item_t* sentry, int len, int var){
     
-    yystack_find(sentry)->iks_var = var;
-    cc_dict_get(stable, sentry->key)->iks_var = var;
+    yystack_find(sentry)->iks_var  = var;
+    yystack_find(sentry)->iks_size = yystack_find(sentry)->iks_size*len;
+    
+    yystack_find(sentry)->address  = get_address_var_rb(yystack_find(sentry)->iks_size);
     
 }
 

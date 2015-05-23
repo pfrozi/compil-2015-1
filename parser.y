@@ -27,10 +27,10 @@ extern comp_tree_t* ast;
 %type <ast> array dowhile whiledo lst_exp exp literal exp_art exp_art_t exp_art_par
 %type <ast> exp_bool exp_bool_e exp_bool_ou exp_end exp_neg
 
-%type <valor_simbolo_lexico> statement const_statement
+%type <valor_simbolo_lexico> statement const_statement 
 %type <arguments> func_params func_head_params
 
-%type <integer> type
+%type <integer> type lst_int array_int
 
 %error-verbose
 
@@ -114,15 +114,22 @@ endline:
 
 global_statement:
           statement endline        // int x; int static x;
-        | statement array endline  { yystack_update_var($1, $2, IKS_ARRAY); }
-        | statement                { yyerror("Missing a ;"); return SINTATICA_ERRO; }
-        | statement array          { yyerror("Missing a ;"); return SINTATICA_ERRO; }
+        | statement array_int endline  { yystack_update_var($1, $2, IKS_ARRAY);         }
+        | statement                    { yyerror("Missing a ;"); return SINTATICA_ERRO; }
+        | statement array_int          { yyerror("Missing a ;"); return SINTATICA_ERRO; }
         
 ;
 array:
           TK_CE_BRA_OPEN lst_exp TK_CE_BRA_CLOSE  {
                                                       if($2->item->iks_type==IKS_CHAR) return IKS_ERROR_CHAR_TO_X;
                                                       if($2->item->iks_type==IKS_STRING) return IKS_ERROR_STRING_TO_X; 
+                                                      $$ = $2;
+                                                  }
+;
+array_int:
+          TK_CE_BRA_OPEN lst_int TK_CE_BRA_CLOSE  {
+                                                      //if($2->item->iks_type==IKS_CHAR) return IKS_ERROR_CHAR_TO_X;
+                                                      //if($2->item->iks_type==IKS_STRING) return IKS_ERROR_STRING_TO_X; 
                                                       $$ = $2;
                                                   }
 ;
@@ -255,8 +262,8 @@ lst_exp:
 ;
 
 lst_int:
-          TK_PR_INT TK_CE_COMMA lst_int { $$ = cc_tree_insert_node($1,$3);}
-        | TK_PR_INT {$$ = $1;}
+          TK_LIT_INT TK_CE_COMMA lst_int { $$ = $1->val_int * $3; }
+        | TK_LIT_INT { $$ = $1->val_int; }
 ;
 
 command_block:
