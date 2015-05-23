@@ -8,11 +8,15 @@ typedef struct comp_tree_item
     int type;
     int iks_type;
     comp_dict_item_t* sentry;
+
+    int iks_coercion;
     
     int               num_codes;
     list_codes_t*     codes;
-    list_codes_t*     bf;
-    list_codes_t*     bv;
+    char*             bf;
+    char*             bv;
+    char*             next;
+    char*             begin;
 
     char* result;
     

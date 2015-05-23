@@ -3,6 +3,7 @@
 #include "cc_tree.h"
 #include "cc_ast.h"
 #include "cc_list.h"
+#include "cc_rot.h"
 #include <stdlib.h>
 
 comp_tree_t* ast;
@@ -83,7 +84,6 @@ void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
     
     sentry->iks_type     = iks_type;
     sentry->iks_var      = iks_var;
-    sentry->iks_coercion = IKS_NULL;
     
     sentry->iks_size     = define_type_size(sentry->iks_type);
     
@@ -139,31 +139,35 @@ int yystack_verify_types(int type_a, int type_b){
 }
 
 int yystack_inf(comp_tree_item_t* sentry_a, comp_tree_item_t* sentry_b){
-    
-    int type_a = sentry_a->sentry->iks_type;
-    int type_b = sentry_b->sentry->iks_type;
-    
+
+    if(sentry_a==NULL || sentry_b==NULL)
+    {
+        fprintf(stderr,"BIG ERROR\n");
+    }
+    fprintf(stderr,"%d\n",sentry_b->iks_type);
+    int type_a = sentry_a->iks_type;
+    int type_b = sentry_b->iks_type;
     if(type_a == type_b){
        return type_a;
     }
     if(type_a == IKS_FLOAT && type_b == IKS_INT || type_b == IKS_FLOAT && type_a == IKS_INT){
-        
-        sentry_a->sentry->iks_coercion = IKS_FLOAT;
-        sentry_b->sentry->iks_coercion = IKS_FLOAT;
+
+        sentry_a->iks_coercion = IKS_FLOAT;
+        sentry_b->iks_coercion = IKS_FLOAT;
         
         return IKS_FLOAT;
     }
     if(type_a == IKS_FLOAT && type_b == IKS_BOOL || type_b == IKS_FLOAT && type_a == IKS_BOOL){
         
-        sentry_a->sentry->iks_coercion = IKS_FLOAT;
-        sentry_b->sentry->iks_coercion = IKS_FLOAT;
+        sentry_a->iks_coercion = IKS_FLOAT;
+        sentry_b->iks_coercion = IKS_FLOAT;
         
         return IKS_FLOAT;   
     }
     if(type_a == IKS_INT && type_b == IKS_BOOL || type_b == IKS_INT && type_a == IKS_BOOL){
         
-        sentry_a->sentry->iks_coercion = IKS_INT;
-        sentry_b->sentry->iks_coercion = IKS_INT;
+        sentry_a->iks_coercion = IKS_INT;
+        sentry_b->iks_coercion = IKS_INT;
         
         return IKS_INT;   
     }
@@ -270,14 +274,126 @@ int define_type_size(int type){
     }
 }
 
-void tree_inorder(comp_tree_t* tree)
+void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
+{
+    if(tree!=NULL)
+    {
+        int i=0;
+        //TODO THE MAGIC
+        switch(tree->item->type)
+        {
+            case AST_IF_ELSE:
+            {
+                //IF-Else
+                if(tree->children[3]!=NULL)
+                {
+                    tree->item->next = (char*)get_rot();
+                }
+                char* rotF = (char*)get_rot();
+                char* rotV = (char*)get_rot();
+                char* rotN = root->item->next;
+                tree->children[1]->item->next = tree->item->next;
+                tree->children[2]->item->next = tree->item->next;
+                tree->children[0]->item->bv = rotV;
+                tree->children[0]->item->bf = rotF;
+                break;
+            }
+            case AST_DO_WHILE:
+            {
+                if(tree->children[2]!=NULL)
+                {
+                    tree->item->next = (char*)get_rot();
+                }
+                tree->item->begin             = (char*)get_rot();
+                tree->children[0]->item->bv   = (char*)get_rot();
+                tree->children[0]->item->bf   = tree->item->next;
+                tree->children[1]->item->next = tree->item->begin;
+                break;
+            }
+            case AST_WHILE_DO:
+            {
+                if(tree->children[2]!=NULL)
+                {
+                    tree->item->next = (char*)get_rot();
+                }
+                tree->item->begin             = (char*)get_rot();
+                tree->children[0]->item->bv   = (char*)get_rot();
+                tree->children[0]->item->bf   = tree->item->next;
+                tree->children[1]->item->next = tree->item->begin;
+                break;
+            }
+            case AST_LITERAL:
+            {
+                if(tree->item->iks_type == IKS_BOOL)
+                {
+                    if(tree->item->sentry->val_bool)
+                    {
+                        tree->item->bv = root->item->bv;
+                    }
+                    else
+                    {
+                        tree->item->bf = root->item->bf;
+                    }
+                }
+                break;
+            }
+            case AST_LOGICO_E:
+            {
+                tree->children[0]->item->bf = root->item->bf;
+                tree->children[0]->item->bv = (char*)get_rot();
+                tree->children[1]->item->bf = root->item->bf;
+                tree->children[1]->item->bv = root->item->bv;
+                break;
+            }
+            case AST_LOGICO_OU:
+            {
+                tree->children[0]->item->bf = (char*)get_rot();
+                tree->children[0]->item->bv = root->item->bv;
+                tree->children[1]->item->bf = root->item->bf;
+                tree->children[1]->item->bv = root->item->bv;
+                break;
+            }
+            case AST_LOGICO_COMP_DIF:
+            case AST_LOGICO_COMP_IGUAL:
+            case AST_LOGICO_COMP_LE:
+            case AST_LOGICO_COMP_GE:
+            case AST_LOGICO_COMP_L:
+            case AST_LOGICO_COMP_G:
+            {
+                tree->item->bv=root->item->bv;
+                tree->item->bf=root->item->bf;
+                break;
+            }
+            case AST_LOGICO_COMP_NEGACAO:
+            {
+                tree->item->bv=root->item->bf;
+                tree->item->bf=root->item->bv;
+                break;
+            }
+            default:
+            {
+                if(tree->children[0]!=NULL)
+                {
+                    tree->children[0]->item->next = (char*)get_rot();
+                }
+            }
+                break;
+        }
+        for(i=0;i<tree->num_children;i++)
+        {
+            tree_pass_gen_labels(tree->children[i],tree);
+        }
+    }
+}
+
+void tree_pass_code(comp_tree_t* tree)
 {
     if(tree!=NULL)
     {
         int i=0;
         for(i=0;i<tree->num_children;i++)
         {
-            tree_inorder(tree->children[i]);
+            tree_pass_code(tree->children[i]);
         }
         //TODO THE MAGIC
         switch(tree->item->type)
@@ -285,8 +401,20 @@ void tree_inorder(comp_tree_t* tree)
             case AST_PROGRAMA:
             case AST_FUNCAO:
             case AST_IF_ELSE:
+            {
+                gen_if_else(tree,tree->children[0],tree->children[1],tree->children[2]);
+                break;
+            }
             case AST_DO_WHILE:
+            {
+                gen_do_while(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_WHILE_DO:
+            {
+                gen_while_do(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_INPUT:
             case AST_OUTPUT:
             case AST_ATRIBUICAO:
@@ -294,19 +422,71 @@ void tree_inorder(comp_tree_t* tree)
             case AST_BLOCO:
             case AST_IDENTIFICADOR:
             case AST_LITERAL:
+            {
+                gen_literal(tree);
+                break;
+            }
             case AST_ARIM_SOMA:
+            {
+                gen_add(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_ARIM_SUBTRACAO:
+            {
+                gen_sub(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_ARIM_MULTIPLICACAO:
+            {
+                gen_mul(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_ARIM_DIVISAO:
+            {
+                gen_div(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_ARIM_INVERSAO:
             case AST_LOGICO_E:
+            {
+                gen_and(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_LOGICO_OU:
+            {
+                gen_or(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_LOGICO_COMP_DIF:
+            {
+                gen_unequal(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_LOGICO_COMP_IGUAL:
+            {
+                gen_equal(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_LOGICO_COMP_LE:
+            {
+                gen_less_equal(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_LOGICO_COMP_GE:
+            {
+                gen_greater_equal(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_LOGICO_COMP_L:
+            {
+                gen_less(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_LOGICO_COMP_G:
+            {
+                gen_greater(tree,tree->children[0],tree->children[1]);
+                break;
+            }
             case AST_LOGICO_COMP_NEGACAO:
             case AST_VETOR_INDEXADO:
             case AST_CHAMADA_DE_FUNCAO:
