@@ -3,14 +3,14 @@
 
 dict_stack_t* cc_stack_create(){
     
-    printf("cc_stack_create()\n");
+    //printf("cc_stack_create()\n");
     
     // create a global scope
     return cc_stack_push(NULL);
 }
 dict_stack_t* cc_stack_push(dict_stack_t* stack){
     
-    printf("cc_stack_push()\n");
+    // printf("cc_stack_push()\n");
     
     dict_stack_t* new = (dict_stack_t*)malloc(sizeof(dict_stack_t)); 
     
@@ -24,7 +24,7 @@ dict_stack_t* cc_stack_push(dict_stack_t* stack){
     return new;
 }
 dict_stack_t* cc_stack_pop(dict_stack_t* stack){
-    printf("cc_stack_pop()\n");
+    // printf("cc_stack_pop()\n");
     
     dict_stack_t* new = stack->next;
     
@@ -35,7 +35,7 @@ dict_stack_t* cc_stack_pop(dict_stack_t* stack){
     
 }
 dict_stack_item_t* cc_stack_top(dict_stack_t* stack){
-    printf("cc_stack_top()\n");
+    // printf("cc_stack_top()\n");
     return stack->top;
 }
 

@@ -44,11 +44,15 @@ int yyerror_var(comp_dict_item_t* sentry){
 
 void main_init (int argc, char **argv)
 {
-  //implemente esta função com rotinas de inicialização, se necessário
-  stable = (comp_dict_t*)malloc(sizeof(comp_dict_t));
-  cc_dict_init(stable);
+    //implemente esta função com rotinas de inicialização, se necessário
+    stable = (comp_dict_t*)malloc(sizeof(comp_dict_t));
+    cc_dict_init(stable);
     
-  scopes = cc_stack_create();
+    scopes = cc_stack_create();
+  
+    init_operations(); 
+    init_cc_regs(); 
+    init_cc_rot(); 
     
 }
 

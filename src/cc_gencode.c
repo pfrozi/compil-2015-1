@@ -5,7 +5,8 @@
 
 void gen_literal(comp_tree_t* t)
 {
-    if(t->item->type==IKS_INT)
+    
+    if(t->item->iks_type==IKS_INT)
     {
     	t->item->num_codes=1;
         int val = t->item->sentry->val_int;
@@ -15,7 +16,7 @@ void gen_literal(comp_tree_t* t)
         t->item->codes = list_codes_create(code);
         t->item->result = result;
     }
-    else if(t->item->type==IKS_BOOL)
+    else if(t->item->iks_type==IKS_BOOL)
     {
     	t->item->num_codes=1;
         int val = t->item->sentry->val_int;
