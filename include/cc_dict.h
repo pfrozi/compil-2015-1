@@ -19,10 +19,14 @@ typedef struct comp_dict_item
     comp_dict_item_key_t key;
     int line;
     int type;
+        
     int iks_type;
     int iks_coercion;
     int iks_var;
     int iks_size;
+    
+    int address;
+    
     comp_list_t* iks_arguments;
     union
     {

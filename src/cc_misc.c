@@ -63,29 +63,34 @@ void main_finalize (void)
 
 comp_dict_item_t* yystack_find_top(comp_dict_item_t* sentry){
         
-    printf(" yystack_find_top(): %s\n", sentry->key.lexem);
+    //printf(" yystack_find_top(): %s\n", sentry->key.lexem);
     
     comp_dict_item_t* item = cc_stack_find_top(scopes, sentry);
     return item;
 }
 comp_dict_item_t* yystack_find(comp_dict_item_t* sentry){
         
-    printf(" yystack_find(): %s\n", sentry->key.lexem);
+    //printf(" yystack_find(): %s\n", sentry->key.lexem);
     
     comp_dict_item_t* item = cc_stack_find(scopes, sentry);
     return item;
 }
+
+
 void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
     
-    printf(" yystack_add()\n");
+    //printf(" yystack_add()\n");
     
     sentry->iks_type     = iks_type;
     sentry->iks_var      = iks_var;
     sentry->iks_coercion = IKS_NULL;
-    sentry->iks_size     = 0;
+    
+    sentry->iks_size     = define_size(sentry->iks_type);
     
     scopes = cc_stack_add_top(scopes, sentry);
 }
+
+
 void yystack_update_var(comp_dict_item_t* sentry, int var){
     
     yystack_find(sentry)->iks_var = var;
@@ -95,7 +100,7 @@ void yystack_update_var(comp_dict_item_t* sentry, int var){
 
 int yystack_verify_types(int type_a, int type_b){
     
-    printf("\ttipo a: %d\t\ttipo b: %d", type_a, type_b);
+    //printf("\ttipo a: %d\t\ttipo b: %d", type_a, type_b);
     
     if(type_a != IKS_STRING && type_b == IKS_STRING){
        return IKS_ERROR_STRING_TO_X;
@@ -142,13 +147,13 @@ int yystack_inf(comp_tree_item_t* sentry_a, comp_tree_item_t* sentry_b){
 
 void yystack_push_scope(){
     
-    printf("Push scope...\n");
+    //printf("Push scope...\n");
     
     scopes = cc_stack_push(scopes);
 }
 void yystack_pop_scope(){
     
-    printf("Pop scope...\n");
+    //printf("Pop scope...\n");
     scopes = cc_stack_pop(scopes);
 }
 
@@ -194,17 +199,15 @@ comp_list_t* yytree_get_argument_list(comp_tree_t* root)
 
 int yystack_set_type(comp_tree_t* root){
  
-    printf("\nROOT TYPE %d .", root->item->iks_type);
-
+    //printf("\nROOT TYPE %d .", root->item->iks_type);
 
     scopes->top->type = root->item->iks_type;
 }
 
 int yystack_return_type(comp_tree_t* root){
     
-    printf("\ntype fun %d .", scopes->top->type);
-    printf("\ntype return %d .", root->item->iks_type);
-    
+   // printf("\ntype fun %d .", scopes->top->type);
+    //printf("\ntype return %d .", root->item->iks_type);
     
     return yystack_type_co(root->item->iks_type, scopes->top->type);
     
@@ -228,4 +231,22 @@ int yystack_type_co(int type_a, int type_b){
             return 1;
         }
     }
+}
+
+int define_type_size(int type){
+    
+    switch(type){
+
+        case IKS_NULL  :  return IKS_NULL_SIZE;
+        case IKS_INT   :  return IKS_INT_SIZE;
+        case IKS_FLOAT :  return IKS_FLOAT_SIZE;
+        case IKS_CHAR  :  return IKS_CHAR_SIZE;
+        case IKS_STRING:  return IKS_STRING_SIZE;
+        case IKS_BOOL  :  return IKS_BOOL_SIZE; 
+    }
+}
+
+void tree_routing(){
+    
+    
 }

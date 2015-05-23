@@ -32,4 +32,8 @@ int yytree_match_arguments(comp_list_t* list, comp_list_t* args);
 
 void yystack_push_scope();
 void yystack_pop_scope();
+
+int  define_type_size(int type);
+void tree_routing();
+
 #endif

@@ -120,7 +120,11 @@ global_statement:
         
 ;
 array:
-          TK_CE_BRA_OPEN lst_exp TK_CE_BRA_CLOSE   {if($2->item->iks_type==IKS_CHAR) return IKS_ERROR_CHAR_TO_X;if($2->item->iks_type==IKS_STRING) return IKS_ERROR_STRING_TO_X; $$ = $2;}
+          TK_CE_BRA_OPEN lst_exp TK_CE_BRA_CLOSE  {
+                                                      if($2->item->iks_type==IKS_CHAR) return IKS_ERROR_CHAR_TO_X;
+                                                      if($2->item->iks_type==IKS_STRING) return IKS_ERROR_STRING_TO_X; 
+                                                      $$ = $2;
+                                                  }
 ;
 
 statement:

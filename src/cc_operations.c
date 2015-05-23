@@ -118,3 +118,24 @@ char* get_str_code(iloc_code_t* iloc_code){
     return ret;
 }
 
+
+void init_operations(){
+
+    offset_fp = 0;
+    offset_rb = 0;
+}
+
+int get_address_var_fp(int size){
+
+    int address = offset_fp;
+    offset_fp  += size;
+    
+    return address;
+}
+int get_address_var_rb(int size){
+
+    int address = offset_rb;
+    offset_rb  += size;
+    
+    return address;
+}
