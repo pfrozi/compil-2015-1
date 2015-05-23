@@ -1,6 +1,6 @@
 #include "cc_operations.h"
 
-iloc_code_t* get_iloc_code(int op, char* reg1, char* reg2, char* result){
+iloc_code_t* get_iloc_code(int op, char* reg1, char* reg2, char* result, char* label){
 
     iloc_code_t* new_code;
     
@@ -10,6 +10,7 @@ iloc_code_t* get_iloc_code(int op, char* reg1, char* reg2, char* result){
     new_code->reg1   = reg1;
     new_code->reg2   = reg2;
     new_code->result = result;
+    new_code->label  = label;
     
     return new_code;
 }
@@ -145,7 +146,7 @@ iloc_code_t*  load_immediate(char* reg1, int val){
     char base_str[10];
     
     snprintf(base_str, 10, "%d", val);
-    return get_iloc_code(OP_LOADI, base_str, NULL, reg1);
+    return get_iloc_code(OP_LOADI, base_str, NULL, reg1,NULL);
 }
 
 
