@@ -168,7 +168,7 @@ list_codes_t* list_codes_append(list_codes_t* list1, list_codes_t* list2){
     	};
     	l->next = list2;
     }
-    return list;
+    return list1;
 }
 
 list_codes_t* list_codes_get(list_codes_t* list, int n){
