@@ -256,6 +256,37 @@ void tree_inorder(comp_tree_t* tree)
             tree_inorder(tree->children[i]);
         }
         //TODO THE MAGIC
+        switch(tree->type)
+        {
+            case AST_PROGRAMA:
+            case AST_FUNCAO:
+            case AST_IF_ELSE:
+            case AST_DO_WHILE:
+            case AST_WHILE_DO:
+            case AST_INPUT:
+            case AST_OUTPUT:
+            case AST_ATRIBUICAO:
+            case AST_RETURN:
+            case AST_BLOCO:
+            case AST_IDENTIFICADOR:
+            case AST_LITERAL:
+            case AST_ARIM_SOMA:
+            case AST_ARIM_SUBTRACAO:
+            case AST_ARIM_MULTIPLICACAO:
+            case AST_ARIM_DIVISAO:
+            case AST_ARIM_INVERSAO:
+            case AST_LOGICO_E:
+            case AST_LOGICO_OU:
+            case AST_LOGICO_COMP_DIF:
+            case AST_LOGICO_COMP_IGUAL:
+            case AST_LOGICO_COMP_LE:
+            case AST_LOGICO_COMP_GE:
+            case AST_LOGICO_COMP_L:
+            case AST_LOGICO_COMP_G:
+            case AST_LOGICO_COMP_NEGACAO:
+            case AST_VETOR_INDEXADO:
+            case AST_CHAMADA_DE_FUNCAO:
+        }
     }
 }
 
