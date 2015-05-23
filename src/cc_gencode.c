@@ -1,4 +1,7 @@
 #include "cc_gencode.h" 
+#include "cc_regs.h"
+#include <stdlib.h>
+#include <string.h>
 
 void gen_literal(comp_tree_t* t)
 {
@@ -81,6 +84,66 @@ void gen_log_and(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
 
 void gen_log_or(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
 {
+}
+
+void gen_less(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
+{
+    char* result = get_reg();
+    t1->item->num_codes = t2->item->num_codes + t3->item->num_codes + 1;
+    t1->item->codes = (iloc_code_t**)malloc(sizeof(iloc_code_t*)*t1->item->num_codes);
+    memcpy(t1->item->codes,t2->item->codes,t2->item->num_codes);
+    memcpy(t1->item->codes+t2->item->num_codes,t3->item->codes,t3->item->num_codes);
+    t1->item->codes[t1->item->num_codes] = get_iloc_code(OP_CMP_LT,t2->item->result,t3->item->result,result);
+}
+
+void gen_greater(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
+{
+    char* result = get_reg();
+    t1->item->num_codes = t2->item->num_codes + t3->item->num_codes + 1;
+    t1->item->codes = (iloc_code_t**)malloc(sizeof(iloc_code_t*)*t1->item->num_codes);
+    memcpy(t1->item->codes,t2->item->codes,t2->item->num_codes);
+    memcpy(t1->item->codes+t2->item->num_codes,t3->item->codes,t3->item->num_codes);
+    t1->item->codes[t1->item->num_codes] = get_iloc_code(OP_CMP_GT,t2->item->result,t3->item->result,result);
+}
+
+void gen_less_equal(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
+{
+    char* result = get_reg();
+    t1->item->num_codes = t2->item->num_codes + t3->item->num_codes + 1;
+    t1->item->codes = (iloc_code_t**)malloc(sizeof(iloc_code_t*)*t1->item->num_codes);
+    memcpy(t1->item->codes,t2->item->codes,t2->item->num_codes);
+    memcpy(t1->item->codes+t2->item->num_codes,t3->item->codes,t3->item->num_codes);
+    t1->item->codes[t1->item->num_codes] = get_iloc_code(OP_CMP_LE,t2->item->result,t3->item->result,result);
+}
+
+void gen_greater_equal(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
+{
+    char* result = get_reg();
+    t1->item->num_codes = t2->item->num_codes + t3->item->num_codes + 1;
+    t1->item->codes = (iloc_code_t**)malloc(sizeof(iloc_code_t*)*t1->item->num_codes);
+    memcpy(t1->item->codes,t2->item->codes,t2->item->num_codes);
+    memcpy(t1->item->codes+t2->item->num_codes,t3->item->codes,t3->item->num_codes);
+    t1->item->codes[t1->item->num_codes] = get_iloc_code(OP_CMP_GE,t2->item->result,t3->item->result,result);
+}
+
+void gen_equal(comp_tree_t* t1,comp_tree_t* t2, comp_tree_t* t3)
+{
+    char* result = get_reg();
+    t1->item->num_codes = t2->item->num_codes + t3->item->num_codes + 1;
+    t1->item->codes = (iloc_code_t**)malloc(sizeof(iloc_code_t*)*t1->item->num_codes);
+    memcpy(t1->item->codes,t2->item->codes,t2->item->num_codes);
+    memcpy(t1->item->codes+t2->item->num_codes,t3->item->codes,t3->item->num_codes);
+    t1->item->codes[t1->item->num_codes] = get_iloc_code(OP_CMP_EQ,t2->item->result,t3->item->result,result);
+}
+
+void gen_unequal(comp_tree_t* t1,comp_tree_t* t2,comp_tree_t* t3)
+{
+    char* result = get_reg();
+    t1->item->num_codes = t2->item->num_codes + t3->item->num_codes + 1;
+    t1->item->codes = (iloc_code_t**)malloc(sizeof(iloc_code_t*)*t1->item->num_codes);
+    memcpy(t1->item->codes,t2->item->codes,t2->item->num_codes);
+    memcpy(t1->item->codes+t2->item->num_codes,t3->item->codes,t3->item->num_codes);
+    t1->item->codes[t1->item->num_codes] = get_iloc_code(OP_CMP_NE,t2->item->result,t3->item->result,result);
 }
 
 void gen_if_else(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
