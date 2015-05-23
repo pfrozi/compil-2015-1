@@ -10,9 +10,9 @@ void gen_literal(comp_tree_t* t)
     	t->item->num_codes=1;
     	t->item->codes = (iloc_code_t**)malloc(sizeof(iloc_code_t*));
         int val = t->item->sentry->val_int;
-        char* reg1 = (char*)malloc(sizeof(char)*8);
         char* result = get_reg();
-        iloc_code_t* code = get_iloc_code(OP_LOADI,reg1, NULL, result);
+        
+        iloc_code_t* code = load_immediate(result, val);
         t->item->codes[0] = code;
         t->item->result = result;
     }
@@ -23,7 +23,6 @@ void gen_literal(comp_tree_t* t)
         int val = t->item->sentry->val_int;
         if(t->item->sentry->val_bool)
         {
-            char* reg1 = (char*)malloc(sizeof(char)*8);
             char* result = get_reg();
             iloc_code_t* code = get_iloc_code(OP_LOADI,"1", NULL, result);
             t->item->codes[0] = code;
@@ -31,7 +30,6 @@ void gen_literal(comp_tree_t* t)
         }
         else
         {
-            char* reg1 = (char*)malloc(sizeof(char)*8);
             char* result = get_reg();
             iloc_code_t* code = get_iloc_code(OP_LOADI,"0", NULL, result);
             t->item->codes[0] = code;
@@ -201,12 +199,7 @@ void gen_int_invert(comp_tree_t* t1)
 
 void load_immediate(){
 
-    char* result = get_reg();
-    t1->item->num_codes = t2->item->num_codes + t3->item->num_codes + 1;
-    t1->item->codes = (iloc_code_t**)malloc(sizeof(iloc_code_t*)*t1->item->num_codes);
-    memcpy(t1->item->codes,t2->item->codes,t2->item->num_codes);
-    memcpy(t1->item->codes+t2->item->num_codes,t3->item->codes,t3->item->num_codes);
-    t1->item->codes[t1->item->num_codes] = get_iloc_code(OP_CMP_NE,t2->item->result,t3->item->result,result);
+    
 }
 
 void load_array(comp_tree_t* t1){
@@ -225,9 +218,7 @@ void load_array(comp_tree_t* t1){
     for(i=0;i<t1->num_children;i++)
     {
         base     = cc_list_get(t1->item->sentry->bases, i)->type;
-        snprintf(base_str, 6, "%d", base);
         
-        get_iloc_code(OP_LOADI, base_str, NULL, reg_base);
         get_iloc_code(OP_MULT,reg_base, tree->children[i]->result, result);
         get_iloc_code(OP_ADD, result, reg_sum, reg_sum);
     }
