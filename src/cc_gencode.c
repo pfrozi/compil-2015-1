@@ -227,18 +227,22 @@ void save_ident(comp_tree_t* t1)
 
 void load_ident(comp_tree_t* t1)
 {
-    char* result = (char*)get_reg();
-    char* offset = (char*)malloc(sizeof(char)*8);
-    sprintf(offset,"%d",t1->item->sentry->address);
-    if(t1->item->sentry->scope_type == SCOPE_TYPE_LOCAL)
+    if(t1->item->sentry->iks_var == IKS_VARIABLE && t1->item->sentry->iks_type!=IKS_NULL)
     {
-        t1->item->codes = list_codes_create(get_iloc_code(OP_LOADAI,"fp",offset,result,NULL));
+        char* result = (char*)get_reg();
+        char* offset = (char*)malloc(sizeof(char)*8);
+        fprintf(stderr,"SENTRY: %s\n",t1->item->sentry->key.lexem);
+        sprintf(offset,"%d",t1->item->sentry->address);
+        if(t1->item->sentry->scope_type == SCOPE_TYPE_LOCAL)
+        {
+            t1->item->codes = list_codes_create(get_iloc_code(OP_LOADAI,"fp",offset,result,NULL));
+        }
+        else
+        {
+            t1->item->codes = list_codes_create(get_iloc_code(OP_LOADAI,"rbss",offset,result,NULL));
+        }
+        t1->item->result = result;
     }
-    else
-    {
-        t1->item->codes = list_codes_create(get_iloc_code(OP_LOADAI,"rbss",offset,result,NULL));
-    }
-    t1->item->result = result;
 }
 
 void load_array(comp_tree_t* t1){

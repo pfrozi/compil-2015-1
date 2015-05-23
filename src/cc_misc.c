@@ -421,8 +421,12 @@ void tree_pass_code(comp_tree_t* tree)
             case AST_ATRIBUICAO:
             case AST_RETURN:
             case AST_BLOCO:
+            {
+                break;
+            }
             case AST_IDENTIFICADOR:
             {
+                load_ident(tree);
                 break;
             }
             case AST_LITERAL:
