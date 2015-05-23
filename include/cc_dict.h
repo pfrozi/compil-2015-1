@@ -29,6 +29,8 @@ typedef struct comp_dict_item
     int iks_var;
     int iks_size;
     
+    comp_list_t* bases;
+    
     int scope_type;
     
     int address;

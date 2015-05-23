@@ -57,4 +57,37 @@ void gen_div(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
 
 void gen_int_invert(comp_tree_t* t1)
 {
+
 }
+
+
+
+
+
+void load_array(comp_tree_t* t1){
+    
+    int i=0;
+    
+    char* result   = get_reg();
+    char* reg_base = get_reg();
+    char* reg_sum  = get_reg();
+    
+    int   base     = 0;
+    char* base_str;
+    
+    get_iloc_code(OP_LOADI, "0", NULL, reg_base);
+    
+    for(i=0;i<t1->num_children;i++)
+    {
+        base     = cc_list_get(t1->item->sentry->bases, i)->type;
+        snprintf(base_str, 6, "%d", base);
+        
+        get_iloc_code(OP_LOADI, base_str, NULL, reg_base);
+        get_iloc_code(OP_MULT,reg_base, tree->children[i]->result, result);
+        get_iloc_code(OP_ADD, result, reg_sum, reg_sum);
+    }
+    snprintf(base_str, 6, "%d", t1->item->sentry->address);
+    get_iloc_code(OP_LOADI, base_str, NULL, reg_base);
+    get_iloc_code(OP_ADD, result, reg_sum, reg_sum);
+}
+

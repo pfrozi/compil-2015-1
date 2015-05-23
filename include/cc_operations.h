@@ -156,13 +156,15 @@ typedef struct iloc_code{
     
 }iloc_code_t;
 
-void         init_operations();
-
-iloc_code_t* get_iloc_code(int op, char* reg1, char* reg2, char* result);
-char*        get_str_code(iloc_code_t* iloc_code);
-
-
-int          get_address_var_fp(int size);
-int          get_address_var_rb(int size);
+void          init_operations();
+ 
+iloc_code_t*  get_iloc_code(int op, char* reg1, char* reg2, char* result);
+char*         get_str_code(iloc_code_t* iloc_code);
+ 
+ 
+int           get_address_var_fp(int size);
+int           get_address_var_rb(int size);
+ 
+iloc_code_t*  load_immediate(char* reg1, int val);
 
 #endif
