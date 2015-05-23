@@ -270,7 +270,18 @@ void get_addr_var_ident(comp_tree_t* t1)
     }
 }
 
-void gen_atrib(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3){
+void gen_atrib_ident(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3){
+    
+    get_addr_var_ident(t2);
+    gen_atrib_addr(t1, t2, t3);
+}
+void gen_atrib_array(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3){
+    
+    get_addr_var_array(t2);
+    gen_atrib_addr(t1, t2, t3);
+}
+
+void gen_atrib_addr(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3){
     
     char* r1 = t3->item->result;
     char* r2 = t2->item->result;

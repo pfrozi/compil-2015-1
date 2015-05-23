@@ -400,7 +400,13 @@ void tree_pass_code(comp_tree_t* tree)
         switch(tree->item->type)
         {
             case AST_PROGRAMA:
+            {
+                break;
+            }
             case AST_FUNCAO:
+            {
+                break;
+            }
             case AST_IF_ELSE:
             {
                 gen_if_else(tree,tree->children[0],tree->children[1],tree->children[2]);
@@ -421,9 +427,20 @@ void tree_pass_code(comp_tree_t* tree)
                 break;
             }
             case AST_OUTPUT:
+            {
+                break;
+            }
             case AST_ATRIBUICAO:{
                 
-                gen_atrib(tree, tree->children[0], tree->children[1]);
+                if(tree->children[0]->item->type==AST_VETOR_INDEXADO){
+                 
+                    gen_atrib_array(tree, tree->children[0], tree->children[1]);
+                }
+                else {
+                    
+                    gen_atrib_ident(tree, tree->children[0], tree->children[1]);
+                }
+                
                 break;
             }
             case AST_RETURN:
@@ -514,7 +531,8 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_VETOR_INDEXADO:
             {
-                get_addr_var_array(tree);
+                // comando realizado pelo pai do nodo
+                load_array(tree);
                 break;   
             }
             case AST_CHAMADA_DE_FUNCAO:{
@@ -528,6 +546,12 @@ void print_iloc_code(comp_tree_t* root){
    
     if(root!=NULL)
     {
+        int i=0;
+        for(i=0;i<root->num_children;i++)
+        {
+            print_iloc_code(root->children[i]);
+        }
+        
         print_codes(root->item->codes);
     }
 }
@@ -535,12 +559,13 @@ void print_codes(list_codes_t* code){
    
     if(code!=NULL)
     {
-        print_codes(code->next);
-        
+                
         char * strcode = get_str_code(code->item);
         printf("%s\n", strcode);
 
         free(strcode);
+        
+        print_codes(code->next);
         
     }
 }
