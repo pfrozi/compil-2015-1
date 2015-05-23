@@ -140,6 +140,8 @@
 #define OP_CMP_GT_STR           "cmp_GT"
 #define OP_CMP_NE_STR           "cmp_NE"
 
+#define FP_INIT_ADDRESS 0
+#define RP_INIT_ADDRESS 0
 
 int offset_fp;
 int offset_rb;
