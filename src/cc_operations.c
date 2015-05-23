@@ -121,8 +121,8 @@ char* get_str_code(iloc_code_t* iloc_code){
 
 void init_operations(){
 
-    offset_fp = 0;
-    offset_rb = 0;
+    offset_fp = FP_INIT_ADDRESS;
+    offset_rb = RP_INIT_ADDRESS;
 }
 
 int get_address_var_fp(int size){
