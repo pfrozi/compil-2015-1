@@ -19,6 +19,7 @@ extern comp_tree_t* ast;
     comp_dict_item_t *valor_simbolo_lexico;
     comp_tree_t      *ast;
     comp_list_t      *arguments;
+    comp_list_t      *integer_list;
     int              integer;
 }
 
@@ -30,7 +31,8 @@ extern comp_tree_t* ast;
 %type <valor_simbolo_lexico> statement const_statement 
 %type <arguments> func_params func_head_params
 
-%type <integer> type lst_int array_int
+%type <integer> type
+%type <integer_list> lst_int array_int
 
 %error-verbose
 
@@ -262,8 +264,8 @@ lst_exp:
 ;
 
 lst_int:
-          TK_LIT_INT TK_CE_COMMA lst_int { $$ = $1->val_int * $3; }
-        | TK_LIT_INT { $$ = $1->val_int; }
+          TK_LIT_INT TK_CE_COMMA lst_int { $$ = cc_list_append($3, cc_list_create($1->val_int)); }
+        | TK_LIT_INT { $$ = cc_list_create($1->val_int); }
 ;
 
 command_block:
