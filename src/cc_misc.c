@@ -417,15 +417,26 @@ void tree_pass_code(comp_tree_t* tree)
                 break;
             }
             case AST_INPUT:
+            {
+                break;
+            }
             case AST_OUTPUT:
             case AST_ATRIBUICAO:{
                 
                 gen_atrib(tree, tree->children[0], tree->children[1]);
+                break;
             }
             case AST_RETURN:
+            {
+                break;
+            }
             case AST_BLOCO:
+            {
+                break;
+            }
             case AST_IDENTIFICADOR:
             {
+                load_ident(tree);
                 break;
             }
             case AST_LITERAL:
@@ -454,6 +465,9 @@ void tree_pass_code(comp_tree_t* tree)
                 break;
             }
             case AST_ARIM_INVERSAO:
+            {
+                break;
+            }
             case AST_LOGICO_E:
             {
                 gen_and(tree,tree->children[0],tree->children[1]);
@@ -495,13 +509,38 @@ void tree_pass_code(comp_tree_t* tree)
                 break;
             }
             case AST_LOGICO_COMP_NEGACAO:
+            {
+                break;
+            }
             case AST_VETOR_INDEXADO:
             {
                 get_addr_var_array(tree);
                 break;   
             }
-            case AST_CHAMADA_DE_FUNCAO:
-		break;
+            case AST_CHAMADA_DE_FUNCAO:{
+		        break;
+            }
         }
+    }
+}
+
+void print_iloc_code(comp_tree_t* root){
+   
+    if(root!=NULL)
+    {
+        print_codes(root->item->codes);
+    }
+}
+void print_codes(list_codes_t* code){
+   
+    if(code!=NULL)
+    {
+        print_codes(code->next);
+        
+        char * strcode = get_str_code(code->item);
+        printf("%s\n", strcode);
+
+        free(strcode);
+        
     }
 }

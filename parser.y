@@ -95,7 +95,7 @@ extern comp_tree_t* ast;
 
 /* Regras (e ações) da gramática */
 programa:
-          input TOKEN_EOF {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_PROGRAMA,NULL)),$1); ast=$$ ; tree_pass_gen_labels(ast,NULL); tree_pass_code(ast);return SINTATICA_SUCESSO; }
+          input TOKEN_EOF {$$ = cc_tree_insert_node(cc_tree_create_node(1,cc_tree_item_create(AST_PROGRAMA,NULL)),$1); ast=$$ ; tree_pass_gen_labels(ast,NULL); tree_pass_code(ast); print_iloc_code(ast); return SINTATICA_SUCESSO; }
 ;
 
 input:    /*empty*/ {$$ = NULL;}

@@ -9,6 +9,8 @@
 
 #define OP_VAR             "@%s"
 
+#define OP_LABEL           "%s:"
+
 #define OP_ZERO            "%s"
 #define OP_1SRC_1TRG       "%s %s => %s"
 #define OP_2SRC_1TRG       "%s %s, %s => %s"

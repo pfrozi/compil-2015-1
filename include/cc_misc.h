@@ -35,6 +35,8 @@ void yystack_pop_scope();
 
 
 int  define_type_size(int type);
-void tree_routing();
+
+void print_iloc_code(comp_tree_t* root);
+void print_codes(list_codes_t* code);
 
 #endif

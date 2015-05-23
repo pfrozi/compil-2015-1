@@ -13,6 +13,7 @@ typedef struct comp_tree_item
     
     int               num_codes;
     list_codes_t*     codes;
+    
     char*             bf;
     char*             bv;
     char*             next;

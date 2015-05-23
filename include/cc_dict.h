@@ -25,6 +25,7 @@ typedef struct comp_dict_item
     int type;
         
     int iks_type;
+    int iks_type2;
     int iks_var;
     int iks_size;
     
