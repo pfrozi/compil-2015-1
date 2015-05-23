@@ -12,14 +12,13 @@ mkdir ilocs
 echo ------------------------------------------------------------
 echo 1o TESTE
 echo ----------------------
+echo EXECUTANDO
+echo ----------------------
+./main < ./tests/e5/input/00.iks > ./ilocs/00.iloc
 echo ----------------------
 echo AMARELA CODE
 echo ----------------------
 cat ./tests/e5/input/00.iks 
-echo ----------------------
-echo EXECUTANDO
-echo ----------------------
-./main < ./tests/e5/input/00.iks > ./ilocs/00.iloc
 echo ----------------------
 echo ILOC CODE
 echo ----------------------
@@ -29,14 +28,13 @@ echo ----------------------
 echo ------------------------------------------------------------
 echo 2o TESTE
 echo ----------------------
+echo EXECUTANDO
+echo ----------------------
+./main < ./tests/e5/input/01.iks > ./ilocs/01.iloc
 echo ----------------------
 echo AMARELA CODE
 echo ----------------------
 cat ./tests/e5/input/01.iks 
-echo ----------------------
-echo EXECUTANDO
-echo ----------------------
-./main < ./tests/e5/input/01.iks > ./ilocs/01.iloc
 echo ----------------------
 echo ILOC CODE
 echo ----------------------
@@ -46,14 +44,13 @@ echo ----------------------
 echo ------------------------------------------------------------
 echo 3o TESTE
 echo ----------------------
+echo EXECUTANDO
+echo ----------------------
+./main < ./tests/e5/input/02.iks > ./ilocs/02.iloc
 echo ----------------------
 echo AMARELA CODE
 echo ----------------------
 cat ./tests/e5/input/02.iks 
-echo ----------------------
-echo EXECUTANDO
-echo ----------------------
-./main < ./tests/e5/input/02.iks > ./ilocs/02.iloc
 echo ----------------------
 echo ILOC CODE
 echo ----------------------
@@ -63,14 +60,13 @@ echo ----------------------
 echo ------------------------------------------------------------
 echo 4o TESTE
 echo ----------------------
+echo EXECUTANDO
+echo ----------------------
+./main < ./tests/e5/input/03.iks > ./ilocs/03.iloc
 echo ----------------------
 echo AMARELA CODE
 echo ----------------------
 cat ./tests/e5/input/03.iks 
-echo ----------------------
-echo EXECUTANDO
-echo ----------------------
-./main < ./tests/e5/input/03.iks > ./ilocs/03.iloc
 echo ----------------------
 echo ILOC CODE
 echo ----------------------
@@ -80,14 +76,13 @@ echo ----------------------
 echo ------------------------------------------------------------
 echo 5o TESTE
 echo ----------------------
+echo EXECUTANDO
+echo ----------------------
+./main < ./tests/e5/input/04.iks > ./ilocs/04.iloc
 echo ----------------------
 echo AMARELA CODE
 echo ----------------------
 cat ./tests/e5/input/04.iks 
-echo ----------------------
-echo EXECUTANDO
-echo ----------------------
-./main < ./tests/e5/input/04.iks > ./ilocs/04.iloc
 echo ----------------------
 echo ILOC CODE
 echo ----------------------
@@ -97,14 +92,13 @@ echo ----------------------
 echo ------------------------------------------------------------
 echo 6o TESTE
 echo ----------------------
+echo EXECUTANDO
+echo ----------------------
+./main < ./tests/e5/input/05.iks > ./ilocs/05.iloc
 echo ----------------------
 echo AMARELA CODE
 echo ----------------------
 cat ./tests/e5/input/05.iks 
-echo ----------------------
-echo EXECUTANDO
-echo ----------------------
-./main < ./tests/e5/input/05.iks > ./ilocs/05.iloc
 echo ----------------------
 echo ILOC CODE
 echo ----------------------
@@ -114,14 +108,13 @@ echo ----------------------
 echo ------------------------------------------------------------
 echo 7o TESTE
 echo ----------------------
+echo EXECUTANDO
+echo ----------------------
+./main < ./tests/e5/input/06.iks > ./ilocs/06.iloc
 echo ----------------------
 echo AMARELA CODE
 echo ----------------------
 cat ./tests/e5/input/06.iks 
-echo ----------------------
-echo EXECUTANDO
-echo ----------------------
-./main < ./tests/e5/input/06.iks > ./ilocs/06.iloc
 echo ----------------------
 echo ILOC CODE
 echo ----------------------
@@ -131,14 +124,13 @@ echo ----------------------
 echo ------------------------------------------------------------
 echo 8o TESTE
 echo ----------------------
+echo EXECUTANDO
+echo ----------------------
+./main < ./tests/e5/input/07.iks > ./ilocs/07.iloc
 echo ----------------------
 echo AMARELA CODE
 echo ----------------------
 cat ./tests/e5/input/07.iks 
-echo ----------------------
-echo EXECUTANDO
-echo ----------------------
-./main < ./tests/e5/input/07.iks > ./ilocs/07.iloc
 echo ----------------------
 echo ILOC CODE
 echo ----------------------
@@ -148,14 +140,13 @@ echo ----------------------
 echo ------------------------------------------------------------
 echo 9o TESTE
 echo ----------------------
+echo EXECUTANDO
+echo ----------------------
+./main < ./tests/e5/input/08.iks > ./ilocs/08.iloc
 echo ----------------------
 echo AMARELA CODE
 echo ----------------------
 cat ./tests/e5/input/08.iks 
-echo ----------------------
-echo EXECUTANDO
-echo ----------------------
-./main < ./tests/e5/input/08.iks > ./ilocs/08.iloc
 echo ----------------------
 echo ILOC CODE
 echo ----------------------
