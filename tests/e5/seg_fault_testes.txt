@@ -1,0 +1,12 @@
+x = a[0]; (ok)
+x = a[0] + 1; (seg fault)
+
+x = x / y; (ok)
+x = (x - 721); (ok)
+x = (x - 721) / y; (seg fault)
+
+x = m[i,i]; (ok)
+x = x * m[i,i]; (seg fault)
+
+while(x > x) {}; (ok)
+while(x > x * 1) {}; (seg fault)
