@@ -242,13 +242,16 @@ void load_ident(comp_tree_t* t1)
 }
 
 
-
-void get_addr_array(comp_tree_t* t1){
+void gen_atrib(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3){
     
+    char* r1 = t3->item->result;
+    char* r2 = t2->item->result;
     
+    t1->item->codes = list_codes_create(get_iloc_code(OP_STORE, r1,NULL,r2,NULL));
 }
 
-void load_array(comp_tree_t* t1){
+
+void get_addr_var_array(comp_tree_t* t1){
     
     int i=0;
     int base = 0;
@@ -282,13 +285,14 @@ void load_array(comp_tree_t* t1){
     
     if(t1->item->sentry->scope_type==SCOPE_TYPE_LOCAL){
         list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_LOADAO, OP_REG_ESPEC_FP, reg_addr, result,NULL)));   
+                      , list_codes_create(get_iloc_code(OP_ADD, OP_REG_ESPEC_FP, reg_addr, result,NULL)));   
     }
     else if(t1->item->sentry->scope_type==SCOPE_TYPE_GLOBAL){
         list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_LOADAO, OP_REG_ESPEC_RB, reg_addr, result,NULL)));
+                      , list_codes_create(get_iloc_code(OP_ADD, OP_REG_ESPEC_RB, reg_addr, result,NULL)));
     }
     else {
+        
         printf("ERROR - cc_gencode: load_array()\n");
     }
     

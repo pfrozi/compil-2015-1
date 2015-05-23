@@ -418,7 +418,10 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_INPUT:
             case AST_OUTPUT:
-            case AST_ATRIBUICAO:
+            case AST_ATRIBUICAO:{
+                
+                gen_atrib(tree, tree->children[0], tree->children[1]);
+            }
             case AST_RETURN:
             case AST_BLOCO:
             case AST_IDENTIFICADOR:
@@ -493,6 +496,10 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_LOGICO_COMP_NEGACAO:
             case AST_VETOR_INDEXADO:
+            {
+                get_addr_var_array(tree);
+                break;   
+            }
             case AST_CHAMADA_DE_FUNCAO:
 		break;
         }

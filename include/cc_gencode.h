@@ -32,6 +32,7 @@ void gen_if_else(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3,comp_tree_t* 
 void gen_do_while(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
 void gen_while_do(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
 void gen_int_invert(comp_tree_t* t1);
-void load_array(comp_tree_t* t1);
+
+void get_addr_var_array(comp_tree_t* t1);
 
 #endif
