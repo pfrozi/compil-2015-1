@@ -104,6 +104,17 @@ void gen_or(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
     t1->item->result = result;
 }
 
+void gen_xor(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
+{
+    char* result = get_reg();
+    t1->item->num_codes = t2->item->num_codes + t3->item->num_codes + 1;
+    t1->item->codes = (iloc_code_t**)malloc(sizeof(iloc_code_t*)*t1->item->num_codes);
+    memcpy(t1->item->codes,t2->item->codes,t2->item->num_codes);
+    memcpy(t1->item->codes+t2->item->num_codes,t3->item->codes,t3->item->num_codes);
+    t1->item->codes[t1->item->num_codes] = get_iloc_code(OP_XOR,t2->item->result,t3->item->result,result);
+    t1->item->result = result;
+}
+
 void gen_log_and(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
 {
 }
