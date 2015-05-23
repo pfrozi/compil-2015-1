@@ -1,6 +1,7 @@
 int x;
 int main()
 {
+	x=1;
   if (x) then {
     x = 0;
   }
