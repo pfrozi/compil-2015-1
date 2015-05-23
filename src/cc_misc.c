@@ -85,7 +85,7 @@ void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
     sentry->iks_var      = iks_var;
     sentry->iks_coercion = IKS_NULL;
     
-    sentry->iks_size     = define_size(sentry->iks_type);
+    sentry->iks_size     = define_type_size(sentry->iks_type);
     
     scopes = cc_stack_add_top(scopes, sentry);
 }
@@ -237,7 +237,7 @@ int define_type_size(int type){
     
     switch(type){
 
-        case IKS_NULL  :  return IKS_NULL_SIZE;
+        //case IKS_NULL  :  return IKS_NULL_SIZE;
         case IKS_INT   :  return IKS_INT_SIZE;
         case IKS_FLOAT :  return IKS_FLOAT_SIZE;
         case IKS_CHAR  :  return IKS_CHAR_SIZE;
@@ -256,7 +256,7 @@ void tree_inorder(comp_tree_t* tree)
             tree_inorder(tree->children[i]);
         }
         //TODO THE MAGIC
-        switch(tree->type)
+        switch(tree->item->type)
         {
             case AST_PROGRAMA:
             case AST_FUNCAO:
@@ -286,6 +286,7 @@ void tree_inorder(comp_tree_t* tree)
             case AST_LOGICO_COMP_NEGACAO:
             case AST_VETOR_INDEXADO:
             case AST_CHAMADA_DE_FUNCAO:
+		break;
         }
     }
 }
