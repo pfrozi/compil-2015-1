@@ -314,8 +314,3 @@ void tree_inorder(comp_tree_t* tree)
         }
     }
 }
-
-void tree_routing(){
-    
-    
-}

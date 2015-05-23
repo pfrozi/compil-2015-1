@@ -162,6 +162,13 @@ void gen_int_invert(comp_tree_t* t1)
 }
 
 
+
+
+void get_addr_array(comp_tree_t* t1){
+    
+    
+}
+
 void load_array(comp_tree_t* t1){
     
     int i=0;
