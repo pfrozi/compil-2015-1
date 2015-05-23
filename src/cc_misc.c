@@ -87,6 +87,16 @@ void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
     
     sentry->iks_size     = define_type_size(sentry->iks_type);
     
+    if(scopes->next==NULL){
+    
+        sentry->scope_type     = SCOPE_TYPE_GLOBAL;
+    }
+    else{
+        
+        sentry->scope_type     = SCOPE_TYPE_LOCAL;
+        sentry->address        = get_address_var_fp(sentry->iks_size);
+        
+    }
     scopes = cc_stack_add_top(scopes, sentry);
 }
 

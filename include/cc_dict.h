@@ -1,8 +1,12 @@
 #ifndef __CC_DICT_H_
 #define __CC_DICT_H_
 
-#include<stdbool.h>
-#include"cc_list.h"
+#include <stdbool.h>
+#include "cc_list.h"
+
+#define SCOPE_TYPE_GLOBAL 0
+#define SCOPE_TYPE_LOCAL  1
+
 struct comp_dict_item;
 
 typedef struct comp_dict_item_key
@@ -24,6 +28,8 @@ typedef struct comp_dict_item
     int iks_coercion;
     int iks_var;
     int iks_size;
+    
+    int scope_type;
     
     int address;
     
