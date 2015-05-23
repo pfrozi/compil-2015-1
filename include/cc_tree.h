@@ -19,7 +19,7 @@ typedef struct comp_tree_item
     char*             next;
     char*             begin;
 
-    char* result;
+    char*             result;
     
 } comp_tree_item_t;
 
