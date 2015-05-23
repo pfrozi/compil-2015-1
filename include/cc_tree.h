@@ -13,6 +13,8 @@ typedef struct comp_tree_item
     iloc_code_t**     codes;
     iloc_code_t**     bf;
     iloc_code_t**     bv;
+
+    char* result;
     
 } comp_tree_item_t;
 
