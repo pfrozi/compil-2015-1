@@ -24,7 +24,7 @@ echo ILOC CODE
 echo ----------------------
 cat ./ilocs/00.iloc
 echo ----------------------
-
+read -n1 -r -p "Press any key to continue..." key
 echo ------------------------------------------------------------
 echo 2o TESTE
 echo ----------------------
@@ -40,7 +40,7 @@ echo ILOC CODE
 echo ----------------------
 cat ./ilocs/01.iloc
 echo ----------------------
-
+read -n1 -r -p "Press any key to continue..." key
 echo ------------------------------------------------------------
 echo 3o TESTE
 echo ----------------------
@@ -56,7 +56,7 @@ echo ILOC CODE
 echo ----------------------
 cat ./ilocs/02.iloc
 echo ----------------------
-
+read -n1 -r -p "Press any key to continue..." key
 echo ------------------------------------------------------------
 echo 4o TESTE
 echo ----------------------
@@ -72,7 +72,7 @@ echo ILOC CODE
 echo ----------------------
 cat ./ilocs/03.iloc
 echo ----------------------
-
+read -n1 -r -p "Press any key to continue..." key
 echo ------------------------------------------------------------
 echo 5o TESTE
 echo ----------------------
@@ -88,7 +88,7 @@ echo ILOC CODE
 echo ----------------------
 cat ./ilocs/04.iloc
 echo ----------------------
-
+read -n1 -r -p "Press any key to continue..." key
 echo ------------------------------------------------------------
 echo 6o TESTE
 echo ----------------------
@@ -104,7 +104,7 @@ echo ILOC CODE
 echo ----------------------
 cat ./ilocs/05.iloc
 echo ----------------------
-
+read -n1 -r -p "Press any key to continue..." key
 echo ------------------------------------------------------------
 echo 7o TESTE
 echo ----------------------
@@ -120,7 +120,7 @@ echo ILOC CODE
 echo ----------------------
 cat ./ilocs/06.iloc
 echo ----------------------
-
+read -n1 -r -p "Press any key to continue..." key
 echo ------------------------------------------------------------
 echo 8o TESTE
 echo ----------------------
@@ -136,7 +136,7 @@ echo ILOC CODE
 echo ----------------------
 cat ./ilocs/07.iloc
 echo ----------------------
-
+read -n1 -r -p "Press any key to continue..." key
 echo ------------------------------------------------------------
 echo 9o TESTE
 echo ----------------------

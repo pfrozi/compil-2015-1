@@ -94,6 +94,9 @@ void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
     if(scopes->next==NULL){
     
         sentry->scope_type     = SCOPE_TYPE_GLOBAL;
+        if(iks_var!=IKS_ARRAY){
+            sentry->address    = get_address_var_rb(sentry->iks_size);
+        }
     }
     else{
         
