@@ -165,7 +165,15 @@ void gen_int_invert(comp_tree_t* t1)
 
 
 
+void load_immediate(){
 
+    char* result = get_reg();
+    t1->item->num_codes = t2->item->num_codes + t3->item->num_codes + 1;
+    t1->item->codes = (iloc_code_t**)malloc(sizeof(iloc_code_t*)*t1->item->num_codes);
+    memcpy(t1->item->codes,t2->item->codes,t2->item->num_codes);
+    memcpy(t1->item->codes+t2->item->num_codes,t3->item->codes,t3->item->num_codes);
+    t1->item->codes[t1->item->num_codes] = get_iloc_code(OP_CMP_NE,t2->item->result,t3->item->result,result);
+}
 
 void load_array(comp_tree_t* t1){
     
