@@ -153,6 +153,8 @@ typedef struct iloc_code{
     char* reg1;
     char* reg2;
     char* result;
+
+    char* label;
     
 }iloc_code_t;
 
