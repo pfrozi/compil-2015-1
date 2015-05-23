@@ -69,6 +69,13 @@ comp_tree_item_t* cc_tree_item_create(int type,comp_dict_item_t* sentry)
     item->type = type;
     item->sentry = sentry;
 
+    item->iks_coercion = IKS_NULL;
+
+    item->begin    = NULL;
+    item->next     = NULL;
+    item->bf       = NULL;
+    item->bv       = NULL;
+
     return item;
 }
 comp_tree_item_t* cc_tree_item_create_type(int type, int iks_type, comp_dict_item_t* sentry)
@@ -79,6 +86,13 @@ comp_tree_item_t* cc_tree_item_create_type(int type, int iks_type, comp_dict_ite
     
     item->iks_type = iks_type;
     item->sentry   = sentry;
+
+    item->iks_coercion = IKS_NULL;
+
+    item->begin    = NULL;
+    item->next     = NULL;
+    item->bf       = NULL;
+    item->bv       = NULL;
     
     return item;
 }

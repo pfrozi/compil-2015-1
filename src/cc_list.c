@@ -1,9 +1,14 @@
 #include "cc_list.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 comp_list_t* cc_list_create(int type)
 {
-    comp_list_t* list = (comp_list_t*) malloc(sizeof(comp_list_t*));
+    comp_list_t* list = (comp_list_t*)malloc(sizeof(comp_list_t));
+    if(list==NULL)
+    {
+        fprintf(stderr,"ALLOC FAILED\n");
+    }
     list->type = type;
     list->next = NULL;
     return list;
