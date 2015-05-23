@@ -417,9 +417,21 @@ void tree_pass_code(comp_tree_t* tree)
                 break;
             }
             case AST_INPUT:
+            {
+                break;
+            }
             case AST_OUTPUT:
+            {
+                break;
+            }
             case AST_ATRIBUICAO:
+            {
+                break;
+            }
             case AST_RETURN:
+            {
+                break;
+            }
             case AST_BLOCO:
             {
                 break;
@@ -455,6 +467,9 @@ void tree_pass_code(comp_tree_t* tree)
                 break;
             }
             case AST_ARIM_INVERSAO:
+            {
+                break;
+            }
             case AST_LOGICO_E:
             {
                 gen_and(tree,tree->children[0],tree->children[1]);
@@ -496,7 +511,13 @@ void tree_pass_code(comp_tree_t* tree)
                 break;
             }
             case AST_LOGICO_COMP_NEGACAO:
+            {
+                break;
+            }
             case AST_VETOR_INDEXADO:
+            {
+                break;
+            }
             case AST_CHAMADA_DE_FUNCAO:
 		break;
         }
