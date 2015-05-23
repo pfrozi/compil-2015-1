@@ -19,7 +19,6 @@ void gen_literal(comp_tree_t* t)
     {
     	t->item->num_codes=1;
         int val = t->item->sentry->val_int;
-        char* reg1 = (char*)malloc(sizeof(char)*8);
         char* result = get_reg();
         iloc_code_t* code=NULL;
         if(t->item->sentry->val_bool)
