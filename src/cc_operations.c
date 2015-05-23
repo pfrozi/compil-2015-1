@@ -29,33 +29,84 @@ char* get_str_code(iloc_code_t* iloc_code){
                 , iloc_code->label);
     }
     else{
-    
+        
         switch(iloc_code->op){
 
-            case OP_ADD    : op_code = OP_ADD_STR;
-            case OP_SUB    : op_code = OP_SUB_STR; 
-            case OP_MULT   : op_code = OP_MULT_STR;
-            case OP_DIV    : op_code = OP_DIV_STR;
-            case OP_ADDI   : op_code = OP_ADDI_STR;
-            case OP_SUBI   : op_code = OP_SUBI_STR;
-            case OP_RSUBI  : op_code = OP_RSUBI_STR;
-            case OP_MULTI  : op_code = OP_MULTI_STR;
-            case OP_DIVI   : op_code = OP_DIVI_STR;
-            case OP_RDIVI  : op_code = OP_RDIVI_STR;
-            case OP_LSHIFT : op_code = OP_LSHIFT_STR;
-            case OP_LSHIFTI: op_code = OP_LSHIFTI_STR;
-            case OP_RSHIFT : op_code = OP_RSHIFT_STR;
-            case OP_RSHIFTI: op_code = OP_RSHIFTI_STR;
-            case OP_AND    : op_code = OP_AND_STR;
-            case OP_ANDI   : op_code = OP_ANDI_STR;
-            case OP_OR     : op_code = OP_OR_STR;
-            case OP_ORI    : op_code = OP_ORI_STR;
-            case OP_XOR    : op_code = OP_XOR_STR;
-            case OP_XORI   : op_code = OP_XORI_STR;
-            case OP_LOADAI : op_code = OP_LOADAI_STR;
-            case OP_LOADAO : op_code = OP_LOADAO_STR;
-            case OP_CLOADAI: op_code = OP_CLOADAI_STR;
-            case OP_CLOADAO: op_code = OP_CLOADAO_STR;
+            case OP_ADD    : op_code = OP_ADD_STR; break;
+            case OP_SUB    : op_code = OP_SUB_STR; break; 
+            case OP_MULT   : op_code = OP_MULT_STR; break;
+            case OP_DIV    : op_code = OP_DIV_STR; break;
+            case OP_ADDI   : op_code = OP_ADDI_STR; break;
+            case OP_SUBI   : op_code = OP_SUBI_STR; break;
+            case OP_RSUBI  : op_code = OP_RSUBI_STR; break;
+            case OP_MULTI  : op_code = OP_MULTI_STR; break;
+            case OP_DIVI   : op_code = OP_DIVI_STR; break;
+            case OP_RDIVI  : op_code = OP_RDIVI_STR; break;
+            case OP_LSHIFT : op_code = OP_LSHIFT_STR; break;
+            case OP_LSHIFTI: op_code = OP_LSHIFTI_STR; break;
+            case OP_RSHIFT : op_code = OP_RSHIFT_STR; break;
+            case OP_RSHIFTI: op_code = OP_RSHIFTI_STR; break;
+            case OP_AND    : op_code = OP_AND_STR; break;
+            case OP_ANDI   : op_code = OP_ANDI_STR; break;
+            case OP_OR     : op_code = OP_OR_STR; break;
+            case OP_ORI    : op_code = OP_ORI_STR; break;
+            case OP_XOR    : op_code = OP_XOR_STR; break;
+            case OP_XORI   : op_code = OP_XORI_STR; break;
+            case OP_LOADAI : op_code = OP_LOADAI_STR; break;
+            case OP_LOADAO : op_code = OP_LOADAO_STR; break;
+            case OP_CLOADAI: op_code = OP_CLOADAI_STR; break;
+            case OP_CLOADAO: op_code = OP_CLOADAO_STR; break;
+            case OP_CMP_LT : op_code = OP_CMP_LT_STR; break;
+            case OP_CMP_LE : op_code = OP_CMP_LE_STR; break;
+            case OP_CMP_EQ : op_code = OP_CMP_EQ_STR; break;
+            case OP_CMP_GE : op_code = OP_CMP_GE_STR; break;
+            case OP_CMP_GT : op_code = OP_CMP_GT_STR; break;
+            case OP_CMP_NE : op_code = OP_CMP_NE_STR; break;
+            case OP_STOREAI : op_code = OP_STOREAI_STR; break;
+            case OP_STOREAO : op_code = OP_STOREAO_STR; break;
+            case OP_CSTOREAI: op_code = OP_CSTOREAI_STR; break;
+            case OP_CSTOREAO: op_code = OP_CSTOREAO_STR; break;
+            case OP_CBR     : op_code = OP_CBR_STR; break;
+            case OP_LOADI : op_code = OP_LOADI_STR; break;
+            case OP_LOAD  : op_code = OP_LOAD_STR; break;
+            case OP_CLOAD : op_code = OP_CLOAD_STR; break;
+            case OP_STORE : op_code = OP_STORE_STR; break;
+            case OP_CSTORE: op_code = OP_CSTORE_STR; break;
+            case OP_I2I   : op_code = OP_I2I_STR; break;
+            case OP_C2C   : op_code = OP_C2C_STR; break;
+            case OP_C2I   : op_code = OP_C2I_STR; break;
+            case OP_I2C   : op_code = OP_I2C_STR; break;
+            case OP_JUMPI  : op_code = OP_JUMPI_STR; break;
+            case OP_JUMP   : op_code = OP_JUMP_STR; break;
+
+        }
+        
+        switch(iloc_code->op){
+
+            case OP_ADD    :
+            case OP_SUB    :
+            case OP_MULT   :
+            case OP_DIV    :
+            case OP_ADDI   :
+            case OP_SUBI   :
+            case OP_RSUBI  :
+            case OP_MULTI  :
+            case OP_DIVI   :
+            case OP_RDIVI  :
+            case OP_LSHIFT :
+            case OP_LSHIFTI:
+            case OP_RSHIFT :
+            case OP_RSHIFTI:
+            case OP_AND    :
+            case OP_ANDI   :
+            case OP_OR     :
+            case OP_ORI    :
+            case OP_XOR    :
+            case OP_XORI   :
+            case OP_LOADAI :
+            case OP_LOADAO :
+            case OP_CLOADAI:
+            case OP_CLOADAO:
             {
                 snprintf(ret
                         , MAX_LEN_STR_CODE
@@ -63,12 +114,12 @@ char* get_str_code(iloc_code_t* iloc_code){
                         , op_code, iloc_code->reg1, iloc_code->reg2, iloc_code->result);
                 break;
             }
-            case OP_CMP_LT : op_code = OP_CMP_LT_STR;
-            case OP_CMP_LE : op_code = OP_CMP_LE_STR;
-            case OP_CMP_EQ : op_code = OP_CMP_EQ_STR;
-            case OP_CMP_GE : op_code = OP_CMP_GE_STR;
-            case OP_CMP_GT : op_code = OP_CMP_GT_STR;
-            case OP_CMP_NE : op_code = OP_CMP_NE_STR;
+            case OP_CMP_LT :
+            case OP_CMP_LE :
+            case OP_CMP_EQ :
+            case OP_CMP_GE :
+            case OP_CMP_GT :
+            case OP_CMP_NE :
             {
                 snprintf(ret
                         , MAX_LEN_STR_CODE
@@ -77,10 +128,10 @@ char* get_str_code(iloc_code_t* iloc_code){
                 break;
             }
 
-            case OP_STOREAI : op_code = OP_STOREAI_STR;
-            case OP_STOREAO : op_code = OP_STOREAO_STR;
-            case OP_CSTOREAI: op_code = OP_CSTOREAI_STR;
-            case OP_CSTOREAO: op_code = OP_CSTOREAO_STR;
+            case OP_STOREAI : 
+            case OP_STOREAO : 
+            case OP_CSTOREAI: 
+            case OP_CSTOREAO: 
             {
                 snprintf(ret
                         , MAX_LEN_STR_CODE
@@ -88,7 +139,7 @@ char* get_str_code(iloc_code_t* iloc_code){
                         , op_code, iloc_code->reg1, iloc_code->reg2, iloc_code->result);
                 break;
             }
-            case OP_CBR     : op_code = OP_CBR_STR;
+            case OP_CBR     :
             {
                 snprintf(ret
                         , MAX_LEN_STR_CODE
@@ -97,15 +148,15 @@ char* get_str_code(iloc_code_t* iloc_code){
                 break;
             }
 
-            case OP_LOADI : op_code = OP_LOADI_STR;
-            case OP_LOAD  : op_code = OP_LOAD_STR;
-            case OP_CLOAD : op_code = OP_CLOAD_STR;
-            case OP_STORE : op_code = OP_STORE_STR;
-            case OP_CSTORE: op_code = OP_CSTORE_STR;
-            case OP_I2I   : op_code = OP_I2I_STR;
-            case OP_C2C   : op_code = OP_C2C_STR;
-            case OP_C2I   : op_code = OP_C2I_STR;
-            case OP_I2C   : op_code = OP_I2C_STR;
+            case OP_LOADI : 
+            case OP_LOAD  : 
+            case OP_CLOAD : 
+            case OP_STORE : 
+            case OP_CSTORE: 
+            case OP_I2I   : 
+            case OP_C2C   : 
+            case OP_C2I   : 
+            case OP_I2C   : 
             {
                 snprintf(ret
                         , MAX_LEN_STR_CODE
@@ -113,8 +164,8 @@ char* get_str_code(iloc_code_t* iloc_code){
                         , op_code, iloc_code->reg1, iloc_code->result);
                 break;
             }
-            case OP_JUMPI  : op_code = OP_JUMPI_STR;
-            case OP_JUMP   : op_code = OP_JUMP_STR;
+            case OP_JUMPI  : 
+            case OP_JUMP   : 
             {
                 snprintf(ret
                         , MAX_LEN_STR_CODE
