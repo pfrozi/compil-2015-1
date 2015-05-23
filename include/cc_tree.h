@@ -9,6 +9,7 @@ typedef struct comp_tree_item
     int iks_type;
     comp_dict_item_t* sentry;
     
+    int               num_codes;
     iloc_code_t**     codes;
     iloc_code_t**     bf;
     iloc_code_t**     bv;
