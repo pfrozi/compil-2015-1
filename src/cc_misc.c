@@ -299,6 +299,9 @@ void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
                 char* rotF = (char*)get_rot();
                 char* rotV = (char*)get_rot();
                 char* rotN = root->item->next;
+                
+                printf("Rot gerados %s %s  ",rotF, rotV);
+                
                 tree->children[1]->item->next = tree->item->next;
                 tree->children[2]->item->next = tree->item->next;
                 tree->children[0]->item->bv = rotV;
@@ -399,8 +402,10 @@ void tree_pass_code(comp_tree_t* tree)
     {
         int i=0;
         fprintf(stderr,"CHILDREN: %d\n",tree->num_children);
+        
         for(i=0;i<tree->num_children;i++)
-        {
+        {    
+            if(tree->children[i]!=NULL && tree->children[i]->item->type==AST_ATRIBUICAO)fprintf(stderr,"AST_type pai: %i\n",tree->item->type); 
             tree_pass_code(tree->children[i]);
         }
         //TODO THE MAGIC
@@ -408,10 +413,33 @@ void tree_pass_code(comp_tree_t* tree)
         {
             case AST_PROGRAMA:
             {
+                fprintf(stderr,"AST_PROGRAMA\n");
+                tree->item->codes = tree->children[0]->item->codes;
+                
+                int j=1;
+                for(j=1;j<tree->num_children;j++)
+                {
+                    if(tree->children[j]!=NULL){
+                        list_codes_append(tree->item->codes
+                                        , tree->children[j]->item->codes);
+                    }
+                }
                 break;
             }
             case AST_FUNCAO:
             {
+                fprintf(stderr,"AST_FUNCAO\n");
+                
+                tree->item->codes = tree->children[0]->item->codes;
+                
+                int j=1;
+                for(j=1;j<tree->num_children;j++)
+                {   
+                    if(tree->children[j]!=NULL){
+                        list_codes_append(tree->item->codes
+                                        , tree->children[j]->item->codes);
+                    }
+                }
                 break;
             }
             case AST_IF_ELSE:
@@ -430,32 +458,53 @@ void tree_pass_code(comp_tree_t* tree)
                 break;
             }
             case AST_INPUT:
-            {
+            {   
+                fprintf(stderr,"AST_INPUT\n");
                 break;
             }
             case AST_OUTPUT:
-            {
+            {   
+                fprintf(stderr,"AST_OUTPUT\n");
                 break;
             }
             case AST_ATRIBUICAO:{
+                fprintf(stderr,"AST_ATRIBUICAO\n");
                 
                 if(tree->children[0]->item->type==AST_VETOR_INDEXADO){
                  
                     gen_atrib_array(tree, tree->children[0], tree->children[1]);
                 }
                 else {
-                    
                     gen_atrib_ident(tree, tree->children[0], tree->children[1]);
+                    
+                }
+                
+                if(tree->children[2]!=NULL){
+                
+                    tree->item->codes = list_codes_append(tree->children[2]->item->codes
+                                                        , tree->item->codes);
                 }
                 
                 break;
             }
             case AST_RETURN:
-            {
+            {   fprintf(stderr,"AST_RETURN\n");
                 break;
             }
             case AST_BLOCO:
             {
+                fprintf(stderr,"AST_BLOCO\n");
+                
+                tree->item->codes = tree->children[0]->item->codes;
+                
+                int j=1;
+                for(j=1;j<tree->num_children;j++)
+                {
+                    if(tree->children[j]!=NULL){
+                        list_codes_append(tree->item->codes
+                                        , tree->children[j]->item->codes);
+                    }
+                }
                 break;
             }
             case AST_IDENTIFICADOR:
@@ -465,6 +514,8 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_LITERAL:
             {
+                fprintf(stderr,"AST_LITERAL\n");
+                
                 gen_literal(tree);
                 break;
             }
@@ -475,6 +526,8 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_ARIM_SUBTRACAO:
             {
+                fprintf(stderr,"AST_ARIM_SUBTRACAO\n");
+                
                 gen_sub(tree,tree->children[0],tree->children[1]);
                 break;
             }
@@ -485,6 +538,8 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_ARIM_DIVISAO:
             {
+                fprintf(stderr,"AST_ARIM_DIVISAO\n");
+                
                 gen_div(tree,tree->children[0],tree->children[1]);
                 break;
             }
@@ -543,21 +598,24 @@ void tree_pass_code(comp_tree_t* tree)
                 break;   
             }
             case AST_CHAMADA_DE_FUNCAO:{
+                fprintf(stderr,"AST_CHAMADA_DE_FUNCAO\n");
 		        break;
             }
+            
         }
     }
 }
+
 
 void print_iloc_code(comp_tree_t* root){
    
     if(root!=NULL)
     {
-        int i=0;
-        for(i=0;i<root->num_children;i++)
-        {
-            print_iloc_code(root->children[i]);
-        }
+        //int i=0;
+        //for(i=0;i<root->num_children;i++)
+        //{
+        //    print_iloc_code(root->children[i]);
+        //}
         
         print_codes(root->item->codes);
     }
@@ -566,13 +624,12 @@ void print_codes(list_codes_t* code){
    
     if(code!=NULL)
     {
-                
+        print_codes(code->next); 
+        
         char * strcode = get_str_code(code->item);
         printf("%s\n", strcode);
 
         free(strcode);
-        
-        print_codes(code->next);
         
     }
 }

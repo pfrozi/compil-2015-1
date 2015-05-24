@@ -205,7 +205,7 @@ iloc_code_t*  load_immediate(char* reg1, int val){
     
     char* base_str;
     
-    base_str = (char*)malloc(sizeof(char));
+    base_str = (char*)malloc(sizeof(char)*10);
     
     snprintf(base_str, 10, "%d", val);
     return get_iloc_code(OP_LOADI, base_str, NULL, reg1,NULL);
