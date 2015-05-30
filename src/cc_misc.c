@@ -300,12 +300,11 @@ void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
                 char* rotV = (char*)get_rot();
                 char* rotN = root->item->next;
                 
-                printf("Rot gerados %s %s  ",rotF, rotV);
-                
                 tree->children[1]->item->next = tree->item->next;
                 tree->children[2]->item->next = tree->item->next;
                 tree->children[0]->item->bv = rotV;
                 tree->children[0]->item->bf = rotF;
+                
                 break;
             }
             case AST_DO_WHILE:
@@ -324,12 +323,26 @@ void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
             {
                 if(tree->children[2]!=NULL)
                 {
+                    tree->item->next = tree->children[2]->item->begin;
+                }else{
+                    
                     tree->item->next = (char*)get_rot();
                 }
+                
+                tree->item->bv = (char*)get_rot();
+                tree->item->bf = tree->item->next;
+                
                 tree->item->begin             = (char*)get_rot();
                 tree->children[0]->item->bv   = (char*)get_rot();
                 tree->children[0]->item->bf   = tree->item->next;
                 tree->children[1]->item->next = tree->item->begin;
+                
+                fprintf(stderr, "AST_WHILE_DO: begin:%s child0.bv:%s child0.bf:%s child1.next:%s \n"
+                        , tree->item->begin
+                        , tree->children[0]->item->bv  
+                        , tree->children[0]->item->bf  
+                        , tree->children[1]->item->next);
+                
                 break;
             }
             case AST_LITERAL:
@@ -370,8 +383,8 @@ void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
             case AST_LOGICO_COMP_L:
             case AST_LOGICO_COMP_G:
             {
-                tree->item->bv=root->item->bv;
-                tree->item->bf=root->item->bf;
+                tree->item->bv = root->item->bv;
+                tree->item->bf = root->item->bf;
                 break;
             }
             case AST_LOGICO_COMP_NEGACAO:
@@ -444,16 +457,19 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_IF_ELSE:
             {
+                fprintf(stderr,"AST_IF_ELSE\n");
                 gen_if_else(tree,tree->children[0],tree->children[1],tree->children[2]);
                 break;
             }
             case AST_DO_WHILE:
             {
+                fprintf(stderr,"AST_DO_WHILE\n");
                 gen_do_while(tree,tree->children[0],tree->children[1]);
                 break;
             }
             case AST_WHILE_DO:
             {
+                fprintf(stderr,"AST_WHILE_DO\n");
                 gen_while_do(tree,tree->children[0],tree->children[1]);
                 break;
             }
@@ -509,6 +525,8 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_IDENTIFICADOR:
             {
+                fprintf(stderr,"AST_IDENTIFICADOR\n");
+                
                 load_ident(tree);
                 break;
             }
@@ -521,6 +539,8 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_ARIM_SOMA:
             {
+                fprintf(stderr,"AST_ARIM_SOMA\n");
+                
                 gen_add(tree,tree->children[0],tree->children[1]);
                 break;
             }
@@ -533,6 +553,8 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_ARIM_MULTIPLICACAO:
             {
+                fprintf(stderr,"AST_ARIM_MULTIPLICACAO\n");
+                
                 gen_mul(tree,tree->children[0],tree->children[1]);
                 break;
             }
@@ -545,54 +567,76 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_ARIM_INVERSAO:
             {
+                fprintf(stderr,"AST_ARIM_INVERSAO\n");
+                
                 break;
             }
             case AST_LOGICO_E:
             {
+                fprintf(stderr,"AST_LOGICO_E\n");
+                
                 gen_and(tree,tree->children[0],tree->children[1]);
                 break;
             }
             case AST_LOGICO_OU:
             {
+                fprintf(stderr,"AST_LOGICO_OU\n");
+                
                 gen_or(tree,tree->children[0],tree->children[1]);
                 break;
             }
             case AST_LOGICO_COMP_DIF:
             {
+                fprintf(stderr,"AST_LOGICO_COMP_DIF\n");
+                
                 gen_unequal(tree,tree->children[0],tree->children[1]);
                 break;
             }
             case AST_LOGICO_COMP_IGUAL:
             {
+                fprintf(stderr,"AST_LOGICO_COMP_IGUAL\n");
+                
                 gen_equal(tree,tree->children[0],tree->children[1]);
                 break;
             }
             case AST_LOGICO_COMP_LE:
             {
+                fprintf(stderr,"AST_LOGICO_COMP_LE\n");
+                
                 gen_less_equal(tree,tree->children[0],tree->children[1]);
                 break;
             }
             case AST_LOGICO_COMP_GE:
             {
+                fprintf(stderr,"AST_LOGICO_COMP_GE\n");
+                
                 gen_greater_equal(tree,tree->children[0],tree->children[1]);
                 break;
             }
             case AST_LOGICO_COMP_L:
             {
+                fprintf(stderr,"AST_LOGICO_COMP_L\n");
+                
                 gen_less(tree,tree->children[0],tree->children[1]);
                 break;
             }
             case AST_LOGICO_COMP_G:
             {
+                fprintf(stderr,"AST_LOGICO_COMP_G\n");
+                
                 gen_greater(tree,tree->children[0],tree->children[1]);
                 break;
             }
             case AST_LOGICO_COMP_NEGACAO:
             {
+                fprintf(stderr,"AST_LOGICO_COMP_NEGACAO\n");
+                
                 break;
             }
             case AST_VETOR_INDEXADO:
             {
+                fprintf(stderr,"AST_VETOR_INDEXADO\n");
+                
                 // comando realizado pelo pai do nodo
                 load_array(tree);
                 break;   

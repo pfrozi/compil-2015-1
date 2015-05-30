@@ -235,12 +235,39 @@ exp_bool_e:
         | exp_art                           { $$ = $1; }
 ;
 exp_art:
-          exp_art TK_CE_PLUS exp_art_t  { if(yystack_verify_types($1->item->iks_type,$3->item->iks_type)>0) return yystack_verify_types($1->item->iks_type,$3->item->iks_type); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_ARIM_SOMA, yystack_inf($1->item, $3->item), NULL)), $1), $3); }
-        | exp_art TK_CE_MINUS exp_art_t { if(yystack_verify_types($1->item->iks_type,$3->item->iks_type)>0) return yystack_verify_types($1->item->iks_type,$3->item->iks_type); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_ARIM_SUBTRACAO, yystack_inf($1->item, $3->item), NULL)), $1), $3); }
-        | exp_art_t                     { $$ = $1; }
+          exp_art TK_CE_PLUS exp_art_t  { 
+                                            if(yystack_verify_types($1->item->iks_type,$3->item->iks_type)>0) 
+                                                return yystack_verify_types($1->item->iks_type,$3->item->iks_type); 
+                                            $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2
+                                                                                       , cc_tree_item_create_type(AST_ARIM_SOMA
+                                                                                                                 , yystack_inf($1->item, $3->item)
+                                                                                                                 , NULL))
+                                                                                       , $1), $3); 
+                                        }
+        | exp_art TK_CE_MINUS exp_art_t { 
+                                            if(yystack_verify_types($1->item->iks_type,$3->item->iks_type)>0) 
+                                                return yystack_verify_types($1->item->iks_type,$3->item->iks_type); 
+                                            
+                                            $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2
+                                                                                       , cc_tree_item_create_type(AST_ARIM_SUBTRACAO
+                                                                                                                , yystack_inf($1->item, $3->item)
+                                                                                                                , NULL))
+                                                                                       , $1), $3); 
+                                        }
+        | exp_art_t                     { 
+                                            $$ = $1; 
+                                        }
 ;
 exp_art_t:
-          exp_art_t TK_CE_MUL exp_art_par { if(yystack_verify_types($1->item->iks_type,$3->item->iks_type)>0) return yystack_verify_types($1->item->iks_type,$3->item->iks_type); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_ARIM_MULTIPLICACAO, yystack_inf($1->item, $3->item), NULL)), $1), $3); }
+          exp_art_t TK_CE_MUL exp_art_par { 
+                                              if(yystack_verify_types($1->item->iks_type,$3->item->iks_type)>0) 
+                                                  return yystack_verify_types($1->item->iks_type,$3->item->iks_type); 
+                                              $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2
+                                                                                          ,cc_tree_item_create_type(AST_ARIM_MULTIPLICACAO
+                                                                                                                  , yystack_inf($1->item, $3->item)
+                                                                                                                  , NULL))
+                                                                                          , $1), $3); 
+                                          }
         | exp_art_t TK_CE_DIV exp_art_par { if(yystack_verify_types($1->item->iks_type,$3->item->iks_type)>0) return yystack_verify_types($1->item->iks_type,$3->item->iks_type); $$ = cc_tree_insert_node(cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create_type(AST_ARIM_DIVISAO, yystack_inf($1->item, $3->item), NULL)), $1), $3); }
         | exp_art_par                     { $$ = $1; }
 ;

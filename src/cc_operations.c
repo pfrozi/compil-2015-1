@@ -230,6 +230,9 @@ list_codes_t* list_codes_append(list_codes_t* list1, list_codes_t* list2){
     	    l=l->next;
     	};
     	l->next = list2;
+    }else if(list1==NULL){
+        
+        list1 = list2;
     }
     return list1;
 }
