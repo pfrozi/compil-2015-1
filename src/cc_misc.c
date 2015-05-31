@@ -291,17 +291,26 @@ void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
         {
             case AST_IF_ELSE:
             {
-                //IF-Else
-                if(tree->children[3]!=NULL)
-                {
-                    tree->item->next = (char*)get_rot();
-                }
-                char* rotF = (char*)get_rot();
                 char* rotV = (char*)get_rot();
-                char* rotN = root->item->next;
+                char* rotF = NULL;
+                char* rotN = (char*)get_rot();
                 
-                tree->children[1]->item->next = tree->item->next;
-                tree->children[2]->item->next = tree->item->next;
+                //IF-Else
+                if(tree->children[2]!=NULL)
+                {
+                    rotF = (char*)get_rot();
+                    tree->children[2]->item->next = rotN;
+                    tree->children[1]->item->next = rotN;
+                }else{
+                    
+                    rotF = rotN;
+                    tree->children[1]->item->next = rotN;
+                }
+                
+                tree->item->next = rotN;
+                tree->item->bv   = rotV;
+                tree->item->bf   = rotF;
+                
                 tree->children[0]->item->bv = rotV;
                 tree->children[0]->item->bf = rotF;
                 
@@ -309,14 +318,22 @@ void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
             }
             case AST_DO_WHILE:
             {
-                if(tree->children[2]!=NULL)
-                {
-                    tree->item->next = (char*)get_rot();
-                }
-                tree->item->begin             = (char*)get_rot();
-                tree->children[0]->item->bv   = (char*)get_rot();
-                tree->children[0]->item->bf   = tree->item->next;
-                tree->children[1]->item->next = tree->item->begin;
+                
+                tree->item->next = (char*)get_rot();
+                tree->item->bv   = (char*)get_rot();
+                tree->item->bf   = tree->item->next;
+                
+                tree->item->begin             = tree->item->bv;
+                tree->children[1]->item->bv   = tree->item->bv;
+                tree->children[1]->item->bf   = tree->item->bf;
+                //tree->children[0]->item->next = tree->item->begin;
+                
+                fprintf(stderr, "AST_DO_WHILE: begin:%s child0.bv:%s child0.bf:%s child1.next:%s \n"
+                        , tree->item->begin
+                        , tree->children[0]->item->bv  
+                        , tree->children[0]->item->bf  
+                        , tree->children[1]->item->next);
+                
                 break;
             }
             case AST_WHILE_DO:
@@ -458,7 +475,15 @@ void tree_pass_code(comp_tree_t* tree)
             case AST_IF_ELSE:
             {
                 fprintf(stderr,"AST_IF_ELSE\n");
-                gen_if_else(tree,tree->children[0],tree->children[1],tree->children[2]);
+                
+                if(tree->children[2]==NULL){
+                    gen_if(tree,tree->children[0],tree->children[1]);
+                }
+                else{
+                    gen_if_else(tree,tree->children[0],tree->children[1],tree->children[2]);
+                }
+                
+                
                 break;
             }
             case AST_DO_WHILE:
