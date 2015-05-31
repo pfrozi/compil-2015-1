@@ -519,13 +519,13 @@ void tree_pass_code(comp_tree_t* tree)
                     gen_atrib_ident(tree, tree->children[0], tree->children[1]);
                     
                 }
-                
+                /*
                 if(tree->children[2]!=NULL){
                 
                     tree->item->codes = list_codes_append(tree->children[2]->item->codes
                                                         , tree->item->codes);
                 }
-                
+                */
                 break;
             }
             case AST_RETURN:
@@ -662,7 +662,6 @@ void tree_pass_code(comp_tree_t* tree)
             {
                 fprintf(stderr,"AST_VETOR_INDEXADO\n");
                 
-                // comando realizado pelo pai do nodo
                 load_array(tree);
                 break;   
             }

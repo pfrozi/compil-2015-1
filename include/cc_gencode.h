@@ -41,7 +41,6 @@ void gen_int_invert(comp_tree_t* t1);
 
 void gen_atrib_ident(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
 void gen_atrib_array(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
-void gen_atrib_addr(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
 
 
 void load_ident(comp_tree_t* t1);
@@ -50,5 +49,10 @@ void load_array(comp_tree_t* t1);
 
 void get_addr_var_ident(comp_tree_t* t1);
 void get_addr_var_array(comp_tree_t* t1);
+
+
+void append_children(comp_tree_t* parent, int child, list_codes_t* append);
+
+void load_array_addr(comp_tree_t* parent, int child, char* reg_result, char* reg_aux, list_codes_t* append);
 
 #endif

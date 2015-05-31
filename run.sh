@@ -24,12 +24,15 @@ for f in tests/e5/input/*; do
     echo AMARELA CODE
     echo ----------------------
     cat ./$f 
+    echo
     echo ----------------------
     echo ILOC CODE
     echo ----------------------
     cat ./ilocs/$filename.iloc
+    echo
     echo ----------------------
     read -n1 -r -p "Press any key to continue..." key
+    echo
 done
 
 echo FIM!

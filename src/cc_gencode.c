@@ -433,8 +433,10 @@ void load_ident(comp_tree_t* t1)
     {
         char* result = (char*)get_reg();
         char* offset = (char*)malloc(sizeof(char)*8);
+        
         fprintf(stderr,"SENTRY: %s\n",t1->item->sentry->key.lexem);
         sprintf(offset,"%d",t1->item->sentry->address);
+        
         if(t1->item->sentry->scope_type == SCOPE_TYPE_LOCAL)
         {
             t1->item->codes = list_codes_create(get_iloc_code(OP_LOADAI,OP_REG_ESPEC_FP,offset,result,NULL));
@@ -479,120 +481,138 @@ void gen_atrib_ident(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3){
     list_codes_append(t1->item->codes
                     , t3->item->codes);
     
-    
-    
-    
 }
+
 void gen_atrib_array(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3){
     
-    get_addr_var_array(t2);
-    gen_atrib_addr(t1, t2, t3);
-}
+    char* offset      = (char*)get_reg();
+    char* offset_aux  = (char*)get_reg();
+    char* offset_init = (char*)malloc(sizeof(char)*8);
 
-void gen_atrib_addr(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3){
+    comp_tree_t* ident = t2->children[0];
     
-    char* r1 = t3->item->result;
-    char* r2 = t2->item->result;
+    char* result = t3->item->result;
     
-    t1->item->codes = list_codes_create(get_iloc_code(OP_STORE, r1,NULL,r2,NULL));
-}
+    // set init offset
+    sprintf(offset,"%d",ident->item->sentry->address);
 
-
-void get_addr_var_array(comp_tree_t* t1){
     
-    int i=0;
-    int base = 0;
-    
-    char* reg_sum  = get_reg();
-    char* reg_mult = get_reg();
-    char* reg_base = get_reg();
-    char* reg_addr = get_reg();
-    char* result   = get_reg();
-        
-    t1->item->codes = list_codes_create(load_immediate(reg_sum, 0));
-    
-    for(i=0;i<t1->num_children-1;i++)
+    fprintf(stderr,"make storage\n");
+    if(ident->item->sentry->scope_type == SCOPE_TYPE_LOCAL)
     {
-        base     = cc_list_get(t1->item->sentry->bases, i)->type;
-        
-        list_codes_append(t1->item->codes
-                      , list_codes_create(load_immediate(reg_base, base)));
-        list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_MULT,reg_base, t1->children[i]->item->result, reg_mult,NULL)));
-        list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_ADD, reg_mult, reg_sum, reg_sum,NULL)));
-        
+        t1->item->codes = list_codes_create(get_iloc_code(OP_STOREAI,result,OP_REG_ESPEC_FP,offset,NULL));
     }
-    list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_ADD, t1->children[i]->item->result, reg_sum, reg_sum,NULL)));
-    list_codes_append(t1->item->codes
-                      , list_codes_create(load_immediate(reg_addr,t1->item->sentry->address)));
-    list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_ADD, reg_addr, reg_sum, reg_addr,NULL)));
-    
-    if(t1->item->sentry->scope_type==SCOPE_TYPE_LOCAL){
-        list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_ADD, OP_REG_ESPEC_FP, reg_addr, result,NULL)));   
-    }
-    else if(t1->item->sentry->scope_type==SCOPE_TYPE_GLOBAL){
-        list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_ADD, OP_REG_ESPEC_RB, reg_addr, result,NULL)));
-    }
-    else {
-        
-        printf("ERROR - cc_gencode: load_array()\n");
+    else
+    {
+        t1->item->codes = list_codes_create(get_iloc_code(OP_STOREAI,result,OP_REG_ESPEC_RB,offset,NULL));
     }
     
+    fprintf(stderr,"make add_off\n");
+    t1->item->codes = list_codes_append(t1->item->codes
+                                      , list_codes_create(get_iloc_code(OP_ADD, offset, offset_init, offset,NULL)));
+    /*
+    fprintf(stderr,"make load\n");
+    load_array_addr(t2, 1, offset, offset_aux, t1->item->codes);
+    
+    fprintf(stderr,"make children\n");
+    // init offset zero
+    t1->item->codes = list_codes_append(t2->item->codes
+                                      , list_codes_create(load_immediate(offset, 0)));
+    
+    fprintf(stderr,"append children\n");
+    append_children(t2, 1, t1->item->codes);
+    
+    // set result 
     t1->item->result = result;
+    */
+    //make append
+    t1->item->codes = list_codes_append(t1->item->codes
+                                      , t3->item->codes);
+    
+    
 }
 
 void load_array(comp_tree_t* t1){
     
-    int i=0;
-    int base = 0;
+    comp_tree_t* ident = t1->children[0];
     
-    char* reg_sum  = get_reg();
-    char* reg_mult = get_reg();
-    char* reg_base = get_reg();
-    char* reg_addr = get_reg();
-    char* result   = get_reg();
-        
-    t1->item->codes = list_codes_create(load_immediate(reg_sum, 0));
-    
-    if(t1->item->sentry->scope_type==SCOPE_TYPE_LOCAL){
-        list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_LOADAO, OP_REG_ESPEC_FP, reg_addr, result,NULL)));   
-    }
-    else if(t1->item->sentry->scope_type==SCOPE_TYPE_GLOBAL){
-        list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_LOADAO, OP_REG_ESPEC_RB, reg_addr, result,NULL)));
-    }
-    else {
-        
-        printf("ERROR - cc_gencode: load_array()\n");
-    }
-    
-    for(i=0;i<t1->num_children-1;i++)
+    if(ident->item->sentry->iks_var == IKS_ARRAY && ident->item->sentry->iks_type!=IKS_NULL)
     {
-        base     = cc_list_get(t1->item->sentry->bases, i)->type;
+        char* result      = (char*)get_reg();
+        char* offset      = (char*)get_reg();
+        char* offset_aux  = (char*)get_reg();
+        char* offset_init = (char*)malloc(sizeof(char)*8);
+                
         
-        list_codes_append(t1->item->codes
-                        , t1->children[i]->item->codes);
-        list_codes_append(t1->item->codes
-                      , list_codes_create(load_immediate(reg_base, base)));
-        list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_ADD, reg_mult, reg_sum, reg_sum,NULL)));
-        list_codes_append(t1->item->codes
-                      , list_codes_create(get_iloc_code(OP_MULT,reg_base, t1->children[i]->item->result, reg_mult,NULL)));
+        // set init offset
+        sprintf(offset,"%d",ident->item->sentry->address);
         
+        if(ident->item->sentry->scope_type == SCOPE_TYPE_LOCAL)
+        {
+            t1->item->codes = list_codes_append(t1->item->codes
+                                              , list_codes_create(get_iloc_code(OP_LOADAI,OP_REG_ESPEC_FP,offset,result,NULL)));
+        }
+        else
+        {
+            t1->item->codes = list_codes_append(t1->item->codes
+                                              , list_codes_create(get_iloc_code(OP_LOADAI,OP_REG_ESPEC_RB,offset,result,NULL)));
+        }
+        
+        t1->item->codes = list_codes_append(t1->item->codes
+                                          , list_codes_create(get_iloc_code(OP_ADD, offset, offset_init, offset,NULL)));
+        
+        load_array_addr(t1, 1, offset, offset_aux, t1->item->codes);
+        
+        // init offset zero
+        t1->item->codes = list_codes_append(t1->item->codes
+                                          , list_codes_create(load_immediate(offset, 0)));
+        
+        // set result 
+        t1->item->result = result;
+        
+        //make append
+        append_children(t1,1, t1->item->codes);
         
     }
-    list_codes_append(t1->item->codes
-                    , t1->children[i]->item->codes);
-    list_codes_append(t1->item->codes
-                    , list_codes_create(get_iloc_code(OP_ADD, reg_mult, reg_sum, reg_sum,NULL)));
-    
-    
-    t1->item->result = result;
 }
 
+void load_array_addr(comp_tree_t* parent, int i, char* reg_result, char* reg_aux, list_codes_t* append){
+   
+    int child = i-1;
+    
+    if(parent->children[i+1]!=NULL){
+        
+        fprintf(stderr,"load_array_addr init %d\n", i);
+        
+        load_array_addr(parent, ++i, reg_result, reg_aux, append);
+         
+        int base            = cc_list_get(parent->item->sentry->bases, child)->type;
+        char* c_base        = (char*)malloc(sizeof(char)*8);
+
+        sprintf(c_base,"%d",base);
+
+        append = list_codes_append(append
+                                 , list_codes_create(get_iloc_code(OP_ADD, reg_aux, parent->children[i+1]->item->result, reg_result,NULL)));
+
+        append = list_codes_append(append
+                                 , list_codes_create(get_iloc_code(OP_MULTI, parent->children[i]->item->result, c_base, reg_aux,NULL)));
+        
+        if(child==0){
+            
+            list_codes_append(parent->item->codes
+                        , list_codes_create(get_iloc_code(OP_ADD, reg_result, parent->children[i]->item->result, reg_result,NULL)));
+        }
+                
+    }
+}
+
+void append_children(comp_tree_t* parent, int child, list_codes_t* append){
+ 
+    if(parent->children[child+1]!=NULL){
+        fprintf(stderr,"make children %d\n", child);
+        append_children(parent, ++child, append);
+    }
+    
+    append = list_codes_append(append
+                             , parent->children[child]->item->codes);
+}
