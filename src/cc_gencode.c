@@ -507,11 +507,11 @@ void gen_atrib_array(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3){
     fprintf(stderr,"make storage\n");
     if(ident->item->sentry->scope_type == SCOPE_TYPE_LOCAL)
     {
-        t1->item->codes = list_codes_create(get_iloc_code(OP_STOREAI,result,OP_REG_ESPEC_FP,offset,NULL));
+        t1->item->codes = list_codes_create(get_iloc_code(OP_STOREAO,result,OP_REG_ESPEC_FP,offset,NULL));
     }
     else
     {
-        t1->item->codes = list_codes_create(get_iloc_code(OP_STOREAI,result,OP_REG_ESPEC_RB,offset,NULL));
+        t1->item->codes = list_codes_create(get_iloc_code(OP_STOREAO,result,OP_REG_ESPEC_RB,offset,NULL));
     }
     
     fprintf(stderr,"make add_off\n");
@@ -563,12 +563,12 @@ void load_array(comp_tree_t* t1){
         if(ident->item->sentry->scope_type == SCOPE_TYPE_LOCAL)
         {
             t1->item->codes = list_codes_append(t1->item->codes
-                                              , list_codes_create(get_iloc_code(OP_LOADAI,OP_REG_ESPEC_FP,offset,result,NULL)));
+                                              , list_codes_create(get_iloc_code(OP_LOADAO,OP_REG_ESPEC_FP,offset,result,NULL)));
         }
         else
         {
             t1->item->codes = list_codes_append(t1->item->codes
-                                              , list_codes_create(get_iloc_code(OP_LOADAI,OP_REG_ESPEC_RB,offset,result,NULL)));
+                                              , list_codes_create(get_iloc_code(OP_LOADAO,OP_REG_ESPEC_RB,offset,result,NULL)));
         }
         
         t1->item->codes = list_codes_append(t1->item->codes
