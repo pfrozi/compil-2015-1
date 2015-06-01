@@ -319,19 +319,25 @@ void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
             case AST_DO_WHILE:
             {
                 
-                tree->item->next = (char*)get_rot();
-                tree->item->bv   = (char*)get_rot();
-                tree->item->bf   = tree->item->next;
+                if(tree->children[2]!=NULL)
+                {
+                    tree->item->next = tree->children[2]->item->begin;
+                }else{
+                    
+                    tree->item->next = (char*)get_rot();
+                }
+                tree->item->begin   = (char*)get_rot();
+                tree->item->bv      = tree->item->begin;
+                tree->item->bf      = tree->item->next;
                 
-                tree->item->begin             = tree->item->bv;
-                tree->children[1]->item->bv   = tree->item->bv;
-                tree->children[1]->item->bf   = tree->item->bf;
-                //tree->children[0]->item->next = tree->item->begin;
+                tree->children[1]->item->bv   = tree->item->begin;
+                tree->children[1]->item->bf   = tree->item->next;
+                tree->children[1]->item->next = tree->item->next;
                 
                 fprintf(stderr, "AST_DO_WHILE: begin:%s child0.bv:%s child0.bf:%s child1.next:%s \n"
                         , tree->item->begin
-                        , tree->children[0]->item->bv  
-                        , tree->children[0]->item->bf  
+                        , tree->children[1]->item->bv  
+                        , tree->children[1]->item->bf  
                         , tree->children[1]->item->next);
                 
                 break;
@@ -519,13 +525,13 @@ void tree_pass_code(comp_tree_t* tree)
                     gen_atrib_ident(tree, tree->children[0], tree->children[1]);
                     
                 }
-                /*
+                
                 if(tree->children[2]!=NULL){
                 
                     tree->item->codes = list_codes_append(tree->children[2]->item->codes
                                                         , tree->item->codes);
                 }
-                */
+                
                 break;
             }
             case AST_RETURN:
