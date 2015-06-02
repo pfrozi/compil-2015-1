@@ -414,10 +414,11 @@ void gen_while_do(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
                                       , list_codes_create(get_iloc_code(OP_CBR, result1, t2->item->bv, t1->item->next, NULL)));
     
     t1->item->codes = list_codes_append(t1->item->codes
-                                      , list_codes_create(get_iloc_code(OP_NOP, NULL, NULL, NULL, t1->item->begin)));
+                                      , t2->item->codes);
     
     t1->item->codes = list_codes_append(t1->item->codes
-                                      , t2->item->codes);
+                                      , list_codes_create(get_iloc_code(OP_NOP, NULL, NULL, NULL, t1->item->begin)));
+    
     
     
 }
