@@ -604,6 +604,11 @@ void tree_pass_code(comp_tree_t* tree)
                 fprintf(stderr,"AST_LITERAL\n");
                 
                 gen_literal(tree);
+                
+                if(tree->children[0]!=NULL){
+                    list_codes_append(tree->item->codes
+                                    , tree->children[0]->item->codes);
+                }
                 break;
             }
             case AST_ARIM_SOMA:

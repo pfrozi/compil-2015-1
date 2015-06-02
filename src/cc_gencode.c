@@ -662,15 +662,16 @@ list_codes_t* load_array_addr2(comp_tree_t* parent, comp_tree_t* child, int dept
         
         append = load_array_addr2(parent, next_child, depth+1, reg_result, reg_aux, append);
         
-        int base            = cc_list_get(parent->children[0]->item->sentry->bases, depth)->type;
+        int base            = cc_list_get(parent->children[0]->item->sentry->bases, (dim-1) - depth)->type;
         char* c_base        = (char*)malloc(sizeof(char)*8);
         sprintf(c_base,"%d",base);
         
         append = list_codes_append(append
-                                 , list_codes_create(get_iloc_code(OP_ADD, reg_aux, child->item->result, reg_result,NULL)));
-
+                                 , list_codes_create(get_iloc_code(OP_MULTI, reg_result, c_base, reg_result,NULL)));
+        
         append = list_codes_append(append
-                                 , list_codes_create(get_iloc_code(OP_MULTI, reg_result, c_base, reg_aux,NULL)));
+                                 , list_codes_create(get_iloc_code(OP_ADD, reg_result, child->item->result, reg_result,NULL)));
+
         
     }else{
         
