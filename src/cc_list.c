@@ -32,15 +32,15 @@ void cc_list_remove(comp_list_t* list, comp_list_t* item)
 {
 }
 
-comp_list_t* cc_list_get(comp_list_t* list,int n)
+comp_list_t* cc_list_get(comp_list_t* list, int n)
 {
     int i=0;
     comp_list_t *l = list;
-    do
+    while(i!=n && l!=NULL)
     {
         l=l->next;
         i++;
-    }while(i!=n && l!=NULL);
+    }
     return l;
 }
 

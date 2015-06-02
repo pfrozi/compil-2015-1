@@ -55,5 +55,6 @@ void get_addr_var_array(comp_tree_t* t1);
 void append_children(comp_tree_t* parent, int child, list_codes_t* append);
 
 void load_array_addr(comp_tree_t* parent, int child, char* reg_result, char* reg_aux, list_codes_t* append);
+void load_array_addr2(comp_tree_t* parent, comp_tree_t* child, int depth, char* reg_result, char* reg_aux, list_codes_t* append);
 
 #endif

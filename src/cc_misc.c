@@ -141,13 +141,16 @@ void yystack_add_array(comp_dict_item_t* sentry, int iks_type, int iks_var, comp
     sentry->bases        = list_int;
     
     int len=1;
+    int dim=0;
     comp_list_t* l_aux = list_int;
     
     do{
         len  *= l_aux->type;
         l_aux = l_aux->next;
-        
+        dim++;
     }while(l_aux!=NULL);
+    
+    sentry->dimension = dim;
     
     if(scopes->next==NULL){
         

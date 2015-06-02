@@ -30,6 +30,7 @@ typedef struct comp_dict_item
     int iks_size;
     
     comp_list_t* bases;
+    int dimension;
     
     int scope_type;
     
