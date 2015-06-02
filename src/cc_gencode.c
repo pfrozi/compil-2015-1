@@ -126,7 +126,27 @@ void gen_div(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
 
 void gen_and(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
 {
-        
+    /*   
+    char* result1 = t2->item->result;
+    char* result2 = t3->item->result;
+    
+    char* result = (char*)get_reg();
+    
+    t1->item->codes = list_codes_append(t1->item->codes
+                                      , list_codes_create(get_iloc_code(OP_AND,result1, result2, result,NULL)));
+    
+    // set result
+    t1->item->result = result;
+    
+    // make the append
+    t1->item->codes = list_codes_append(t1->item->codes
+                                      , t3->item->codes);
+    
+    t1->item->codes = list_codes_append(t1->item->codes
+                                      , t2->item->codes);
+    */
+    
+    
     char* result1 = t2->item->result;
     char* result2 = t3->item->result;
     
@@ -155,7 +175,7 @@ void gen_and(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
 
 void gen_or(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
 {
-       
+    /*
     char* result1 = t2->item->result;
     char* result2 = t3->item->result;
     
@@ -173,6 +193,33 @@ void gen_or(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
     
     t1->item->codes = list_codes_append(t1->item->codes
                                       , t2->item->codes);
+                                      
+    */
+    
+    char* result1 = t2->item->result;
+    char* result2 = t3->item->result;
+    
+    char* rotN   = (char*)get_rot();
+    
+    char* result = result2;
+    
+    t1->item->codes = list_codes_append(t1->item->codes
+                                      , list_codes_create(get_iloc_code(OP_CBR, result2, t1->item->bv, t1->item->bf, NULL)));
+        
+    t1->item->codes = list_codes_append(t1->item->codes
+                                      , t3->item->codes);
+    
+    t1->item->codes = list_codes_append(t1->item->codes
+                                      , list_codes_create(get_iloc_code(OP_NOP, NULL, NULL, NULL, rotN)));
+    
+    t1->item->codes = list_codes_append(t1->item->codes
+                                      , list_codes_create(get_iloc_code(OP_CBR, result1, t1->item->bv, rotN, NULL)));
+    
+    t1->item->codes = list_codes_append(t1->item->codes
+                                      , t2->item->codes);
+    
+    // set result
+    t1->item->result = result;
 }
 
 void gen_xor(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
