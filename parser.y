@@ -28,7 +28,7 @@ extern comp_tree_t* ast;
 %type <ast> array dowhile whiledo lst_exp exp literal exp_art exp_art_t exp_art_par
 %type <ast> exp_bool exp_bool_e exp_bool_ou exp_end exp_neg
 
-%type <valor_simbolo_lexico> statement const_statement 
+%type <valor_simbolo_lexico> statement_array statement const_statement 
 %type <arguments> func_params func_head_params
 
 %type <integer> type
@@ -91,6 +91,7 @@ extern comp_tree_t* ast;
 %token TOKEN_ERRO
 %token TOKEN_EOF
 %right TK_PR_THEN TK_PR_ELSE
+%right TK_IDENTIFICADOR TK_CE_BRA_OPEN TK_CE_BRA_CLOSE
 %%
 
 /* Regras (e ações) da gramática */
@@ -122,8 +123,8 @@ endline:
 ;
 
 global_statement:
-          statement endline        // int x; int static x;
-        | statement array_int endline  { yystack_update_var($1, $2, IKS_ARRAY);         }
+          statement_array endline            // int x; int static x;
+        | statement endline      //{ yystack_update_var($1, $2, IKS_ARRAY);         }
         | statement                    { yyerror("Missing a ;"); return SINTATICA_ERRO; }
         | statement array_int          { yyerror("Missing a ;"); return SINTATICA_ERRO; }
         
@@ -142,7 +143,22 @@ array_int:
                                                       $$ = $2;
                                                   }
 ;
-
+statement_array:
+          TK_PR_STATIC type TK_IDENTIFICADOR array_int	    { 
+                                                                if(yystack_find_top($3)!=NULL) 
+                                                                    return IKS_ERROR_DECLARED; 
+                                                                else 
+                                                                    yystack_add_array($3, $2, IKS_ARRAY, $4); 
+                                                                $$ = $3; 
+                                                            }
+        | type TK_IDENTIFICADOR	array_int		            { 
+                                                                if(yystack_find_top($2)!=NULL) 
+                                                                    return IKS_ERROR_DECLARED; 
+                                                                else 
+                                                                    yystack_add_array($2, $1, IKS_ARRAY, $3); 
+                                                                $$ = $2; 
+                                                            }
+;
 statement:
           TK_PR_STATIC type TK_IDENTIFICADOR	    { 
                                                         if(yystack_find_top($3)!=NULL) 

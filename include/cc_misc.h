@@ -19,6 +19,8 @@ comp_dict_item_t* yystack_find_top(comp_dict_item_t* sentry);
 comp_dict_item_t* yystack_find(comp_dict_item_t* sentry);
 
 void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var);
+void yystack_add_array(comp_dict_item_t* sentry, int iks_type, int iks_var, comp_list_t* list_int);
+    
 void yystack_update_var(comp_dict_item_t* sentry, comp_list_t* list_int , int var);
 
 int yystack_verify_types(int type_a, int type_b);

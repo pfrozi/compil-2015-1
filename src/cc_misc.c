@@ -121,12 +121,47 @@ void yystack_update_var(comp_dict_item_t* sentry, comp_list_t* list_int, int var
     
     
     yystack_find(sentry)->iks_var  = var;
-    yystack_find(sentry)->iks_size = yystack_find(sentry)->iks_size*len;
+    yystack_find(sentry)->iks_size = yystack_find(sentry)->iks_size;
     
     yystack_find(sentry)->bases = list_int;
     
-    yystack_find(sentry)->address  = get_address_var_rb(yystack_find(sentry)->iks_size);
+    yystack_find(sentry)->address  = get_address_var_rb(len*yystack_find(sentry)->iks_size);
     
+}
+
+void yystack_add_array(comp_dict_item_t* sentry, int iks_type, int iks_var, comp_list_t* list_int){
+    
+    //printf(" yystack_add()\n");
+    
+    sentry->iks_type     = iks_type;
+    sentry->iks_var      = iks_var;
+    
+    sentry->iks_size     = define_type_size(sentry->iks_type);
+    
+    sentry->bases        = list_int;
+    
+    int len=1;
+    comp_list_t* l_aux = list_int;
+    
+    do{
+        len  *= l_aux->type;
+        l_aux = l_aux->next;
+        
+    }while(l_aux!=NULL);
+    
+    if(scopes->next==NULL){
+        
+        sentry->scope_type     = SCOPE_TYPE_GLOBAL;
+        sentry->address        = get_address_var_rb(len*sentry->iks_size);
+        
+    }
+    else{
+        
+        sentry->scope_type     = SCOPE_TYPE_LOCAL;
+        sentry->address        = get_address_var_fp(len*sentry->iks_size);
+        
+    }
+    scopes = cc_stack_add_top(scopes, sentry);
 }
 
 int yystack_verify_types(int type_a, int type_b){

@@ -650,6 +650,9 @@ void load_array(comp_tree_t* t1){
 void load_array_addr(comp_tree_t* parent, int i, char* reg_result, char* reg_aux, list_codes_t* append){
    
     int child = i-1;
+    fprintf(stderr,"FILHOS: %d\n", parent->num_children);
+    if(parent->children[1]!=NULL)fprintf(stderr,"FILHOS 1: %d\n", parent->children[1]->item->sentry->val_int);
+    if(parent->children[1]!=NULL && parent->children[1]->children[0]!=NULL)fprintf(stderr,"FILHOS 2: %d\n", parent->children[1]->children[0]->item->sentry->val_int);
     
     if(parent->children[i+1]!=NULL){
         
