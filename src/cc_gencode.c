@@ -578,7 +578,7 @@ void gen_atrib_array(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3){
     
     fprintf(stderr,"make load\n");
     //load_array_addr(t2, 1, offset, offset_aux, t1->item->codes);
-    load_array_addr2(t2, t2->children[1], 0, offset, offset_aux, t1->item->codes);
+    t1->item->codes = load_array_addr2(t2, t2->children[1], 0, offset, offset_aux, t1->item->codes);
     
     fprintf(stderr,"make children\n");
     // init offset zero
@@ -586,7 +586,7 @@ void gen_atrib_array(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3){
                                       , list_codes_create(load_immediate(offset, 0)));
     
     fprintf(stderr,"append children\n");
-    //append_children(t2, 1, t1->item->codes);
+    append_children(t2, 1, t1->item->codes);
     
     // set result 
     t1->item->result = result;
@@ -634,7 +634,7 @@ void load_array(comp_tree_t* t1){
                                           , list_codes_create(get_iloc_code(OP_MULTI, offset, c_size, offset, NULL)));
         
         //load_array_addr(t1, 1, offset, offset_aux, t1->item->codes);
-        load_array_addr2(t1, t1->children[1], 0, offset, offset_aux, t1->item->codes);
+        t1->item->codes = load_array_addr2(t1, t1->children[1], 0, offset, offset_aux, t1->item->codes);
         
         // init offset zero
         t1->item->codes = list_codes_append(t1->item->codes
@@ -648,7 +648,8 @@ void load_array(comp_tree_t* t1){
         
     }
 }
-void load_array_addr2(comp_tree_t* parent, comp_tree_t* child, int depth, char* reg_result, char* reg_aux, list_codes_t* append){
+
+list_codes_t* load_array_addr2(comp_tree_t* parent, comp_tree_t* child, int depth, char* reg_result, char* reg_aux, list_codes_t* append){
     
     comp_tree_t* next_child = NULL;
     int dim                 = parent->children[0]->item->sentry->dimension;
@@ -659,7 +660,7 @@ void load_array_addr2(comp_tree_t* parent, comp_tree_t* child, int depth, char* 
         
         next_child = child->children[child->num_children-1];
         
-        load_array_addr2(parent, next_child, depth+1, reg_result, reg_aux, append);
+        append = load_array_addr2(parent, next_child, depth+1, reg_result, reg_aux, append);
         
         int base            = cc_list_get(parent->children[0]->item->sentry->bases, depth)->type;
         char* c_base        = (char*)malloc(sizeof(char)*8);
@@ -678,8 +679,9 @@ void load_array_addr2(comp_tree_t* parent, comp_tree_t* child, int depth, char* 
                                  , list_codes_create(get_iloc_code(OP_ADD, reg_result, child->item->result, reg_result,NULL)));
     }
     
-    append = list_codes_append(append
-                             , child->item->codes);
+    //append = list_codes_append(append
+    //                        , child->item->codes);
+    return append;
     
 }
 
