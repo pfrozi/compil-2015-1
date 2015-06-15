@@ -755,7 +755,7 @@ void print_codes(list_codes_t* code){
 void fun_reset(comp_tree_t* t){
     
     if(loc_var_size>0){
-           
+       t->item->local_var_size = loc_var_size;
     }
     
     fp_reset();
