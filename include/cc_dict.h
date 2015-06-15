@@ -86,4 +86,7 @@ void cc_dict_remove(comp_dict_t* table,comp_dict_item_key_t key);
 //key: Key of the item
 comp_dict_item_t* cc_dict_get(comp_dict_t* table,comp_dict_item_key_t key);
 
+
+int  define_type_size(int type);
+int  get_args_size(comp_dict_item_t* sentry);
 #endif

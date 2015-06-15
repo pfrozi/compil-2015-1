@@ -198,3 +198,30 @@ comp_dict_item_t* cc_dict_get(comp_dict_t* table,comp_dict_item_key_t key)
     }while((*table).items[index]!=NULL && strcmp(key.lexem,(*table).items[index]->key.lexem)!=0);
     return (*table).items[index];
 }
+
+int define_type_size(int type){
+    
+    switch(type){
+
+        //case IKS_NULL  :  return IKS_NULL_SIZE;
+        case IKS_INT   :  return IKS_INT_SIZE;
+        case IKS_FLOAT :  return IKS_FLOAT_SIZE;
+        case IKS_CHAR  :  return IKS_CHAR_SIZE;
+        case IKS_STRING:  return IKS_STRING_SIZE;
+        case IKS_BOOL  :  return IKS_BOOL_SIZE; 
+    }
+}
+
+int get_args_size(comp_dict_item_t* sentry){
+    
+    int size = 0;
+    
+    comp_list_t* l = sentry->iks_arguments;
+    
+    while(l!=NULL){
+        size += define_type_size(l->type);
+        l = l->next;
+    }
+    
+    return size;
+}

@@ -54,7 +54,7 @@ void main_init (int argc, char **argv)
     init_cc_regs(); 
     init_cc_rot(); 
     
-    fun_reset();
+    fun_reset(ast,0);
 }
 
 void main_finalize (void)
@@ -103,7 +103,7 @@ void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
         
         sentry->scope_type     = SCOPE_TYPE_LOCAL;
         sentry->address        = get_address_var_fp(sentry->iks_size);
-        fun_var_size          += sentry->iks_size;
+        loc_var_size          += sentry->iks_size;
         
     }
     scopes = cc_stack_add_top(scopes, sentry);
@@ -305,19 +305,6 @@ int yystack_type_co(int type_a, int type_b){
             
             return 1;
         }
-    }
-}
-
-int define_type_size(int type){
-    
-    switch(type){
-
-        //case IKS_NULL  :  return IKS_NULL_SIZE;
-        case IKS_INT   :  return IKS_INT_SIZE;
-        case IKS_FLOAT :  return IKS_FLOAT_SIZE;
-        case IKS_CHAR  :  return IKS_CHAR_SIZE;
-        case IKS_STRING:  return IKS_STRING_SIZE;
-        case IKS_BOOL  :  return IKS_BOOL_SIZE; 
     }
 }
 
@@ -716,6 +703,9 @@ void tree_pass_code(comp_tree_t* tree)
                 break;   
             }
             case AST_CHAMADA_DE_FUNCAO:{
+                
+                gen_fun_call();
+                
                 fprintf(stderr,"AST_CHAMADA_DE_FUNCAO\n");
 		        break;
             }
@@ -752,12 +742,23 @@ void print_codes(list_codes_t* code){
     }
 }
 
-void fun_reset(comp_tree_t* t){
+void fun_reset(comp_tree_t* t, int set){
     
-    if(loc_var_size>0){
+    
+    if(t!=NULL && t->item!=NULL && t->item->type==AST_FUNCAO && set){
+       
        t->item->local_var_size = loc_var_size;
+       t->item->args_size = get_args_size(t->item->sentry);
+       t->item->return_size = return_size;
+       
+        fprintf(stderr,"AST_TYPE: %d\n", t->item->return_size);
     }
     
     fp_reset();
     loc_var_size = 0;
+    return_size = 0;
+}
+void set_return(){
+    
+    return_size = define_type_size(scopes->top->type);
 }

@@ -8,7 +8,9 @@
 extern int line_number;
 extern comp_dict_t* stable;
 
-int fun_var_size;
+int loc_var_size;
+int args_size;
+int return_size;
 
 int getLineNumber (void);
 void yyerror (char const *mensagem);
@@ -38,11 +40,10 @@ void yystack_push_scope();
 void yystack_pop_scope();
 
 
-int  define_type_size(int type);
-
 void print_iloc_code(comp_tree_t* root);
 void print_codes(list_codes_t* code);
 
-void fun_reset(comp_tree_t* t);
+void fun_reset(comp_tree_t* t, int set);
+void set_return();
 
 #endif

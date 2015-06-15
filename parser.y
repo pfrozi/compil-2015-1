@@ -116,7 +116,7 @@ global_line:
 ;
 
 line:
-          function {$$ = $1; fun_reset($$); }
+          function {$$ = $1; fun_reset($$,1); }
 ;  
 endline:
           TK_CE_SEMICOLON
@@ -423,7 +423,7 @@ out:
 
 // retorno
 ret:
-          TK_PR_RETURN exp                          { if(yystack_return_type($2)>0) return IKS_ERROR_WRONG_PAR_RETURN; $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_RETURN,NULL)),$2);}
+          TK_PR_RETURN exp                          { if(yystack_return_type($2)>0) return IKS_ERROR_WRONG_PAR_RETURN; $$ = cc_tree_insert_node(cc_tree_create_node(2,cc_tree_item_create(AST_RETURN,NULL)),$2); set_return(); }
         | TK_PR_RETURN                              { yyerror("Missing a expression"); return SINTATICA_ERRO; } 
 ;
 
