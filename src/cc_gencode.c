@@ -35,6 +35,51 @@ void gen_literal(comp_tree_t* t)
     }
 }
 
+void gen_function(comp_tree_t* t){
+    
+    t->item->codes = NULL;
+    
+    if(t->children[0]!=NULL){
+        
+        t->item->codes = list_codes_append(t->item->codes
+                                         , t->children[0]->item->codes);
+    }
+    if(t->children[1]!=NULL){
+        
+        t->item->codes = list_codes_append(t->item->codes
+                                         , t->children[1]->item->codes);
+    }
+    
+    t->item->codes = list_codes_append(t->item->codes
+                                     , list_codes_create(get_iloc_code(OP_NOP, NULL, NULL, NULL, t->item->label_fun)));
+  
+}
+
+void gen_program(comp_tree_t* t, char* rot_main){
+    
+    t->item->codes = NULL;
+    
+    if(t->children[0]!=NULL){
+        t->item->codes = t->children[0]->item->codes;
+    }
+    
+    // jump to main
+    t->item->codes = list_codes_append(t->item->codes
+                                      , list_codes_create(get_iloc_code(OP_JUMPI, NULL, NULL, rot_main, NULL)));
+    
+        
+    t->item->codes = list_codes_append(t->item->codes
+                                      , list_codes_create(load_immediate(OP_REG_ESPEC_RB, 0)));
+    
+    t->item->codes = list_codes_append(t->item->codes
+                                      , list_codes_create(load_immediate(OP_REG_SP, 0)));
+    
+    t->item->codes = list_codes_append(t->item->codes
+                                      , list_codes_create(load_immediate(OP_REG_FP, 0)));
+    
+    
+}
+
 void gen_add(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3)
 {
     char* result1 = t2->item->result;

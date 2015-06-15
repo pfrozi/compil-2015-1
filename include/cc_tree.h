@@ -3,6 +3,7 @@
 #include "cc_dict.h"
 #include "cc_operations.h"
 
+
 typedef struct comp_tree_item
 {
     int type;
@@ -18,8 +19,14 @@ typedef struct comp_tree_item
     char*             bv;
     char*             next;
     char*             begin;
-
+    
     char*             result;
+    
+    char*             label_fun;
+    int               is_main;
+    int               local_var_size;
+    int               args_size;
+    
     
 } comp_tree_item_t;
 

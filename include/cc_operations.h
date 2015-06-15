@@ -21,8 +21,13 @@
 #define OP_2SRC_1TRG_FLOW  "%s %s, %s -> %s"
 #define OP_1SRC_2TRG_FLOW  "%s %s -> %s, %s"
 
-#define OP_REG_ESPEC_FP     "rarp"
+//#define OP_REG_ESPEC_FP     "rarp"
+#define OP_REG_ESPEC_FP     "fp"
 #define OP_REG_ESPEC_RB     "rbss"
+
+#define OP_REG_SP           "sp"
+
+#define MAIN_NAME           "main"
 
 // OPERACOES INDIVIDUAIS
 
@@ -148,6 +153,8 @@
 int offset_fp;
 int offset_rb;
 
+char* main_rot;
+
 typedef struct iloc_code{
     
     int   op;
@@ -182,4 +189,7 @@ int           get_address_var_fp(int size);
 int           get_address_var_rb(int size);
  
 iloc_code_t*  load_immediate(char* reg1, int val);
+
+void          fp_reset();
+void          set_main_rot(char* rot);
 #endif

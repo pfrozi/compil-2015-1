@@ -54,6 +54,7 @@ void main_init (int argc, char **argv)
     init_cc_regs(); 
     init_cc_rot(); 
     
+    fun_reset();
 }
 
 void main_finalize (void)
@@ -102,6 +103,7 @@ void yystack_add(comp_dict_item_t* sentry, int iks_type, int iks_var){
         
         sentry->scope_type     = SCOPE_TYPE_LOCAL;
         sentry->address        = get_address_var_fp(sentry->iks_size);
+        fun_var_size          += sentry->iks_size;
         
     }
     scopes = cc_stack_add_top(scopes, sentry);
@@ -454,6 +456,19 @@ void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
                 tree->item->bf=root->item->bv;
                 break;
             }
+            case AST_FUNCAO:{
+                
+                tree->item->label_fun = (char*)get_rot();
+                if(strcmp(tree->item->sentry->key.lexem,MAIN_NAME)==0){
+                    set_main_rot(tree->item->label_fun);
+                    tree->item->is_main = 1;
+                }else{
+                    tree->item->is_main = 0;
+                }
+                
+                
+                break;
+            }
             default:
             {
                 if(tree->children[0]!=NULL)
@@ -488,32 +503,18 @@ void tree_pass_code(comp_tree_t* tree)
             case AST_PROGRAMA:
             {
                 fprintf(stderr,"AST_PROGRAMA\n");
-                tree->item->codes = tree->children[0]->item->codes;
                 
-                int j=1;
-                for(j=1;j<tree->num_children;j++)
-                {
-                    if(tree->children[j]!=NULL){
-                        list_codes_append(tree->item->codes
-                                        , tree->children[j]->item->codes);
-                    }
-                }
+                gen_program(tree,main_rot);
+                
+                
                 break;
             }
             case AST_FUNCAO:
             {
                 fprintf(stderr,"AST_FUNCAO\n");
                 
-                tree->item->codes = tree->children[0]->item->codes;
+                gen_function(tree);
                 
-                int j=1;
-                for(j=1;j<tree->num_children;j++)
-                {   
-                    if(tree->children[j]!=NULL){
-                        list_codes_append(tree->item->codes
-                                        , tree->children[j]->item->codes);
-                    }
-                }
                 break;
             }
             case AST_IF_ELSE:
@@ -749,4 +750,14 @@ void print_codes(list_codes_t* code){
         free(strcode);
         
     }
+}
+
+void fun_reset(comp_tree_t* t){
+    
+    if(loc_var_size>0){
+           
+    }
+    
+    fp_reset();
+    loc_var_size = 0;
 }

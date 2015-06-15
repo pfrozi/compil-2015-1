@@ -8,6 +8,8 @@
 extern int line_number;
 extern comp_dict_t* stable;
 
+int fun_var_size;
+
 int getLineNumber (void);
 void yyerror (char const *mensagem);
 void main_init (int argc, char **argv);
@@ -40,5 +42,7 @@ int  define_type_size(int type);
 
 void print_iloc_code(comp_tree_t* root);
 void print_codes(list_codes_t* code);
+
+void fun_reset(comp_tree_t* t);
 
 #endif

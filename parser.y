@@ -116,7 +116,7 @@ global_line:
 ;
 
 line:
-          function {$$ = $1;}
+          function {$$ = $1; fun_reset($$); }
 ;  
 endline:
           TK_CE_SEMICOLON

@@ -12,7 +12,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 void gen_literal(comp_tree_t* t);
 
 void gen_add(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
@@ -43,6 +42,7 @@ void gen_int_invert(comp_tree_t* t1);
 void gen_atrib_ident(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
 void gen_atrib_array(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
 
+void gen_program(comp_tree_t* t, char* rot_main);
 
 void load_ident(comp_tree_t* t1);
 void load_array(comp_tree_t* t1);

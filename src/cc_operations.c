@@ -186,6 +186,16 @@ void init_operations(){
     offset_rb = RP_INIT_ADDRESS;
 }
 
+void fp_reset(){
+    
+    offset_fp = FP_INIT_ADDRESS;
+}
+
+void set_main_rot(char* rot){
+
+    main_rot = rot;
+}
+
 int get_address_var_fp(int size){
 
     int address = offset_fp;
