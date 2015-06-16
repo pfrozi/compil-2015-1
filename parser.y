@@ -381,10 +381,34 @@ func_head_params:
         | TK_CE_PAR_OPEN                                       {yyerror("Missing '('"); return SINTATICA_ERRO; }
 ;
 func_params:
-          type TK_IDENTIFICADOR TK_CE_COMMA func_params               { $$ = cc_list_append(cc_list_create($1),$4);}
-        | TK_PR_CONST type TK_IDENTIFICADOR TK_CE_COMMA func_params   { $$ = cc_list_append(cc_list_create($2),$5);}
-        | type TK_IDENTIFICADOR                                       { $$ = cc_list_create($1);}
-        | TK_PR_CONST type TK_IDENTIFICADOR                           { $$ = cc_list_create($2);}
+          type TK_IDENTIFICADOR TK_CE_COMMA func_params               { 
+                                                                        if(yystack_find_top($2)!=NULL) 
+                                                                            return IKS_ERROR_DECLARED; 
+                                                                        else 
+                                                                            yystack_add($2, $1, IKS_VARIABLE); 
+                                                                        $$ = cc_list_append(cc_list_create($1),$4);
+                                                                      }
+        | TK_PR_CONST type TK_IDENTIFICADOR TK_CE_COMMA func_params   {  
+                                                                        if(yystack_find_top($3)!=NULL) 
+                                                                            return IKS_ERROR_DECLARED; 
+                                                                        else 
+                                                                            yystack_add($3, $2, IKS_VARIABLE); 
+                                                                        $$ = cc_list_append(cc_list_create($2),$5);
+                                                                      }
+        | type TK_IDENTIFICADOR                                       { 
+                                                                        if(yystack_find_top($2)!=NULL) 
+                                                                            return IKS_ERROR_DECLARED; 
+                                                                        else 
+                                                                            yystack_add($2, $1, IKS_VARIABLE); 
+                                                                        $$ = cc_list_create($1);
+                                                                      }
+        | TK_PR_CONST type TK_IDENTIFICADOR                           { 
+                                                                        if(yystack_find_top($3)!=NULL) 
+                                                                            return IKS_ERROR_DECLARED; 
+                                                                        else 
+                                                                            yystack_add($3, $2, IKS_VARIABLE); 
+                                                                        $$ = cc_list_create($2);
+                                                                      }
         | TK_IDENTIFICADOR TK_CE_COMMA func_params              { yyerror("Missing a param type"); return SINTATICA_ERRO; }
         | TK_PR_CONST TK_IDENTIFICADOR TK_CE_COMMA func_params  { yyerror("Missing a param type"); return SINTATICA_ERRO; }
         | TK_IDENTIFICADOR                                      { yyerror("Missing a param type"); return SINTATICA_ERRO; }
