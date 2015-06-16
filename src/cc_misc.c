@@ -747,11 +747,11 @@ void fun_reset(comp_tree_t* t, int set){
     
     if(t!=NULL && t->item!=NULL && t->item->type==AST_FUNCAO && set){
        
-       t->item->local_var_size = loc_var_size;
-       t->item->args_size = get_args_size(t->item->sentry);
-       t->item->return_size = return_size;
+       t->item->sentry->local_var_size = loc_var_size;
+       t->item->sentry->args_size      = get_args_size(t->item->sentry);
+       t->item->sentry->return_size    = return_size;
        
-        fprintf(stderr,"AST_TYPE: %d\n", t->item->return_size);
+        //fprintf(stderr,"AST_TYPE: %d\n", t->item->return_size);
     }
     
     fp_reset();

@@ -12,6 +12,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define FP_SIZE 4
+#define SP_SIZE 4
+#define ADDR_RETURN_SIZE 4
+
 void gen_literal(comp_tree_t* t);
 
 void gen_add(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
@@ -43,6 +47,9 @@ void gen_atrib_ident(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
 void gen_atrib_array(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
 
 void gen_program(comp_tree_t* t, char* rot_main);
+void gen_fun_call(comp_tree_t* t);
+void gen_function(comp_tree_t* t);
+
 
 void load_ident(comp_tree_t* t1);
 void load_array(comp_tree_t* t1);

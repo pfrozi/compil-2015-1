@@ -47,26 +47,64 @@ void gen_function(comp_tree_t* t){
     
     t->item->codes = NULL;
     
+    char* reg_return = (char*)get_reg();
+    char* reg_fp = (char*)get_reg();
+    char* reg_sp = (char*)get_reg();
     int size_of = 0;
     
-    size_of += t->item->local_var_size;
+    size_of += t->item->sentry->local_var_size;
     
     if(!t->item->is_main){
-        size_of += t->item->args_size;
-        size_of += t->item->return_size;                           // return of function
+        size_of += ADDR_RETURN_SIZE;
+        size_of += FP_SIZE;
+        size_of += SP_SIZE;
+        size_of += t->item->sentry->args_size;
+        size_of += t->item->sentry->return_size;                           // return of function
+        
     }
     char* loc_size = (char*)malloc(sizeof(char)*8);
+    
+    char* desloc_addr_return = (char*)malloc(sizeof(char)*8);
+    char* desloc_fp = (char*)malloc(sizeof(char)*8);
+    char* desloc_sp = (char*)malloc(sizeof(char)*8);
+    
     sprintf(loc_size,"%d",size_of);
+    
+    sprintf(desloc_addr_return,"%d",0);
+    sprintf(desloc_fp,"%d",ADDR_RETURN_SIZE);
+    sprintf(desloc_sp,"%d",ADDR_RETURN_SIZE+FP_SIZE);
     
     if(t->children[0]!=NULL){
         
         t->item->codes = list_codes_append(t->item->codes
                                          , t->children[0]->item->codes);
     }
+    
     if(t->children[1]!=NULL){
         
         t->item->codes = list_codes_append(t->item->codes
                                          , t->children[1]->item->codes);
+    }
+    
+    if(!t->item->is_main){
+        
+        t->item->codes = list_codes_append(t->item->codes
+                                     , list_codes_create(get_iloc_code(OP_JUMP, NULL, NULL, reg_return, NULL)));
+        
+        
+        t->item->codes = list_codes_append(t->item->codes
+                                     , list_codes_create(get_iloc_code(OP_STORE, reg_sp, NULL, OP_REG_SP,NULL)));
+        t->item->codes = list_codes_append(t->item->codes
+                                     , list_codes_create(get_iloc_code(OP_STORE, reg_fp, NULL, OP_REG_FP,NULL)));
+        
+        
+        t->item->codes = list_codes_append(t->item->codes
+                                     , list_codes_create(get_iloc_code(OP_LOADAI, OP_REG_SP, desloc_sp, reg_sp,NULL)));
+        t->item->codes = list_codes_append(t->item->codes
+                                     , list_codes_create(get_iloc_code(OP_LOADAI, OP_REG_FP, desloc_fp, reg_fp,NULL)));
+         t->item->codes = list_codes_append(t->item->codes
+                                     , list_codes_create(get_iloc_code(OP_LOADAI, OP_REG_FP, desloc_addr_return, reg_return,NULL)));
+        
     }
     
     t->item->codes = list_codes_append(t->item->codes

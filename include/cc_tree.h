@@ -25,10 +25,7 @@ typedef struct comp_tree_item
     char*             label_fun;
     
     int               is_main;
-    int               local_var_size;
-    int               args_size;
-    int               return_size;
-    
+ 
     
 } comp_tree_item_t;
 

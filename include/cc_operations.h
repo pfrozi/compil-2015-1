@@ -26,6 +26,7 @@
 #define OP_REG_ESPEC_RB     "rbss"
 
 #define OP_REG_SP           "sp"
+#define OP_REG_FP           "fp"
 
 #define MAIN_NAME           "main"
 
