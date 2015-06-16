@@ -12,6 +12,8 @@ int loc_var_size;
 int args_size;
 int return_size;
 
+char* ra_scope_return;
+
 int getLineNumber (void);
 void yyerror (char const *mensagem);
 void main_init (int argc, char **argv);

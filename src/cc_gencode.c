@@ -37,22 +37,19 @@ void gen_literal(comp_tree_t* t)
 
 void gen_fun_call(comp_tree_t* t){
     
-    
-    
-    
     //calc_ret_addr();
 }
 
-void gen_return(comp_tree_t* t, char* scope_return){
+void gen_return(comp_tree_t* t, char** scope_return){
     
     if(t->children[0]!=NULL){
         
-        scope_return = t->children[0]->item->result;
+        *scope_return = t->children[0]->item->result;
         t->item->codes  = t->children[0]->item->codes;
     }
 }
 
-void gen_function(comp_tree_t* t){
+void gen_function(comp_tree_t* t, char* scope_return){
     
     t->item->codes = NULL;
     
@@ -74,14 +71,23 @@ void gen_function(comp_tree_t* t){
     char* loc_size = (char*)malloc(sizeof(char)*8);
     
     char* desloc_addr_return = (char*)malloc(sizeof(char)*8);
+    
     char* desloc_fp = (char*)malloc(sizeof(char)*8);
     char* desloc_sp = (char*)malloc(sizeof(char)*8);
+    
+    char* desloc_return = (char*)malloc(sizeof(char)*8);
     
     sprintf(loc_size,"%d",size_of);
     
     sprintf(desloc_addr_return,"%d",0);
     sprintf(desloc_fp,"%d",ADDR_RETURN_SIZE);
     sprintf(desloc_sp,"%d",ADDR_RETURN_SIZE+FP_SIZE);
+    
+    sprintf(desloc_return,"%d"
+            , ADDR_RETURN_SIZE
+            + FP_SIZE
+            + SP_SIZE
+            + t->item->sentry->args_size);
     
     // proximo cod
     if(t->children[1]!=NULL){
@@ -102,7 +108,8 @@ void gen_function(comp_tree_t* t){
                                      , list_codes_create(get_iloc_code(OP_STORE, reg_fp, NULL, OP_REG_FP,NULL)));                       // retorna o fp para chamador
         
         // push do registrador com o retorno
-        
+        t->item->codes = list_codes_append(t->item->codes       
+                                     , list_codes_create(get_iloc_code(OP_STOREAI, scope_return, OP_REG_FP, desloc_return,NULL))); 
     }
     
     // codigo da funcao

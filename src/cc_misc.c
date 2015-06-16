@@ -55,6 +55,8 @@ void main_init (int argc, char **argv)
     init_cc_rot(); 
     
     fun_reset(ast,0);
+    
+    ra_scope_return = NULL;
 }
 
 void main_finalize (void)
@@ -474,8 +476,7 @@ void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
 
 void tree_pass_code(comp_tree_t* tree)
 {
-    char* ra_scope_return = NULL;
-    
+        
     if(tree!=NULL)
     {
         int i=0;
@@ -502,8 +503,9 @@ void tree_pass_code(comp_tree_t* tree)
             case AST_FUNCAO:
             {
                 fprintf(stderr,"AST_FUNCAO\n");
+                fprintf(stderr,"\tscope return: %s\n", ra_scope_return);
                 
-                gen_function(tree);
+                gen_function(tree,ra_scope_return);
                 
                 break;
             }
@@ -564,10 +566,12 @@ void tree_pass_code(comp_tree_t* tree)
                 break;
             }
             case AST_RETURN:
-            {   fprintf(stderr,"AST_RETURN\n");
+            {   
+                fprintf(stderr,"AST_RETURN\n");
              
-                    gen_return(tree, ra_scope_return);       
-             
+                gen_return(tree, &ra_scope_return);       
+                fprintf(stderr,"\tscope return: %s\n", ra_scope_return);
+                
                 break;
             }
             case AST_BLOCO:

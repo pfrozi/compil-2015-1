@@ -16,6 +16,8 @@
 #define SP_SIZE 4
 #define ADDR_RETURN_SIZE 4
 
+
+
 void gen_literal(comp_tree_t* t);
 
 void gen_add(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
@@ -48,8 +50,8 @@ void gen_atrib_array(comp_tree_t* t1, comp_tree_t* t2, comp_tree_t* t3);
 
 void gen_program(comp_tree_t* t, char* rot_main);
 void gen_fun_call(comp_tree_t* t);
-void gen_function(comp_tree_t* t);
-void gen_return(comp_tree_t* t, char* scope_return);
+void gen_function(comp_tree_t* t, char* scope_return);
+void gen_return(comp_tree_t* t, char** scope_return);
 
 
 void load_ident(comp_tree_t* t1);
