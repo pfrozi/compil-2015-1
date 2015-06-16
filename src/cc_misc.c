@@ -474,6 +474,8 @@ void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
 
 void tree_pass_code(comp_tree_t* tree)
 {
+    char* ra_scope_return = NULL;
+    
     if(tree!=NULL)
     {
         int i=0;
@@ -484,6 +486,7 @@ void tree_pass_code(comp_tree_t* tree)
             if(tree->children[i]!=NULL && tree->children[i]->item->type==AST_ATRIBUICAO)fprintf(stderr,"AST_type pai: %i\n",tree->item->type); 
             tree_pass_code(tree->children[i]);
         }
+                
         //TODO THE MAGIC
         switch(tree->item->type)
         {
@@ -562,6 +565,9 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_RETURN:
             {   fprintf(stderr,"AST_RETURN\n");
+             
+                    gen_return(tree, ra_scope_return);       
+             
                 break;
             }
             case AST_BLOCO:
@@ -711,6 +717,7 @@ void tree_pass_code(comp_tree_t* tree)
             }
             
         }
+        
     }
 }
 

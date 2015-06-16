@@ -43,6 +43,15 @@ void gen_fun_call(comp_tree_t* t){
     //calc_ret_addr();
 }
 
+void gen_return(comp_tree_t* t, char* scope_return){
+    
+    if(t->children[0]!=NULL){
+        
+        scope_return = t->children[0]->item->result;
+        t->item->codes  = t->children[0]->item->codes;
+    }
+}
+
 void gen_function(comp_tree_t* t){
     
     t->item->codes = NULL;
@@ -74,41 +83,53 @@ void gen_function(comp_tree_t* t){
     sprintf(desloc_fp,"%d",ADDR_RETURN_SIZE);
     sprintf(desloc_sp,"%d",ADDR_RETURN_SIZE+FP_SIZE);
     
-    if(t->children[0]!=NULL){
-        
-        t->item->codes = list_codes_append(t->item->codes
-                                         , t->children[0]->item->codes);
-    }
-    
+    // proximo cod
     if(t->children[1]!=NULL){
         
         t->item->codes = list_codes_append(t->item->codes
                                          , t->children[1]->item->codes);
     }
     
+    // retorno da funcao
     if(!t->item->is_main){
         
         t->item->codes = list_codes_append(t->item->codes
-                                     , list_codes_create(get_iloc_code(OP_JUMP, NULL, NULL, reg_return, NULL)));
+                                     , list_codes_create(get_iloc_code(OP_JUMP, NULL, NULL, reg_return, NULL)));                        // volta para o retorno da funcao 
+        
+        t->item->codes = list_codes_append(t->item->codes
+                                     , list_codes_create(get_iloc_code(OP_STORE, reg_sp, NULL, OP_REG_SP,NULL)));                       // retorna o sp para chamador 
+        t->item->codes = list_codes_append(t->item->codes       
+                                     , list_codes_create(get_iloc_code(OP_STORE, reg_fp, NULL, OP_REG_FP,NULL)));                       // retorna o fp para chamador
+        
+        // push do registrador com o retorno
+        
+    }
+    
+    // codigo da funcao
+    if(t->children[0]!=NULL){
+
+        t->item->codes = list_codes_append(t->item->codes
+                                         , t->children[0]->item->codes);
+    }
+    
+    if(!t->item->is_main){
+        
+        // faz pop's do RA
+        
+        // Arguments
         
         
         t->item->codes = list_codes_append(t->item->codes
-                                     , list_codes_create(get_iloc_code(OP_STORE, reg_sp, NULL, OP_REG_SP,NULL)));
+                                     , list_codes_create(get_iloc_code(OP_LOADAI, OP_REG_SP, desloc_sp, reg_sp,NULL)));                 // pega o sp do chamador
         t->item->codes = list_codes_append(t->item->codes
-                                     , list_codes_create(get_iloc_code(OP_STORE, reg_fp, NULL, OP_REG_FP,NULL)));
-        
-        
+                                     , list_codes_create(get_iloc_code(OP_LOADAI, OP_REG_FP, desloc_fp, reg_fp,NULL)));                 // pega o fp do chamador
         t->item->codes = list_codes_append(t->item->codes
-                                     , list_codes_create(get_iloc_code(OP_LOADAI, OP_REG_SP, desloc_sp, reg_sp,NULL)));
-        t->item->codes = list_codes_append(t->item->codes
-                                     , list_codes_create(get_iloc_code(OP_LOADAI, OP_REG_FP, desloc_fp, reg_fp,NULL)));
-         t->item->codes = list_codes_append(t->item->codes
-                                     , list_codes_create(get_iloc_code(OP_LOADAI, OP_REG_FP, desloc_addr_return, reg_return,NULL)));
+                                     , list_codes_create(get_iloc_code(OP_LOADAI, OP_REG_FP, desloc_addr_return, reg_return,NULL)));    // pega endereco de retorno da pilha
         
     }
     
     t->item->codes = list_codes_append(t->item->codes
-                                     , list_codes_create(get_iloc_code(OP_ADDI, OP_REG_SP, loc_size, OP_REG_SP,NULL)));
+                                     , list_codes_create(get_iloc_code(OP_ADDI, OP_REG_SP, loc_size, OP_REG_SP,NULL)));                 // sobe o ponteiro da pilha
     
     if(!t->item->is_main){
         t->item->codes = list_codes_append(t->item->codes

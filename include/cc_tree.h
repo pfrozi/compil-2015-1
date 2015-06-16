@@ -23,9 +23,7 @@ typedef struct comp_tree_item
     char*             result;
     
     char*             label_fun;
-    
     int               is_main;
- 
     
 } comp_tree_item_t;
 
