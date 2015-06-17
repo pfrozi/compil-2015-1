@@ -53,6 +53,7 @@ void gen_fun_call(comp_tree_t* t);
 void gen_function(comp_tree_t* t, char* scope_return);
 void gen_return(comp_tree_t* t, char** scope_return);
 
+list_codes_t* push_fun_args(comp_tree_t* t, list_codes_t* append, comp_list_t* iks_args, int desloc);
 
 void load_ident(comp_tree_t* t1);
 void load_array(comp_tree_t* t1);

@@ -448,6 +448,8 @@ void tree_pass_gen_labels(comp_tree_t* tree,comp_tree_t* root)
             case AST_FUNCAO:{
                 
                 tree->item->label_fun = (char*)get_rot();
+                tree->item->sentry->label_fun = tree->item->label_fun;
+                
                 if(strcmp(tree->item->sentry->key.lexem,MAIN_NAME)==0){
                     set_main_rot(tree->item->label_fun);
                     tree->item->is_main = 1;
@@ -714,7 +716,7 @@ void tree_pass_code(comp_tree_t* tree)
             }
             case AST_CHAMADA_DE_FUNCAO:{
                 
-                gen_fun_call();
+                gen_fun_call(tree);
                 
                 fprintf(stderr,"AST_CHAMADA_DE_FUNCAO\n");
 		        break;
@@ -723,11 +725,12 @@ void tree_pass_code(comp_tree_t* tree)
         }
         
     }
+    //fprintf(stderr,"num_codes: %d\n", num_codes);
 }
 
 
 void print_iloc_code(comp_tree_t* root){
-   
+    //fprintf(stderr,"num_codes: %d\n", num_codes);
     if(root!=NULL)
     {
         //int i=0;

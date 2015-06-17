@@ -36,11 +36,12 @@ typedef struct comp_dict_item
     
     int address;
     
-    comp_list_t* iks_arguments;
+    comp_list_t*      iks_arguments;
     
     int               local_var_size;
     int               args_size;
     int               return_size;
+    char*             label_fun;
     
     union
     {

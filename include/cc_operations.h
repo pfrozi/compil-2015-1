@@ -176,6 +176,7 @@ typedef struct list_codes{
     
 }list_codes_t;
 
+
 list_codes_t* list_codes_create(iloc_code_t* item);
 list_codes_t* list_codes_append(list_codes_t* list1, list_codes_t* list2);
 list_codes_t* list_codes_get(list_codes_t* list, int n);
@@ -185,7 +186,8 @@ void          init_operations();
 iloc_code_t*  get_iloc_code(int op, char* reg1, char* reg2, char* result, char* label);
 char*         get_str_code(iloc_code_t* iloc_code);
  
- 
+int           get_addr_pos(list_codes_t* list);
+
 int           get_address_var_fp(int size);
 int           get_address_var_rb(int size);
  

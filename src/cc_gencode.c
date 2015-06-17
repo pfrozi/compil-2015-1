@@ -35,9 +35,86 @@ void gen_literal(comp_tree_t* t)
     }
 }
 
+list_codes_t* push_fun_args(comp_tree_t* t, list_codes_t* append, comp_list_t* iks_args, int desloc){
+ 
+    int   arg_size = define_type_size(iks_args->type);
+    char* desloc_arg = (char*)malloc(sizeof(char)*8);
+    
+    sprintf(desloc_arg,"%d",desloc);
+    
+    if(t->num_children>1){
+        append = list_codes_append(append
+                                 , push_fun_args(t->children[1], append, iks_args->next, desloc+arg_size));
+    }
+    
+    append = list_codes_append(append
+                             , list_codes_create(get_iloc_code(OP_STOREAI, t->children[0]->item->result, OP_REG_SP, desloc_arg,NULL)));  // grava o sp do chamador
+    
+    append = list_codes_append(append
+                             , t->children[0]->item->codes);
+    
+    return append;
+}
+
 void gen_fun_call(comp_tree_t* t){
     
-    //calc_ret_addr();
+    comp_tree_t* ident = NULL;
+    comp_tree_t* child = NULL;
+    
+    ident = t->children[0];
+    
+    int desloc_args = 0;
+    
+    char* reg_return = (char*)get_reg();
+    
+    char* desloc_addr_return = (char*)malloc(sizeof(char)*8);
+    char* desloc_fp = (char*)malloc(sizeof(char)*8);
+    char* desloc_sp = (char*)malloc(sizeof(char)*8);
+    char* desloc_return = (char*)malloc(sizeof(char)*8);
+    
+    char* addr_return = (char*)malloc(sizeof(char)*8);
+    
+    sprintf(desloc_addr_return,"%d",0);
+    sprintf(desloc_fp,"%d",ADDR_RETURN_SIZE);
+    sprintf(desloc_sp,"%d",ADDR_RETURN_SIZE+FP_SIZE);
+    
+    desloc_args = ADDR_RETURN_SIZE+FP_SIZE+SP_SIZE;
+    
+    sprintf(desloc_return,"%d"
+            , ADDR_RETURN_SIZE
+            + FP_SIZE
+            + SP_SIZE
+            + t->item->sentry->args_size);
+    
+    // >>> Geracao de Codigo
+    
+    // faz load do retorno
+    t->item->codes = list_codes_append(t->item->codes
+                                     , list_codes_create(get_iloc_code(OP_LOADAI, OP_REG_SP, desloc_return, reg_return,NULL)));      // pega o retorno
+    t->item->result = reg_return;
+    
+    // jump para a funcao
+    t->item->codes = list_codes_append(t->item->codes
+                                     , list_codes_create(get_iloc_code(OP_JUMPI, NULL, NULL, ident->item->sentry->label_fun, NULL)));  // vai para funcao 
+    
+    
+    // push dos argumentos
+    if(t->num_children>1){
+     
+        child = t->children[1];
+        t->item->codes = push_fun_args(child, t->item->codes, ident->item->sentry->iks_arguments, desloc_args);
+    }
+    
+    
+    // faz push's do RA
+    t->item->codes = list_codes_append(t->item->codes
+                                 , list_codes_create(get_iloc_code(OP_STOREAI, OP_REG_SP, OP_REG_SP, desloc_sp,NULL)));                 // grava o sp do chamador
+    t->item->codes = list_codes_append(t->item->codes
+                                 , list_codes_create(get_iloc_code(OP_STOREAI, OP_REG_FP, OP_REG_SP, desloc_fp,NULL)));                 // grava o fp do chamador
+    t->item->codes = list_codes_append(t->item->codes
+                                 , list_codes_create(get_iloc_code(OP_STOREAI, addr_return, OP_REG_SP, desloc_addr_return, NULL)));    // grava endereco de retorno da pilha
+    
+    
 }
 
 void gen_return(comp_tree_t* t, char** scope_return){

@@ -184,6 +184,8 @@ void init_operations(){
 
     offset_fp = FP_INIT_ADDRESS;
     offset_rb = RP_INIT_ADDRESS;
+    
+    
 }
 
 void fp_reset(){
@@ -257,4 +259,17 @@ list_codes_t* list_codes_get(list_codes_t* list, int n){
         i++;
     }while(i!=n && l!=NULL);
     return l;
+}
+
+int get_addr_pos(list_codes_t* list){
+    
+    int cont=0;
+    list_codes_t *l = list;
+    do
+    {   
+        if(l->item->label==NULL) cont++;
+        l=l->next;
+    }while(l!=NULL);
+    
+    return cont-1;
 }
