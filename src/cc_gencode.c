@@ -105,9 +105,11 @@ void gen_fun_call(comp_tree_t* t){
     
     
     // push dos argumentos
+    fprintf(stderr,"\tIN push of %s\n",t->children[0]->item->sentry->key.lexem);
     fprintf(stderr,"\tpush of args;\n");
     if(t->num_children>1 && t->children[1]!=NULL){
         child = t->children[1];
+        fprintf(stderr,"\tIN push of args: t=%p, append=%p, iks_args=%p, desloc=%d, name=%s;\n",child,t->item->codes,ident->item->sentry->iks_arguments,desloc_args,t->children[1]->item->sentry->key.lexem);
         t->item->codes = push_fun_args(child, t->item->codes, ident->item->sentry->iks_arguments, desloc_args);
     }
     
