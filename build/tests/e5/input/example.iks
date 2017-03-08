@@ -1,0 +1,9 @@
+float arranjo[10,40,30];
+int funcao_com_arranjos ()
+{
+	int a;
+	int b;
+	float c;
+	arranjo[a+b,b+c,10*a] = 3;
+	a = arranjo[a+b,b+c,10*a];
+}

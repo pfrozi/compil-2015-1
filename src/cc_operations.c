@@ -185,7 +185,7 @@ void init_operations(){
     offset_fp = FP_INIT_ADDRESS;
     offset_rb = RP_INIT_ADDRESS;
     
-    
+    memory_pointer = 0;
 }
 
 void fp_reset(){

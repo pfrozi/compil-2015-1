@@ -1,0 +1,25 @@
+loadI 0 => fp
+loadI 0 => sp
+loadI 0 => rbss
+jumpI -> l4
+l1:
+i2i sp => fp
+addI sp, 20 => sp
+loadAI fp, 0 => r15
+loadAI fp, 4 => r16
+loadAI fp, 8 => r17
+loadI 4 => r8
+storeAI r8 => fp, 0
+loadAI fp, 0 => r9
+storeAI r9 => fp, 12
+store r16 => fp
+store r17 => sp
+jump -> r15
+l4:
+addI sp, 4 => sp
+storeAI  => sp, 0
+storeAI fp => sp, 4
+storeAI sp => sp, 8
+jumpI -> l1
+loadAI sp, 12 => r11
+storeAI r11 => fp, 0

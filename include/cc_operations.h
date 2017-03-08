@@ -156,6 +156,9 @@ int offset_rb;
 
 char* main_rot;
 
+
+int memory_pointer;
+
 typedef struct iloc_code{
     
     int   op;
@@ -175,6 +178,17 @@ typedef struct list_codes{
     struct list_codes*  next;
     
 }list_codes_t;
+
+
+typedef struct ra_function{
+    
+    int   desloc_addr_ret;
+    int   desloc_fp;
+    int   desloc_sp;
+    int   desloc_
+    
+    
+}iloc_code_t;
 
 
 list_codes_t* list_codes_create(iloc_code_t* item);

@@ -1,0 +1,10 @@
+bool vai;
+bool naovai;
+
+int acabafondo() {
+   if(vai && !naovai) then
+   {
+     return vai;
+   };
+   return naovai;
+}

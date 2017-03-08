@@ -1,0 +1,31 @@
+loadI 0 => fp
+loadI 0 => sp
+loadI 0 => rbss
+jumpI -> l5
+l1:
+i2i sp => fp
+addI sp, 28 => sp
+loadAI fp, 0 => r24
+loadAI fp, 4 => r25
+loadAI fp, 8 => r26
+loadAI rbss, 4 => r11
+loadAI rbss, 0 => r12
+mult r11, r12 => r13
+storeAI r13 => fp, 0
+loadAI fp, 0 => r14
+storeAI r14 => fp, 20
+store r25 => fp
+store r26 => sp
+jump -> r24
+l5:
+addI sp, 8 => sp
+loadI 2 => r16
+storeAI r16 => fp, 0
+storeAI  => sp, 0
+storeAI fp => sp, 4
+storeAI sp => sp, 8
+loadAI fp, 0 => r18
+storeAI r18 => sp, 12
+jumpI -> l1
+loadAI sp, 20 => r20
+storeAI r20 => fp, 4
